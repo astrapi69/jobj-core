@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.lang;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -42,12 +43,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package name from the given class object.
 	 */
-	public static String getPackageName(final Class<?> clazz)
+	public static String getPackageName(final @NonNull Class<?> clazz)
 	{
-		if (clazz == null)
-		{
-			return null;
-		}
 		final String packageName = clazz.getPackage().getName();
 		return packageName;
 	}
@@ -62,12 +59,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package name from the given String.
 	 */
-	public static String getPackageName(final String qualifiedClassName)
+	public static String getPackageName(final @NonNull String qualifiedClassName)
 	{
-		if (qualifiedClassName == null)
-		{
-			return null;
-		}
 		final String packageName = qualifiedClassName.substring(0,
 			qualifiedClassName.lastIndexOf("."));
 		return packageName;
@@ -81,12 +74,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package name from the given class object.
 	 */
-	public static String getPackageNameWithDot(final Class<?> clazz)
+	public static String getPackageNameWithDot(final @NonNull Class<?> clazz)
 	{
-		if (clazz == null)
-		{
-			return null;
-		}
 		final String packageName = clazz.getPackage().getName() + ".";
 		return packageName;
 	}
@@ -99,12 +88,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package path from the given class object.
 	 */
-	public static String getPackagePath(final Class<?> clazz)
+	public static String getPackagePath(final @NonNull Class<?> clazz)
 	{
-		if (clazz == null)
-		{
-			return null;
-		}
 		final String packagePath = getPackageName(clazz).replace('.', '/') + "/";
 		return packagePath;
 	}
@@ -117,12 +102,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package path from the given object.
 	 */
-	public static String getPackagePath(final Object object)
+	public static String getPackagePath(final @NonNull Object object)
 	{
-		if (object == null)
-		{
-			return null;
-		}
 		return getPackagePath(object.getClass());
 	}
 
@@ -134,7 +115,7 @@ public final class PackageExtensions
 	 *            the package path with dots
 	 * @return The package path from the given String object
 	 */
-	public static String getPackagePath(final String packagePathWithDots)
+	public static String getPackagePath(final @NonNull String packagePathWithDots)
 	{
 		return getPackagePath(packagePathWithDots, false);
 	}
@@ -152,13 +133,9 @@ public final class PackageExtensions
 	 *            flag that indicates if a slash will be appended at the end
 	 * @return The package path from the given String object
 	 */
-	public static String getPackagePath(final String packagePathWithDots,
+	public static String getPackagePath(final @NonNull String packagePathWithDots,
 		final boolean withEndSlash)
 	{
-		if (packagePathWithDots == null)
-		{
-			return null;
-		}
 		final StringBuilder sb = new StringBuilder();
 		sb.append(packagePathWithDots.replace('.', '/'));
 		if (withEndSlash)
@@ -176,12 +153,8 @@ public final class PackageExtensions
 	 *            the clazz
 	 * @return The package path from the given object with the added slash at the front.
 	 */
-	public static String getPackagePathWithSlash(final Class<?> clazz)
+	public static String getPackagePathWithSlash(final @NonNull Class<?> clazz)
 	{
-		if (clazz == null)
-		{
-			return null;
-		}
 		final String packagePath = "/" + getPackagePath(clazz);
 		return packagePath;
 	}
@@ -194,12 +167,8 @@ public final class PackageExtensions
 	 *
 	 * @return The package path from the given object with the added slash at the front.
 	 */
-	public static String getPackagePathWithSlash(final Object object)
+	public static String getPackagePathWithSlash(final @NonNull Object object)
 	{
-		if (object == null)
-		{
-			return null;
-		}
 		return getPackagePathWithSlash(object.getClass());
 	}
 

@@ -24,6 +24,7 @@
  */
 package de.alpharogroup.lang;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 
 import org.meanbean.factories.ObjectCreationException;
@@ -43,13 +44,45 @@ public class PackageExtensionsTest
 {
 
 	/**
-	 * Test method for {@link PackageExtensions#getPackageName(Class)}.
+	 * Test method for {@link PackageExtensions#getPackageName(Class)}
 	 */
 	@Test
-	public void testGetPackageNameClassOfQ()
+	public void testGetPackageNameOfClass()
 	{
-		String packageName = PackageExtensions.getPackageName((Class<?>)null);
-		assertTrue(packageName == null);
+		String expected;
+		String actual;
+
+		actual = PackageExtensions.getPackageName(TypeArgumentsExtensions.class);
+		expected = "de.alpharogroup.lang";
+		assertEquals(actual, expected);
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageName(String)}
+	 */
+	@Test
+	public void testGetPackageNameOfQualifiedClassName()
+	{
+		String expected;
+		String actual;
+
+		actual = PackageExtensions.getPackageName("de.alpharogroup.lang.TypeArgumentsExtensions");
+		expected = "de.alpharogroup.lang";
+		assertEquals(actual, expected);
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageNameWithDot(Class)}
+	 */
+	@Test
+	public void testGetPackageNameWithDot()
+	{
+		String expected;
+		String actual;
+
+		actual = PackageExtensions.getPackageNameWithDot(TypeArgumentsExtensions.class);
+		expected = "de.alpharogroup.lang.";
+		assertEquals(actual, expected);
 	}
 
 	/**
