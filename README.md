@@ -2,8 +2,8 @@
 
 <div align="center">
 
-[![Build Status](https://travis-ci.org/astrapi69/jobj-core.svg?branch=develop)](https://travis-ci.org/astrapi69/jobj-core) 
-[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=develop)](https://coveralls.io/github/astrapi69/jobj-core?branch=develop) 
+[![Build Status](https://travis-ci.org/astrapi69/jobj-core.svg?branch=master)](https://travis-ci.org/astrapi69/jobj-core) 
+[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master) 
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/jobj-core.svg)](http://www.javadoc.io/doc/de.alpharogroup/jobj-core)
@@ -111,7 +111,7 @@ Do not hesitate to contact the jobj-core developers with your questions, concern
 
 |**coveralls.io**|
 |     :---:      |
-|[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=develop)](https://coveralls.io/github/astrapi69/jobj-core?branch=master)|
+|[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master)|
 |Special thanks to [coveralls.io](https://coveralls.io) for providing a free code coverage for open source projects|
 |     <img width=1000/>     |
 
