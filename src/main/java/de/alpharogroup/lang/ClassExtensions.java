@@ -31,12 +31,15 @@ import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -58,7 +61,7 @@ public final class ClassExtensions
 	 * @throws ClassNotFoundException
 	 *             is thrown if the Class was not found or could not be located.
 	 */
-	public static Class<?> forName(final String className) throws ClassNotFoundException
+	public static Class<?> forName(final @NonNull String className) throws ClassNotFoundException
 	{
 		Class<?> clazz = null;
 		try
@@ -113,7 +116,7 @@ public final class ClassExtensions
 	 *            the elements
 	 * @return the calling method name
 	 */
-	public static String getCallingMethodName(final StackTraceElement elements[])
+	public static String getCallingMethodName(final @NonNull StackTraceElement elements[])
 	{
 		String callingMethodName = null;
 		if (2 < elements.length)
@@ -132,7 +135,7 @@ public final class ClassExtensions
 	 * @return the real class if the given class is decorated with cglib proxy classes and if not
 	 *         the given class will be returned.
 	 */
-	public static Class<?> getCglibProxy(final Class<?> clazz)
+	public static Class<?> getCglibProxy(final @NonNull Class<?> clazz)
 	{
 		Class<?> found = clazz;
 		while (isCglib(found))
@@ -220,7 +223,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return The classname.
 	 */
-	public static String getClassname(final Class<?> clazz)
+	public static String getClassname(final @NonNull Class<?> clazz)
 	{
 		final String className = clazz.getName();
 		return className;
@@ -233,11 +236,10 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return The classname and concats the suffix ".class".
 	 */
-	public static String getClassnameWithSuffix(final Class<?> clazz)
+	public static String getClassnameWithSuffix(final @NonNull Class<?> clazz)
 	{
 		String className = clazz.getName();
-		className = className.substring(className.lastIndexOf('.') + 1)
-			+ ".class";
+		className = className.substring(className.lastIndexOf('.') + 1) + ".class";
 		return className;
 	}
 
@@ -248,7 +250,7 @@ public final class ClassExtensions
 	 *            The object.
 	 * @return The classname and concats the suffix ".class".
 	 */
-	public static String getClassnameWithSuffix(final Object obj)
+	public static String getClassnameWithSuffix(final @NonNull Object obj)
 	{
 		return getClassnameWithSuffix(obj.getClass());
 	}
@@ -260,7 +262,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return the {@link ClassType} from the given class.
 	 */
-	public static ClassType getClassType(final Class<?> clazz)
+	public static ClassType getClassType(final @NonNull Class<?> clazz)
 	{
 		if (clazz.isArray())
 		{
@@ -316,7 +318,7 @@ public final class ClassExtensions
 	 *            the elements
 	 * @return the current method name
 	 */
-	public static String getCurrentMethodName(final StackTraceElement elements[])
+	public static String getCurrentMethodName(final @NonNull StackTraceElement elements[])
 	{
 		String currentMethodName = null;
 		boolean isNext = false;
@@ -346,7 +348,7 @@ public final class ClassExtensions
 	 * @throws URISyntaxException
 	 *             is thrown if a string could not be parsed as a URI reference.
 	 */
-	public static List<File> getDirectoriesFromResources(String path, final boolean isPackage)
+	public static List<File> getDirectoriesFromResources(@NonNull String path, final boolean isPackage)
 		throws IOException, URISyntaxException
 	{
 		if (isPackage)
@@ -369,7 +371,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return the jar path as String if the given class is in a JAR file.
 	 */
-	public static String getJarPath(final Class<?> clazz)
+	public static String getJarPath(final @NonNull Class<?> clazz)
 	{
 		String jarPath = null;
 		final String jarPathPrefix = "jar:";
@@ -399,7 +401,7 @@ public final class ClassExtensions
 	 *            the class
 	 * @return the jdk proxy interfaces
 	 */
-	public static Class<?>[] getJdkProxyInterfaces(final Class<?> clazz)
+	public static Class<?>[] getJdkProxyInterfaces(final @NonNull Class<?> clazz)
 	{
 		final Class<?> found = clazz;
 		if (isJdkProxy(found))
@@ -416,7 +418,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return the manifest url as String if the given class is in a JAR, WAR or EAR file.
 	 */
-	public static String getManifestUrl(final Class<?> clazz)
+	public static String getManifestUrl(final @NonNull Class<?> clazz)
 	{
 		String manifestUrl = null;
 		final String path = ClassExtensions.getPath(clazz);
@@ -443,7 +445,7 @@ public final class ClassExtensions
 	 *
 	 * @return The name of the given class.
 	 */
-	public static String getName(final Class<?> clazz)
+	public static String getName(final @NonNull Class<?> clazz)
 	{
 		return getName(clazz, false);
 	}
@@ -490,7 +492,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return the path from the given class.
 	 */
-	public static String getPath(final Class<?> clazz)
+	public static String getPath(final @NonNull Class<?> clazz)
 	{
 		final String packagePath = PackageExtensions.getPackagePath(clazz);
 		final String className = ClassExtensions.getSimpleName(clazz);
@@ -525,7 +527,7 @@ public final class ClassExtensions
 	 *            The class-object.
 	 * @return 's the url from the path.
 	 */
-	public static URL getResource(final Class<?> clazz)
+	public static URL getResource(final @NonNull Class<?> clazz)
 	{
 		final String path = ClassExtensions.getPath(clazz);
 		URL url = clazz.getResource(path);
@@ -545,7 +547,7 @@ public final class ClassExtensions
 	 *            The path.
 	 * @return 's the url from the path.
 	 */
-	public static URL getResource(final Class<?> clazz, final String path)
+	public static URL getResource(final @NonNull Class<?> clazz, final @NonNull String path)
 	{
 		URL url = clazz.getResource(path);
 		if (url == null)
@@ -562,7 +564,7 @@ public final class ClassExtensions
 	 *            The name from the resource.
 	 * @return The resource or null if the resource does not exists.
 	 */
-	public static URL getResource(final String name)
+	public static URL getResource(final @NonNull String name)
 	{
 		String path = name;
 		if (name.startsWith("/"))
@@ -584,7 +586,7 @@ public final class ClassExtensions
 	 *            The Object.
 	 * @return The resource or null if the resource does not exists.
 	 */
-	public static <T> URL getResource(final String name, final T obj)
+	public static <T> URL getResource(final @NonNull String name, final @NonNull T obj)
 	{
 		final Class<?> clazz = obj.getClass();
 		URL url = clazz.getResource(name);
@@ -605,7 +607,7 @@ public final class ClassExtensions
 	 * @throws URISyntaxException
 	 *             occurs by creation of the file with an uri.
 	 */
-	public static File getResourceAsFile(final String name) throws URISyntaxException
+	public static File getResourceAsFile(final @NonNull String name) throws URISyntaxException
 	{
 		File file = null;
 		URL url = getResource(name);
@@ -640,12 +642,13 @@ public final class ClassExtensions
 	 * @param obj
 	 *            The Object.
 	 * @return The file or null if the file does not exists.
-	 *
 	 * @throws URISyntaxException
 	 *             occurs by creation of the file with an uri.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public static File getResourceAsFile(final String name, final Object obj)
-		throws URISyntaxException
+	public static File getResourceAsFile(final @NonNull String name, final @NonNull Object obj)
+		throws URISyntaxException, IOException
 	{
 		File file = null;
 		URL url = getResource(name, obj);
@@ -661,8 +664,9 @@ public final class ClassExtensions
 		{
 			if (url.getProtocol().equals("jar"))
 			{
-				throw new URISyntaxException(url.toString(),
-					"Resource is in a jar file. Use instead the method ClassExtensions#getResourceAsStream(String, Object). Given resource is");
+				InputStream resourceAsStream = ClassExtensions.getResourceAsStream(name, obj);
+				file = new File(System.getProperty("java.io.tmpdir"), obj.getClass().getSimpleName());
+				Files.copy(resourceAsStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			}
 			if (url.getProtocol().equals("file"))
 			{
@@ -683,7 +687,7 @@ public final class ClassExtensions
 	 *            The uri as String.
 	 * @return The InputStream from the uri.
 	 */
-	public static InputStream getResourceAsStream(final Class<?> clazz, final String uri)
+	public static InputStream getResourceAsStream(final @NonNull Class<?> clazz, final @NonNull String uri)
 	{
 		InputStream is = clazz.getResourceAsStream(uri);
 		if (null == is)
@@ -700,7 +704,7 @@ public final class ClassExtensions
 	 *            The name from the resource.
 	 * @return The resource or null if the resource does not exists.
 	 */
-	public static InputStream getResourceAsStream(final String name)
+	public static InputStream getResourceAsStream(final @NonNull String name)
 	{
 		final ClassLoader loader = ClassExtensions.getClassLoader();
 		final InputStream inputStream = loader.getResourceAsStream(name);
@@ -716,7 +720,7 @@ public final class ClassExtensions
 	 *            The Object.
 	 * @return The resource or null if the resource does not exists.
 	 */
-	public static InputStream getResourceAsStream(final String name, final Object obj)
+	public static InputStream getResourceAsStream(final @NonNull String name, final @NonNull Object obj)
 	{
 		InputStream inputStream = obj.getClass().getResourceAsStream(name);
 		if (null == inputStream)
@@ -736,7 +740,7 @@ public final class ClassExtensions
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static List<URL> getResources(final String path) throws IOException
+	public static List<URL> getResources(final @NonNull String path) throws IOException
 	{
 		final ClassLoader classLoader = ClassExtensions.getClassLoader();
 		final List<URL> list = Collections.list(classLoader.getResources(path));
@@ -751,7 +755,7 @@ public final class ClassExtensions
 	 *
 	 * @return The simple name of the given class.
 	 */
-	public static String getSimpleName(final Class<?> clazz)
+	public static String getSimpleName(final @NonNull Class<?> clazz)
 	{
 		return getName(clazz, true);
 	}
@@ -780,7 +784,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return the URL from the given class.
 	 */
-	public static URL getURL(final Class<?> clazz)
+	public static URL getURL(final @NonNull Class<?> clazz)
 	{
 		return ClassExtensions.getResource(ClassExtensions.getPath(clazz));
 	}
@@ -806,7 +810,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return true, if the given class is assignable from {@link Collection} otherwise false.
 	 */
-	public static boolean isCollection(final Class<?> clazz)
+	public static boolean isCollection(final @NonNull Class<?> clazz)
 	{
 		return Collection.class.isAssignableFrom(clazz);
 	}
@@ -867,7 +871,7 @@ public final class ClassExtensions
 	 *            The class.
 	 * @return true, if the given class is assignable from {@link Map} otherwise false.
 	 */
-	public static boolean isMap(final Class<?> clazz)
+	public static boolean isMap(final @NonNull Class<?> clazz)
 	{
 		return Map.class.isAssignableFrom(clazz);
 	}

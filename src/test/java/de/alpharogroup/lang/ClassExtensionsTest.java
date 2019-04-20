@@ -470,7 +470,7 @@ public class ClassExtensionsTest
 		actual = ClassExtensions.getManifestUrl(ClassExtensions.class);
 		assertTrue(actual.toString().startsWith("file:"));
 		assertTrue(
-			actual.toString().endsWith("/jcommons-lang/target/classes/META-INF/MANIFEST.MF"));
+			actual.toString().endsWith("/jobj-core/target/classes/META-INF/MANIFEST.MF"));
 	}
 
 	/**
@@ -567,13 +567,15 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getResourceAsFile(String, Object)}.
+	 * Test method for {@link ClassExtensions#getResourceAsFile(String, Object)}
 	 *
 	 * @throws URISyntaxException
 	 *             occurs by creation of the file with an uri.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test
-	public void testGetResourceAsFileStringObject() throws URISyntaxException
+	@Test(enabled = true)
+	public void testGetResourceAsFileStringObject() throws URISyntaxException, IOException
 	{
 		final String filename = "/de/alpharogroup/test/objects/Person.class";
 
@@ -581,21 +583,6 @@ public class ClassExtensionsTest
 		this.result = file != null;
 		assertTrue("File should not be null", this.result);
 		assertTrue("File should exist.", file.exists());
-	}
-
-	/**
-	 * Test method for {@link ClassExtensions#getResourceAsFile(String, Object)} that throws an
-	 * URISyntaxException
-	 *
-	 * @throws URISyntaxException
-	 *             occurs by creation of the file with an uri.
-	 */
-	@Test(expectedExceptions = URISyntaxException.class)
-	public void testGetResourceAsFileStringObjectThrowsURISyntaxException()
-		throws URISyntaxException
-	{
-		ClassExtensions.getResourceAsFile("de/alpharogroup/test/objects/Person.class",
-			Person.builder().build());
 	}
 
 	/**
@@ -856,6 +843,5 @@ public class ClassExtensionsTest
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ClassExtensions.class);
 	}
-	// =========================================================================== //
 
 }

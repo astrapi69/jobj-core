@@ -12,7 +12,7 @@
 
 	<artifactId>jobj-core</artifactId>
 
-	<version>0.0.1-SNAPSHOT</version>
+	<version>3-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
 
@@ -28,7 +28,7 @@
 		<!-- TEST-OBJECTS version -->
 		<test-objects.version>5.0.1</test-objects.version>
 		<!-- CGLIB version -->
-		<cglib.version>3.2.7</cglib.version>
+		<cglib.version>3.2.10</cglib.version>
 		<!-- RUNTIME-COMPILER version -->
 		<runtime-compiler.version>1.2</runtime-compiler.version>
 	</properties>
@@ -132,6 +132,7 @@
 			<artifactId>runtime-compiler</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 </project>
