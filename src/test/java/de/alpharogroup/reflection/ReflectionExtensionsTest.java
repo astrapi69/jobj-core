@@ -52,10 +52,11 @@ public class ReflectionExtensionsTest
 	 * Test method for {@link ReflectionExtensions#copyArray(Object)}
 	 */
 	@Test
-	public void testCopyArray() {
+	public void testCopyArray()
+	{
 		Integer[] actual;
 		Integer[] expected;
-		actual = ArrayFactory.newArray(1,2,3);
+		actual = ArrayFactory.newArray(1, 2, 3);
 		expected = (Integer[])ReflectionExtensions.copyArray(actual);
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}

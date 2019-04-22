@@ -493,7 +493,7 @@ public final class ReflectionExtensions
 	 *            a list with field names that shell be ignored
 	 * @return all the declared fields minus the given ignored field names
 	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, final List<String> ignoreFieldNames)
+	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, List<String> ignoreFieldNames)
 	{
 		Field[] declaredFields = getDeclaredFields(cls, ignoreFieldNames);
 		Class<?> superClass = cls.getSuperclass();
@@ -501,14 +501,11 @@ public final class ReflectionExtensions
 		{
 			return declaredFields;
 		}
-		// TODO optimize with dot detection...
-		ignoreFieldNames.removeAll(Arrays.asList(getDeclaredFieldNames(cls)));
 		List<Field> fields = new ArrayList<>(Arrays.asList(declaredFields));
 		while ((superClass != null && superClass.getSuperclass() != null
 			&& superClass.getSuperclass().equals(Object.class)))
 		{
 			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
-			ignoreFieldNames.removeAll(Arrays.asList(getDeclaredFieldNames(cls)));
 			superClass = superClass.getSuperclass();
 		}
 		return fields.toArray(new Field[] { });
