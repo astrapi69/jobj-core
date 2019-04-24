@@ -45,6 +45,22 @@ import lombok.experimental.UtilityClass;
 public final class ReflectionExtensions
 {
 
+    
+    /**
+     * Creates a new array instance from the same type as the given {@link Class}
+     *
+     * @param <T>
+     *            the generic type
+     * @param cls
+     *            the Class object
+     * @param length
+     *            the length of the array
+     * @return the new array instance
+     */
+	public static <T> T[] newArrayInstance(Class<T> cls, int length) {
+		return (T[]) Array.newInstance(cls, length);
+	}
+	
 	/**
 	 * Copy the given array object and return a copy of it
 	 *
