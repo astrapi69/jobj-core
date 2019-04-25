@@ -4,6 +4,11 @@
 Version 3.1-SNAPSHOT
 -------------
 
+ADDED:
+ 
+- new method created for create new instance of an array with reflection with capacity
+- new method created for copy an existing array 
+
 Version 3
 -------------
 

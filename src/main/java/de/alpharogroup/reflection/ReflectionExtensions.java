@@ -45,22 +45,41 @@ import lombok.experimental.UtilityClass;
 public final class ReflectionExtensions
 {
 
-    
-    /**
-     * Creates a new array instance from the same type as the given {@link Class}
-     *
-     * @param <T>
-     *            the generic type
-     * @param cls
-     *            the Class object
-     * @param length
-     *            the length of the array
-     * @return the new array instance
-     */
-	public static <T> T[] newArrayInstance(Class<T> cls, int length) {
-		return (T[]) Array.newInstance(cls, length);
+
+	/**
+	 * Creates a new array instance from the same type as the given {@link Class} and the given
+	 * length
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param cls
+	 *            the class object
+	 * @param length
+	 *            the length of the array
+	 * @return the new array instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
+	{
+		return (T[])Array.newInstance(cls, length);
 	}
-	
+
+	/**
+	 * Creates a new empty array instance from the given source array the length of the given source
+	 * array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source array
+	 * @return the new empty array instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
+	{
+		return (T[])newArrayInstance(source.getClass().getComponentType(), source.length);
+	}
+
 	/**
 	 * Copy the given array object and return a copy of it
 	 *
@@ -68,10 +87,9 @@ public final class ReflectionExtensions
 	 *            the source
 	 * @return the copy of the given array object
 	 */
-	public static Object copyArray(final @NonNull Object source)
+	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		Class<?> arrayType = source.getClass().getComponentType();
-		Object destination = Array.newInstance(arrayType, Array.getLength(source));
+		T[] destination = newEmptyArrayInstance(source);
 		for (int i = 0; i < Array.getLength(source); i++)
 		{
 			Array.set(destination, i, Array.get(source, i));
@@ -494,7 +512,8 @@ public final class ReflectionExtensions
 	 *            an optional array with field names that shell be ignored
 	 * @return all the declared fields minus the given ignored field names
 	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, final String... ignoreFieldNames)
+	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
+		final String... ignoreFieldNames)
 	{
 		return getAllDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
 	}
@@ -509,7 +528,8 @@ public final class ReflectionExtensions
 	 *            a list with field names that shell be ignored
 	 * @return all the declared fields minus the given ignored field names
 	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, List<String> ignoreFieldNames)
+	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
+		List<String> ignoreFieldNames)
 	{
 		Field[] declaredFields = getDeclaredFields(cls, ignoreFieldNames);
 		Class<?> superClass = cls.getSuperclass();

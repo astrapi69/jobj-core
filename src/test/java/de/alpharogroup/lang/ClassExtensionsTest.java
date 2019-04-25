@@ -469,8 +469,7 @@ public class ClassExtensionsTest
 
 		actual = ClassExtensions.getManifestUrl(ClassExtensions.class);
 		assertTrue(actual.toString().startsWith("file:"));
-		assertTrue(
-			actual.toString().endsWith("/jobj-core/target/classes/META-INF/MANIFEST.MF"));
+		assertTrue(actual.toString().endsWith("/jobj-core/target/classes/META-INF/MANIFEST.MF"));
 	}
 
 	/**
