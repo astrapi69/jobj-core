@@ -555,29 +555,52 @@ public class ReflectionExtensionsTest
 		assertEquals(expected, actual);
 	}
 
+    /**
+     * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
+     *
+     * @throws NoSuchFieldException
+     *             is thrown if no such field exists.
+     * @throws SecurityException
+     *             is thrown if a security manager says no.
+     * @throws IllegalAccessException
+     *             is thrown if an illegal on create an instance or access a method.
+     */
+    @Test
+    public void testSetFieldValueObject()
+            throws NoSuchFieldException, SecurityException, IllegalAccessException
+    {
+        String expected;
+        String actual;
+        final Person person = Person.builder().name("Alex").build();
+        expected = "Leo";
+        ReflectionExtensions.setFieldValue(person, "name", "Leo");
+        actual = person.getName();
+        assertEquals(expected, actual);
+    }
 
-	/**
-	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
-	 *
-	 * @throws NoSuchFieldException
-	 *             is thrown if no such field exists.
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no.
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method.
-	 */
-	@Test
-	public void testSetFieldValueObject()
-		throws NoSuchFieldException, SecurityException, IllegalAccessException
-	{
-		String expected;
-		String actual;
-		final Person person = Person.builder().name("Alex").build();
-		expected = "Leo";
-		ReflectionExtensions.setFieldValue(person, "name", "Leo");
-		actual = person.getName();
-		assertEquals(expected, actual);
-	}
+    /**
+     * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
+     *
+     * @throws NoSuchFieldException
+     *             is thrown if no such field exists.
+     * @throws SecurityException
+     *             is thrown if a security manager says no.
+     * @throws IllegalAccessException
+     *             is thrown if an illegal on create an instance or access a method.
+     */
+    @Test
+    public void testSetFieldValueObjectWithField()
+            throws NoSuchFieldException, SecurityException, IllegalAccessException
+    {
+        String expected;
+        String actual;
+        final Person person = Person.builder().name("Alex").build();
+        expected = "Leo";
+        Field nameField = ReflectionExtensions.getDeclaredField(person, "name");
+        ReflectionExtensions.setFieldValue(person, nameField, "Leo");
+        actual = person.getName();
+        assertEquals(expected, actual);
+    }
 
 	/**
 	 * Test method for {@link ReflectionExtensions#setFieldValue(Class, String, Object)}.

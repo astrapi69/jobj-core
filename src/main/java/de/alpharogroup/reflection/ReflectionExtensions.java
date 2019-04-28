@@ -126,12 +126,12 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Sets the field value of the given source object over the field name.
+	 * Sets the field value of the given source object over the field name
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param source
-	 *            the source
+	 *            the source object
 	 * @param fieldName
 	 *            the field name
 	 * @param newValue
@@ -141,15 +141,34 @@ public final class ReflectionExtensions
 	 * @throws SecurityException
 	 *             is thrown if a security manager says no.
 	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method.
+	 *             is thrown if an illegal on create an instance or access a method
 	 */
 	public static <T> void setFieldValue(final @NonNull T source, final @NonNull String fieldName,
 		final Object newValue)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
-		final Field sourceField = getDeclaredField(source, fieldName);
-		sourceField.setAccessible(true);
-		sourceField.set(source, newValue);
+		setFieldValue(source, getDeclaredField(source, fieldName), newValue);
+	}
+
+	/**
+	 * Sets the field value of the given source object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source object
+	 * @param field
+	 *            the field
+	 * @param newValue
+	 *            the new value
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
+	 */
+	public static <T> void setFieldValue(final T source, final Field field, final Object newValue)
+		throws IllegalAccessException
+	{
+		field.setAccessible(true);
+		field.set(source, newValue);
 	}
 
 	/**

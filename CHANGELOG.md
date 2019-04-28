@@ -8,6 +8,7 @@ ADDED:
  
 - new method created for create new instance of an array with reflection with capacity
 - new method created for copy an existing array 
+- new method created for set an field value from a given source object
 
 Version 3
 -------------
