@@ -45,7 +45,6 @@ import lombok.experimental.UtilityClass;
 public final class ReflectionExtensions
 {
 
-
 	/**
 	 * Creates a new array instance from the same type as the given {@link Class} and the given
 	 * length
