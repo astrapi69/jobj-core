@@ -80,8 +80,10 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Copy the given array object and return a copy of it
+	 * Copy the given array object and return a copy of it.
 	 *
+	 * @param <T>
+	 *            the generic type
 	 * @param source
 	 *            the source
 	 * @return the copy of the given array object
