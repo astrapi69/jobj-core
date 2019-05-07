@@ -8,6 +8,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/jobj-core.svg)](http://www.javadoc.io/doc/de.alpharogroup/jobj-core)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
+[![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
 </div>
 
@@ -55,7 +56,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3</jobj-core.version>
+		<jobj-core.version>3.1</jobj-core.version>
 			...
 	</properties>
 			...
