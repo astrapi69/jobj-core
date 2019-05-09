@@ -12,7 +12,7 @@
 
 	<artifactId>jobj-core</artifactId>
 
-	<version>3.1</version>
+	<version>3.2-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
 
@@ -23,6 +23,7 @@
 	<properties>
 		<!-- OBJENESIS version -->
 		<objenesis.version>3.0.1</objenesis.version>
+		<!-- TEST-SCOPE versions -->
 		<!-- SILLY-COLLECTIONS version -->
 		<silly-collections.version>5.2</silly-collections.version>
 		<!-- TEST-OBJECTS version -->
@@ -66,6 +67,7 @@
 				<artifactId>objenesis</artifactId>
 				<version>${objenesis.version}</version>
 			</dependency>
+			<!-- TEST-SCOPE DEPENDENCIES -->
 			<!-- SILLY-COLLECTIONS DEPENDENCY -->
 			<dependency>
 				<groupId>de.alpharogroup</groupId>
@@ -96,13 +98,12 @@
 	</dependencyManagement>
 
 	<dependencies>
-
 		<!-- OBJENESIS DEPENDENCY -->
 		<dependency>
 			<groupId>org.objenesis</groupId>
 			<artifactId>objenesis</artifactId>
 		</dependency>
-		<!-- UNIT-TEST DEPENDENCIES -->
+		<!-- TEST-SCOPE DEPENDENCIES -->
 		<dependency>
 			<groupId>de.alpharogroup</groupId>
 			<artifactId>test-objects</artifactId>
