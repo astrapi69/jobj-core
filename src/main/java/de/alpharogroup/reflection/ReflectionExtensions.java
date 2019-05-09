@@ -472,18 +472,12 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible.
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason.
 	 */
-
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
-		throws InstantiationException, IllegalAccessException
 	{
-		return clazz.newInstance();
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
 	}
 
 	/**
@@ -494,13 +488,14 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
+	 * @deprecated use instead <code>newInstance</code> method.<br>
+	 *             Note: will be removed in next minor version
 	 */
 
+	@Deprecated
 	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
 	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
+		return newInstance(clazz);
 	}
 
 	/**
