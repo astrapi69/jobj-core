@@ -46,16 +46,51 @@ public final class ReflectionExtensions
 {
 
 	/**
-	 * Copy the given array object and return a copy of it
+	 * Creates a new array instance from the same type as the given {@link Class} and the given
+	 * length
 	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param cls
+	 *            the class object
+	 * @param length
+	 *            the length of the array
+	 * @return the new array instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
+	{
+		return (T[])Array.newInstance(cls, length);
+	}
+
+	/**
+	 * Creates a new empty array instance from the given source array the length of the given source
+	 * array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source array
+	 * @return the new empty array instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
+	{
+		return (T[])newArrayInstance(source.getClass().getComponentType(), source.length);
+	}
+
+	/**
+	 * Copy the given array object and return a copy of it.
+	 *
+	 * @param <T>
+	 *            the generic type
 	 * @param source
 	 *            the source
 	 * @return the copy of the given array object
 	 */
-	public static Object copyArray(final @NonNull Object source)
+	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		Class<?> arrayType = source.getClass().getComponentType();
-		Object destination = Array.newInstance(arrayType, Array.getLength(source));
+		T[] destination = newEmptyArrayInstance(source);
 		for (int i = 0; i < Array.getLength(source); i++)
 		{
 			Array.set(destination, i, Array.get(source, i));
@@ -85,19 +120,40 @@ public final class ReflectionExtensions
 		final @NonNull String fieldName)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
-		final Field sourceField = getDeclaredField(source, fieldName);
-		sourceField.setAccessible(true);
-		final Object sourceValue = sourceField.get(source);
-		setFieldValue(target, fieldName, sourceValue);
+		setFieldValue(source, target, getDeclaredField(source, fieldName));
 	}
 
 	/**
-	 * Sets the field value of the given source object over the field name.
+	 * Sets the field value of the given source object over the field
 	 *
 	 * @param <T>
 	 *            the generic type
 	 * @param source
-	 *            the source
+	 *            the source object
+	 * @param target
+	 *            the target
+	 * @param sourceField
+	 *            the source field
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no
+	 */
+	public static <T> void setFieldValue(final @NonNull T source, final @NonNull T target,
+		final @NonNull Field sourceField) throws IllegalAccessException
+	{
+		sourceField.setAccessible(true);
+		final Object sourceValue = sourceField.get(source);
+		setFieldValue(target, sourceField, sourceValue);
+	}
+
+	/**
+	 * Sets the field value of the given source object over the field name
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source object
 	 * @param fieldName
 	 *            the field name
 	 * @param newValue
@@ -107,15 +163,34 @@ public final class ReflectionExtensions
 	 * @throws SecurityException
 	 *             is thrown if a security manager says no.
 	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method.
+	 *             is thrown if an illegal on create an instance or access a method
 	 */
 	public static <T> void setFieldValue(final @NonNull T source, final @NonNull String fieldName,
 		final Object newValue)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
-		final Field sourceField = getDeclaredField(source, fieldName);
-		sourceField.setAccessible(true);
-		sourceField.set(source, newValue);
+		setFieldValue(source, getDeclaredField(source, fieldName), newValue);
+	}
+
+	/**
+	 * Sets the field value of the given source object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source object
+	 * @param field
+	 *            the field
+	 * @param newValue
+	 *            the new value
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
+	 */
+	public static <T> void setFieldValue(final T source, final Field field, final Object newValue)
+		throws IllegalAccessException
+	{
+		field.setAccessible(true);
+		field.set(source, newValue);
 	}
 
 	/**
@@ -397,18 +472,12 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible.
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason.
 	 */
-
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
-		throws InstantiationException, IllegalAccessException
 	{
-		return clazz.newInstance();
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
 	}
 
 	/**
@@ -419,13 +488,14 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
+	 * @deprecated use instead <code>newInstance</code> method.<br>
+	 *             Note: will be removed in next minor version
 	 */
 
+	@Deprecated
 	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
 	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
+		return newInstance(clazz);
 	}
 
 	/**
@@ -478,7 +548,8 @@ public final class ReflectionExtensions
 	 *            an optional array with field names that shell be ignored
 	 * @return all the declared fields minus the given ignored field names
 	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, final String... ignoreFieldNames)
+	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
+		final String... ignoreFieldNames)
 	{
 		return getAllDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
 	}
@@ -493,7 +564,8 @@ public final class ReflectionExtensions
 	 *            a list with field names that shell be ignored
 	 * @return all the declared fields minus the given ignored field names
 	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls, final List<String> ignoreFieldNames)
+	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
+		List<String> ignoreFieldNames)
 	{
 		Field[] declaredFields = getDeclaredFields(cls, ignoreFieldNames);
 		Class<?> superClass = cls.getSuperclass();
@@ -501,14 +573,11 @@ public final class ReflectionExtensions
 		{
 			return declaredFields;
 		}
-		// TODO optimize with dot detection...
-		ignoreFieldNames.removeAll(Arrays.asList(getDeclaredFieldNames(cls)));
 		List<Field> fields = new ArrayList<>(Arrays.asList(declaredFields));
 		while ((superClass != null && superClass.getSuperclass() != null
 			&& superClass.getSuperclass().equals(Object.class)))
 		{
 			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
-			ignoreFieldNames.removeAll(Arrays.asList(getDeclaredFieldNames(cls)));
 			superClass = superClass.getSuperclass();
 		}
 		return fields.toArray(new Field[] { });

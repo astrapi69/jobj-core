@@ -49,14 +49,15 @@ public class ReflectionExtensionsTest
 {
 
 	/**
-	 * Test method for {@link ReflectionExtensions#copyArray(Object)}
+	 * Test method for {@link ReflectionExtensions#copyArray(Object[])}
 	 */
 	@Test
-	public void testCopyArray() {
+	public void testCopyArray()
+	{
 		Integer[] actual;
 		Integer[] expected;
-		actual = ArrayFactory.newArray(1,2,3);
-		expected = (Integer[])ReflectionExtensions.copyArray(actual);
+		expected = ArrayFactory.newArray(1, 2, 3);
+		actual = ReflectionExtensions.copyArray(expected);
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
@@ -504,6 +505,11 @@ public class ReflectionExtensionsTest
 		actual = ReflectionExtensions.newInstance(clazz);
 		assertNotNull(actual);
 		expected = new Person();
+		expected.setAbout(null);
+		expected.setGender(null);
+		expected.setMarried(null);
+		expected.setName(null);
+		expected.setNickname(null);
 		assertEquals(expected, actual);
 	}
 
@@ -537,6 +543,7 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstanceWithObjenesis(Class)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInstanceWithObjenesis()
 	{
@@ -553,7 +560,6 @@ public class ReflectionExtensionsTest
 		expected.setNickname(null);
 		assertEquals(expected, actual);
 	}
-
 
 	/**
 	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
@@ -574,6 +580,30 @@ public class ReflectionExtensionsTest
 		final Person person = Person.builder().name("Alex").build();
 		expected = "Leo";
 		ReflectionExtensions.setFieldValue(person, "name", "Leo");
+		actual = person.getName();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
+	 *
+	 * @throws NoSuchFieldException
+	 *             is thrown if no such field exists.
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method.
+	 */
+	@Test
+	public void testSetFieldValueObjectWithField()
+		throws NoSuchFieldException, SecurityException, IllegalAccessException
+	{
+		String expected;
+		String actual;
+		final Person person = Person.builder().name("Alex").build();
+		expected = "Leo";
+		Field nameField = ReflectionExtensions.getDeclaredField(person, "name");
+		ReflectionExtensions.setFieldValue(person, nameField, "Leo");
 		actual = person.getName();
 		assertEquals(expected, actual);
 	}
@@ -600,9 +630,40 @@ public class ReflectionExtensionsTest
 		expected = "Leo";
 		assertEquals(expected, actual);
 
-		ReflectionExtensions.setFieldValue(StaticBox.class, "value", null);
+		ReflectionExtensions.setFieldValue(StaticBox.class, "value", (Object)null);
 		actual = StaticBox.getValue();
 		expected = null;
+		assertEquals(expected, actual);
+	}
+
+
+	/**
+	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Object, Field)}.
+	 *
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
+	 * @throws NoSuchFieldException
+	 *             is thrown if no such field exists.
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 */
+	@Test
+	public void testSetFieldValueWithField() throws InstantiationException, IllegalAccessException,
+		NoSuchFieldException, SecurityException
+	{
+
+		String expected;
+		String actual;
+		expected = "Alex";
+		final Person person = Person.builder().name(expected).build();
+		Person destination = ReflectionExtensions.newInstance(Person.class);
+		Field declaredField = ReflectionExtensions.getDeclaredField(destination, "name");
+		ReflectionExtensions.setFieldValue(person, destination, declaredField);
+		actual = destination.getName();
 		assertEquals(expected, actual);
 	}
 
