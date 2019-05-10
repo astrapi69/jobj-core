@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.objenesis.Objenesis;
@@ -37,11 +39,13 @@ import org.objenesis.instantiator.ObjectInstantiator;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
  */
 @UtilityClass
+@Log
 public final class ReflectionExtensions
 {
 
@@ -164,7 +168,10 @@ public final class ReflectionExtensions
 	 *             is thrown if a security manager says no.
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method
+	 * @deprecated use instead the same name method with field instead field name.<br>
+	 *             Note: will be removed on next minor release
 	 */
+	@Deprecated
 	public static <T> void setFieldValue(final @NonNull T source, final @NonNull String fieldName,
 		final Object newValue)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
@@ -450,22 +457,18 @@ public final class ReflectionExtensions
 	 * @return the new instance
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class cannot be located
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible.
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstance(final @NonNull T object)
-		throws InstantiationException, IllegalAccessException, ClassNotFoundException
+	public static <T> T newInstance(final @NonNull T object) throws ClassNotFoundException
 	{
 		return newInstance((Class<T>)Class.forName(object.getClass().getCanonicalName()));
 	}
 
 	/**
-	 * Creates a new instance from the same type as the given Class.
+	 * Factory method for create a new instance from the same type as the given {@link Class}. First
+	 * try is over the class and second try is with objenesis. <br>
+	 * <br>
+	 * Note: if non of the tries no instance could created null will be returned.
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -475,9 +478,48 @@ public final class ReflectionExtensions
 	 */
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
 	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
+		T newInstance = null;
+		Optional<T> optionalNewInstance = forceNewInstanceWithClass(clazz);
+		if (optionalNewInstance.isPresent())
+		{
+			return optionalNewInstance.get();
+		}
+		optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
+		if (optionalNewInstance.isPresent())
+		{
+			return optionalNewInstance.get();
+		}
+		return newInstance;
+	}
+
+	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz)
+	{
+
+		Optional<T> optionalNewInstance = Optional.empty();
+		try
+		{
+			optionalNewInstance = Optional.of(newInstanceWithClass(clazz));
+		}
+		catch (InstantiationException | IllegalAccessException e)
+		{
+			log.log(Level.INFO, "Failed to create new instance with method Class.newInstance()", e);
+		}
+		return optionalNewInstance;
+	}
+
+	private static <T> Optional<T> forceNewInstanceWithObjenesis(final @NonNull Class<T> clazz)
+	{
+
+		Optional<T> optionalNewInstance = Optional.empty();
+		try
+		{
+			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
+		}
+		catch (Exception e)
+		{
+			log.log(Level.INFO, "Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
+		}
+		return optionalNewInstance;
 	}
 
 	/**
@@ -488,14 +530,33 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
-	 * @deprecated use instead <code>newInstance</code> method.<br>
-	 *             Note: will be removed in next minor version
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible.
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
 	 */
+	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
+		throws InstantiationException, IllegalAccessException
+	{
+		return clazz.newInstance();
+	}
 
-	@Deprecated
+	/**
+	 * Creates a new instance from the same type as the given {@link Class}
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the Class object
+	 * @return the new instance
+	 */
 	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
 	{
-		return newInstance(clazz);
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
 	}
 
 	/**

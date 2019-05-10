@@ -505,11 +505,6 @@ public class ReflectionExtensionsTest
 		actual = ReflectionExtensions.newInstance(clazz);
 		assertNotNull(actual);
 		expected = new Person();
-		expected.setAbout(null);
-		expected.setGender(null);
-		expected.setMarried(null);
-		expected.setName(null);
-		expected.setNickname(null);
 		assertEquals(expected, actual);
 	}
 
@@ -543,7 +538,6 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstanceWithObjenesis(Class)}
 	 */
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInstanceWithObjenesis()
 	{
@@ -571,6 +565,7 @@ public class ReflectionExtensionsTest
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSetFieldValueObject()
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
