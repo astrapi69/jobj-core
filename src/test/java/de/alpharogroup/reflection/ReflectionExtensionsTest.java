@@ -505,6 +505,11 @@ public class ReflectionExtensionsTest
 		actual = ReflectionExtensions.newInstance(clazz);
 		assertNotNull(actual);
 		expected = new Person();
+		expected.setAbout(null);
+		expected.setGender(null);
+		expected.setMarried(null);
+		expected.setName(null);
+		expected.setNickname(null);
 		assertEquals(expected, actual);
 	}
 
@@ -538,6 +543,7 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstanceWithObjenesis(Class)}
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testNewInstanceWithObjenesis()
 	{

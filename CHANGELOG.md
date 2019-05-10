@@ -4,6 +4,13 @@
 Version 3.2-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of parent version to 5
+- update of silly-collections version to 5.2.1
+- update of test-objects dependency version to 5.2
+- update of cglib dependency version to 3.2.12
+
 Version 3.1
 -------------
 
