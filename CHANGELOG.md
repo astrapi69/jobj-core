@@ -4,6 +4,11 @@
 Version 3.3-SNAPSHOT
 -------------
 
+CHANGED:
+
+- update of method newInstance in ReflectionExtensions
+- tagged method setFieldValue with field name as deprecated
+
 Version 3.2
 -------------
 
