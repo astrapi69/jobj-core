@@ -529,6 +529,7 @@ public final class ReflectionExtensions
 	 *            the generic type
 	 * @param clazz
 	 *            the Class object
+	 * @return the new instance
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
 	 * @throws InstantiationException
