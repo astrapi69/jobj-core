@@ -654,8 +654,7 @@ public final class ReflectionExtensions
 	 */
 	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls)
 	{
-		Field[] allDeclaredFields = getAllDeclaredFields(cls);
-		return Arrays.stream(allDeclaredFields).map(Field::getName).toArray(String[]::new);
+		return Arrays.stream(getAllDeclaredFields(cls)).map(Field::getName).toArray(String[]::new);
 	}
 
 	/**
