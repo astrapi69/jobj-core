@@ -161,6 +161,24 @@ public final class ClassExtensions
 		return null;
 	}
 
+	/**
+	 * Gets the component {@link Class} type of the given array object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param arrayObject
+	 *            the object to resolve the class
+	 * @return the component {@link Class} of the given object
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getComponentClassType(final @NonNull T[] arrayObject)
+	{
+		if (0 < arrayObject.length)
+		{
+			return (Class<T>)arrayObject[0].getClass();
+		}
+		return (Class<T>)arrayObject.getClass().getComponentType();
+	}
 
 	/**
 	 * Gets the current class loader.
@@ -365,6 +383,7 @@ public final class ClassExtensions
 	 * @return the jar path as String if the given class is in a JAR file.
 	 * @deprecated will be removed in next version
 	 */
+	@Deprecated
 	public static String getJarPath(final @NonNull Class<?> clazz)
 	{
 		String jarPath = null;
@@ -413,6 +432,7 @@ public final class ClassExtensions
 	 * @return the manifest url as String if the given class is in a JAR, WAR or EAR file.
 	 * @deprecated will be removed in next version
 	 */
+	@Deprecated
 	public static String getManifestUrl(final @NonNull Class<?> clazz)
 	{
 		String manifestUrl = null;
