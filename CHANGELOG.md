@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 3.3
+-------------
+
+ADDED:
+
+- new method that resolves the generic component class type of a given generic array
+
+CHANGED:
+
+- update of parent version to 5.3
+- update of objenesis dependency version to 3.1
+- update of cglib dependency version to 3.3.0
+
 Version 3.2.1
 -------------
 

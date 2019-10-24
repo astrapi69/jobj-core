@@ -27,6 +27,7 @@ import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public final class ClassExtensions
 	 */
 	public static Class<?> forName(final @NonNull String className) throws ClassNotFoundException
 	{
-		Class<?> clazz = null;
+		Class<?> clazz;
 		try
 		{
 			clazz = Class.forName(className);
@@ -97,7 +98,7 @@ public final class ClassExtensions
 		{
 			return childClass;
 		}
-		while (!(superClass.getSuperclass() != null
+		while (superClass != null && !(superClass.getSuperclass() != null
 			&& superClass.getSuperclass().equals(Object.class)))
 		{
 			superClass = superClass.getSuperclass();
@@ -112,7 +113,7 @@ public final class ClassExtensions
 	 *            the elements
 	 * @return the calling method name
 	 */
-	public static String getCallingMethodName(final @NonNull StackTraceElement elements[])
+	public static String getCallingMethodName(final @NonNull StackTraceElement[] elements)
 	{
 		String callingMethodName = null;
 		if (2 < elements.length)
@@ -160,6 +161,24 @@ public final class ClassExtensions
 		return null;
 	}
 
+	/**
+	 * Gets the component {@link Class} type of the given array object
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param arrayObject
+	 *            the object to resolve the class
+	 * @return the component {@link Class} of the given object
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getComponentClassType(final @NonNull T[] arrayObject)
+	{
+		if (0 < arrayObject.length)
+		{
+			return (Class<T>)arrayObject[0].getClass();
+		}
+		return (Class<T>)arrayObject.getClass().getComponentType();
+	}
 
 	/**
 	 * Gets the current class loader.
@@ -180,7 +199,7 @@ public final class ClassExtensions
 	 */
 	public static ClassLoader getClassLoader(final Object obj)
 	{
-		ClassLoader classLoader = null;
+		ClassLoader classLoader;
 		if (null != obj)
 		{
 			if (isDerivate(Thread.currentThread().getContextClassLoader(),
@@ -221,8 +240,7 @@ public final class ClassExtensions
 	 */
 	public static String getClassname(final @NonNull Class<?> clazz)
 	{
-		final String className = clazz.getName();
-		return className;
+		return clazz.getName();
 	}
 
 	/**
@@ -314,7 +332,7 @@ public final class ClassExtensions
 	 *            the elements
 	 * @return the current method name
 	 */
-	public static String getCurrentMethodName(final @NonNull StackTraceElement elements[])
+	public static String getCurrentMethodName(final @NonNull StackTraceElement[] elements)
 	{
 		String currentMethodName = null;
 		boolean isNext = false;
@@ -340,12 +358,9 @@ public final class ClassExtensions
 	 * @return the directories from resources
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 *
-	 * @throws URISyntaxException
-	 *             is thrown if a string could not be parsed as a URI reference.
 	 */
 	public static List<File> getDirectoriesFromResources(@NonNull String path,
-		final boolean isPackage) throws IOException, URISyntaxException
+		final boolean isPackage) throws IOException
 	{
 		if (isPackage)
 		{
@@ -355,7 +370,8 @@ public final class ClassExtensions
 		final List<File> dirs = new ArrayList<>();
 		for (final URL resource : resources)
 		{
-			dirs.add(new File(URLDecoder.decode(resource.getFile(), "UTF-8")));
+			dirs.add(
+				new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8.name())));
 		}
 		return dirs;
 	}
@@ -366,7 +382,9 @@ public final class ClassExtensions
 	 * @param clazz
 	 *            The class.
 	 * @return the jar path as String if the given class is in a JAR file.
+	 * @deprecated will be removed in next version
 	 */
+	@Deprecated
 	public static String getJarPath(final @NonNull Class<?> clazz)
 	{
 		String jarPath = null;
@@ -413,7 +431,9 @@ public final class ClassExtensions
 	 * @param clazz
 	 *            The class.
 	 * @return the manifest url as String if the given class is in a JAR, WAR or EAR file.
+	 * @deprecated will be removed in next version
 	 */
+	@Deprecated
 	public static String getManifestUrl(final @NonNull Class<?> clazz)
 	{
 		String manifestUrl = null;
@@ -492,10 +512,8 @@ public final class ClassExtensions
 	{
 		final String packagePath = PackageExtensions.getPackagePath(clazz);
 		final String className = ClassExtensions.getSimpleName(clazz);
-		final StringBuilder sb = new StringBuilder().append("/").append(packagePath)
-			.append(className).append(".class");
-		final String path = sb.toString();
-		return path;
+		return new StringBuilder().append("/").append(packagePath).append(className)
+			.append(".class").toString();
 	}
 
 	/**
@@ -511,9 +529,7 @@ public final class ClassExtensions
 		{
 			return null;
 		}
-		final String pathFromObject = obj.getClass()
-			.getResource(ClassExtensions.getClassnameWithSuffix(obj)).getPath();
-		return pathFromObject;
+		return obj.getClass().getResource(ClassExtensions.getClassnameWithSuffix(obj)).getPath();
 	}
 
 	/**
@@ -567,8 +583,7 @@ public final class ClassExtensions
 		{
 			path = name.substring(1, name.length());
 		}
-		final URL url = ClassExtensions.getClassLoader().getResource(path);
-		return url;
+		return ClassExtensions.getClassLoader().getResource(path);
 	}
 
 	/**
@@ -704,9 +719,7 @@ public final class ClassExtensions
 	 */
 	public static InputStream getResourceAsStream(final @NonNull String name)
 	{
-		final ClassLoader loader = ClassExtensions.getClassLoader();
-		final InputStream inputStream = loader.getResourceAsStream(name);
-		return inputStream;
+		return ClassExtensions.getClassLoader().getResourceAsStream(name);
 	}
 
 	/**
@@ -741,9 +754,7 @@ public final class ClassExtensions
 	 */
 	public static List<URL> getResources(final @NonNull String path) throws IOException
 	{
-		final ClassLoader classLoader = ClassExtensions.getClassLoader();
-		final List<URL> list = Collections.list(classLoader.getResources(path));
-		return list;
+		return Collections.list(ClassExtensions.getClassLoader().getResources(path));
 	}
 
 	/**

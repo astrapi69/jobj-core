@@ -16,26 +16,6 @@ Utility library for the java core classes.
 
 If you like this project put a ⭐ and donate
 
-# Donations
-
-If you like this library, please consider a donation through paypal: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
-<img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" alt="PayPal this" title="PayPal – The safer, easier way to pay online!" border="0" />
-</a>
-
-or over bitcoin or bitcoin-cash with:
-
-36JxRRDfRazLNqUV6NsywCw1q7TK38ukpC
-
-or over ether with:
-
-0x588Aa02De98B1Ef70afeDC3ec5290130a3E5e273
-
-or over flattr:
-  
-<a href="http://flattr.com/thing/4067696/astrapi69jobj-core-on-GitHub" target="_blank">
-<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" />
-</a>
-
 ## Note
 
 No animals were harmed in the making of this library.
@@ -56,7 +36,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3.2.1</jobj-core.version>
+		<jobj-core.version>3.3</jobj-core.version>
 			...
 	</properties>
 			...
@@ -70,6 +50,23 @@ Than you can add the dependency to your dependencies:
 			</dependency>
 			...
 		</dependencies>
+			
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to your project `build.gradle` if you want to import the core functionality of jobj-core:
+
+```
+ext {
+			...
+    jobjCoreVersion = '3.3'
+			...
+}
+dependencies {
+			...
+compile group: 'de.alpharogroup', name: 'jobj-core', version: '${jobjCoreVersion}'
+			...
+}
+```
 
 ## Semantic Versioning
 

@@ -517,7 +517,8 @@ public final class ReflectionExtensions
 		}
 		catch (Exception e)
 		{
-			log.log(Level.INFO, "Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
+			log.log(Level.INFO,
+				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
 		}
 		return optionalNewInstance;
 	}
@@ -654,8 +655,7 @@ public final class ReflectionExtensions
 	 */
 	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls)
 	{
-		Field[] allDeclaredFields = getAllDeclaredFields(cls);
-		return Arrays.stream(allDeclaredFields).map(Field::getName).toArray(String[]::new);
+		return Arrays.stream(getAllDeclaredFields(cls)).map(Field::getName).toArray(String[]::new);
 	}
 
 	/**
