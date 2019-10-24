@@ -370,7 +370,8 @@ public final class ClassExtensions
 		final List<File> dirs = new ArrayList<>();
 		for (final URL resource : resources)
 		{
-			dirs.add(new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8.name())));
+			dirs.add(
+				new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8.name())));
 		}
 		return dirs;
 	}
@@ -511,8 +512,8 @@ public final class ClassExtensions
 	{
 		final String packagePath = PackageExtensions.getPackagePath(clazz);
 		final String className = ClassExtensions.getSimpleName(clazz);
-		return new StringBuilder().append("/").append(packagePath)
-				.append(className).append(".class").toString();
+		return new StringBuilder().append("/").append(packagePath).append(className)
+			.append(".class").toString();
 	}
 
 	/**
@@ -528,8 +529,7 @@ public final class ClassExtensions
 		{
 			return null;
 		}
-		return obj.getClass()
-				.getResource(ClassExtensions.getClassnameWithSuffix(obj)).getPath();
+		return obj.getClass().getResource(ClassExtensions.getClassnameWithSuffix(obj)).getPath();
 	}
 
 	/**

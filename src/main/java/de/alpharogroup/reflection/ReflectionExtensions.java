@@ -517,7 +517,8 @@ public final class ReflectionExtensions
 		}
 		catch (Exception e)
 		{
-			log.log(Level.INFO, "Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
+			log.log(Level.INFO,
+				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
 		}
 		return optionalNewInstance;
 	}

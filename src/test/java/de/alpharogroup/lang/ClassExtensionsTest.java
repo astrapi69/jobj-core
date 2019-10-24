@@ -211,6 +211,29 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])}
+	 */
+	@Test(enabled = true)
+	public void testGetArrayClass()
+	{
+		Class<ClassExtensionsTest> expected;
+		Class<ClassExtensionsTest> actual;
+		ClassExtensionsTest[] objectArray;
+
+		objectArray = new ClassExtensionsTest[0];
+		actual = ClassExtensions.getComponentClassType(objectArray);
+		expected = ClassExtensionsTest.class;
+		assertEquals(expected, actual);
+
+		objectArray = new ClassExtensionsTest[1];
+		objectArray[0] = this;
+		actual = ClassExtensions.getComponentClassType(objectArray);
+		expected = ClassExtensionsTest.class;
+		assertEquals(expected, actual);
+
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getBaseClass(Class)}
 	 */
 	@Test(enabled = true)
@@ -284,29 +307,6 @@ public class ClassExtensionsTest
 		actual = ClassExtensions.getClass(null);
 		expected = null;
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])}
-	 */
-	@Test(enabled = true)
-	public void testGetArrayClass()
-	{
-		Class<ClassExtensionsTest> expected;
-		Class<ClassExtensionsTest> actual;
-		ClassExtensionsTest[] objectArray;
-
-		objectArray = new ClassExtensionsTest[0];
-		actual = ClassExtensions.getComponentClassType(objectArray);
-		expected = ClassExtensionsTest.class;
-		assertEquals(expected, actual);
-
-		objectArray = new ClassExtensionsTest[1];
-		objectArray[0] = this;
-		actual = ClassExtensions.getComponentClassType(objectArray);
-		expected = ClassExtensionsTest.class;
-		assertEquals(expected, actual);
-
 	}
 
 	/**
