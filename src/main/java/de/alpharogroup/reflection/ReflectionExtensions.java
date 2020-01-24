@@ -429,11 +429,9 @@ public final class ReflectionExtensions
 	 * @param object
 	 *            the object
 	 * @return the new instance
-	 * @throws ClassNotFoundException
-	 *             is thrown if the class cannot be located
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstance(final @NonNull T object) throws ClassNotFoundException
+	public static <T> T newInstance(final @NonNull T object)
 	{
 		Class<?> clazz = object.getClass();
 		ClassType classType = ClassExtensions.getClassType(clazz);
@@ -444,7 +442,7 @@ public final class ReflectionExtensions
 				return (T)Array.newInstance(clazz.getComponentType(), length);
 
 			default :
-				return newInstance((Class<T>)Class.forName(object.getClass().getCanonicalName()));
+				return newInstance((Class<T>)object.getClass());
 		}
 	}
 
@@ -463,7 +461,8 @@ public final class ReflectionExtensions
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
 	{
 		T newInstance = null;
-		Optional<T> optionalNewInstance = forceNewInstanceWithClass(clazz);
+		Optional<T> optionalNewInstance;
+		optionalNewInstance = forceNewInstanceWithClass(clazz);
 		if (optionalNewInstance.isPresent())
 		{
 			return optionalNewInstance.get();
