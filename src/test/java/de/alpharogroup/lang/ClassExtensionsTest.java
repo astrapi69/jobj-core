@@ -22,7 +22,6 @@ package de.alpharogroup.lang;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
@@ -46,6 +45,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import de.alpharogroup.classes.inner.OuterClass;
+import de.alpharogroup.collections.array.ArrayFactory;
 import de.alpharogroup.runtime.compiler.JavaSourceCompiler;
 import de.alpharogroup.test.objects.Member;
 import de.alpharogroup.test.objects.Person;
@@ -433,20 +433,6 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getJarPath(Class)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testGetJarPath()
-	{
-		String actual = ClassExtensions.getJarPath(Object.class);
-		assertTrue(actual.toString().endsWith("/jre/lib/rt.jar"));
-
-		actual = ClassExtensions.getJarPath(ClassExtensions.class);
-		assertNull(actual);
-	}
-
-	/**
 	 * Test method for {@link ClassExtensions#getJdkProxyInterfaces(Class)}.
 	 */
 	@Test
@@ -475,22 +461,6 @@ public class ClassExtensionsTest
 		expected = Foo.class;
 		actual = jdkProxyInterfaces[0];
 		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ClassExtensions#getManifestUrl(Class)}
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testGetManifestURL()
-	{
-		String actual = ClassExtensions.getManifestUrl(Object.class);
-		assertTrue(actual.toString().startsWith("jar:file:"));
-		assertTrue(actual.toString().endsWith("/jre/lib/rt.jar!/META-INF/MANIFEST.MF"));
-
-		actual = ClassExtensions.getManifestUrl(ClassExtensions.class);
-		assertTrue(actual.toString().startsWith("file:"));
-		assertTrue(actual.toString().endsWith("/jobj-core/target/classes/META-INF/MANIFEST.MF"));
 	}
 
 	/**
@@ -828,6 +798,53 @@ public class ClassExtensionsTest
 		actual = ClassExtensions.isJdkProxy(jdkProxy.getClass());
 		assertEquals(expected, actual);
 	}
+
+	/**
+	 * Test method for {@link ClassExtensions#isPrimitiveArray(Class)}
+	 */
+	@Test
+	public void testIsPrimitiveArray()
+	{
+		boolean actual;
+		boolean expected;
+		boolean[] primitiveBooleanArray;
+		Boolean[] booleanObjectArray;
+		byte[] primitiveByteArray;
+		Byte[] byteObjectArray;
+		int[] primitiveIntArray;
+		Integer[] integerArray;
+
+		expected = true;
+		primitiveByteArray = ArrayFactory.newByteArray((byte)-84, (byte)-19, (byte)0);
+		actual = ClassExtensions.isPrimitiveArray(primitiveByteArray.getClass());
+		assertEquals(expected, actual);
+
+		expected = false;
+		byteObjectArray = ArrayFactory.newArray((byte)-84, (byte)-19, (byte)0);
+		actual = ClassExtensions.isPrimitiveArray(byteObjectArray.getClass());
+		assertEquals(expected, actual);
+
+		expected = true;
+		primitiveBooleanArray = ArrayFactory.newBooleanArray(true, true, false);
+		actual = ClassExtensions.isPrimitiveArray(primitiveBooleanArray.getClass());
+		assertEquals(expected, actual);
+
+		expected = false;
+		booleanObjectArray = ArrayFactory.newArray(true, true, false);
+		actual = ClassExtensions.isPrimitiveArray(booleanObjectArray.getClass());
+		assertEquals(expected, actual);
+
+		expected = true;
+		primitiveIntArray = ArrayFactory.newIntArray(1, 2, 3);
+		actual = ClassExtensions.isPrimitiveArray(primitiveIntArray.getClass());
+		assertEquals(expected, actual);
+
+		expected = false;
+		integerArray = ArrayFactory.newArray(1, 2, 3);
+		actual = ClassExtensions.isPrimitiveArray(integerArray.getClass());
+		assertEquals(expected, actual);
+	}
+
 
 	/**
 	 * Test method for {@link ClassExtensions#isProxy(Class)}.

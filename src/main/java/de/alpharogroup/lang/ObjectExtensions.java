@@ -20,9 +20,6 @@
  */
 package de.alpharogroup.lang;
 
-import java.util.Collection;
-import java.util.Map;
-
 import lombok.experimental.UtilityClass;
 
 /**
@@ -89,47 +86,7 @@ public final class ObjectExtensions
 		{
 			return null;
 		}
-		if (clazz.isArray())
-		{
-			return ClassType.ARRAY;
-		}
-		if (Collection.class.isAssignableFrom(clazz))
-		{
-			return ClassType.COLLECTION;
-		}
-		if (Map.class.isAssignableFrom(clazz))
-		{
-			return ClassType.MAP;
-		}
-		if (clazz.isLocalClass())
-		{
-			return ClassType.LOCAL;
-		}
-		if (clazz.isMemberClass())
-		{
-			return ClassType.MEMBER;
-		}
-		if (clazz.isPrimitive())
-		{
-			return ClassType.PRIMITIVE;
-		}
-		if (clazz.isAnnotation())
-		{
-			return ClassType.ANNOTATION;
-		}
-		if (clazz.isEnum())
-		{
-			return ClassType.ENUM;
-		}
-		if (clazz.isInterface())
-		{
-			return ClassType.INTERFACE;
-		}
-		if (clazz.isAnonymousClass())
-		{
-			return ClassType.ANONYMOUS;
-		}
-		return ClassType.DEFAULT;
+		return ClassExtensions.getClassType(clazz);
 	}
 
 }

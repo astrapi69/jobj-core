@@ -4,6 +4,18 @@
 Version 3.4-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method that resolves if the given class is an primitive array type
+
+CHANGED:
+
+- update of parent version to 5.4
+- update of test-dependency silly-collections version to 5.8
+- removed deprecated methods in ClassExtensions class
+- removed deprecated methods in ReflectionExtensions class
+- method newInstance from the ReflectionExtensions class considers now array types on creation
+
 Version 3.3
 -------------
 

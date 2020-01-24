@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>de.alpharogroup</groupId>
 		<artifactId>mvn-java-parent</artifactId>
-		<version>5.3</version>
+		<version>5.4</version>
 	</parent>
 
 	<artifactId>jobj-core</artifactId>
@@ -25,7 +25,7 @@
 		<objenesis.version>3.1</objenesis.version>
 		<!-- TEST-SCOPE versions -->
 		<!-- SILLY-COLLECTIONS version -->
-		<silly-collections.version>5.4</silly-collections.version>
+		<silly-collections.version>5.8</silly-collections.version>
 		<!-- TEST-OBJECTS version -->
 		<test-objects.version>5.2</test-objects.version>
 		<!-- CGLIB version -->
