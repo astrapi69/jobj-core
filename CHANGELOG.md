@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 3.4-SNAPSHOT
+Version 3.4
 -------------
 
 ADDED:
@@ -10,7 +10,7 @@ ADDED:
 
 CHANGED:
 
-- update of parent version to 5.4
+- migrate to gradle build system
 - update of test-dependency silly-collections version to 5.8
 - removed deprecated methods in ClassExtensions class
 - removed deprecated methods in ReflectionExtensions class

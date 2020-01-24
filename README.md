@@ -37,7 +37,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3.3</jobj-core.version>
+		<jobj-core.version>3.4</jobj-core.version>
 			...
 	</properties>
 			...
@@ -59,12 +59,12 @@ You can first define the version in the ext section and add than the following g
 ```
 ext {
 			...
-    jobjCoreVersion = '3.3'
+    jobjCoreVersion = "3.4"
 			...
 }
 dependencies {
 			...
-compile group: 'de.alpharogroup', name: 'jobj-core', version: '${jobjCoreVersion}'
+    compile("de.alpharogroup:jobj-core:$jobjCoreVersion")
 			...
 }
 ```
