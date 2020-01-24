@@ -377,38 +377,6 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * If the given class is in a JAR file than the jar path as String will be returned.
-	 *
-	 * @param clazz
-	 *            The class.
-	 * @return the jar path as String if the given class is in a JAR file.
-	 * @deprecated will be removed in next version
-	 */
-	@Deprecated
-	public static String getJarPath(final @NonNull Class<?> clazz)
-	{
-		String jarPath = null;
-		final String jarPathPrefix = "jar:";
-		final String jarPathFilePrefix = jarPathPrefix + "file:";
-		final String path = ClassExtensions.getPath(clazz);
-		final URL classUrl = ClassExtensions.getResource(path);
-		if (classUrl != null)
-		{
-			final String classUrlString = classUrl.toString();
-			if ((classUrlString.startsWith(jarPathPrefix) && (classUrlString.indexOf(path) > 0)))
-			{
-				jarPath = classUrlString.replace("!" + path, "");
-				if (jarPath.startsWith(jarPathFilePrefix))
-				{
-					final int beginIndex = jarPathFilePrefix.length();
-					jarPath = jarPath.substring(beginIndex, jarPath.length());
-				}
-			}
-		}
-		return jarPath;
-	}
-
-	/**
 	 * Gets the jdk proxy interfaces.
 	 *
 	 * @param clazz
@@ -423,34 +391,6 @@ public final class ClassExtensions
 			return found.getInterfaces();
 		}
 		return new Class<?>[] { found };
-	}
-
-	/**
-	 * If the given class is in a JAR, WAR or EAR file than the manifest url as String is returned.
-	 *
-	 * @param clazz
-	 *            The class.
-	 * @return the manifest url as String if the given class is in a JAR, WAR or EAR file.
-	 * @deprecated will be removed in next version
-	 */
-	@Deprecated
-	public static String getManifestUrl(final @NonNull Class<?> clazz)
-	{
-		String manifestUrl = null;
-		final String path = ClassExtensions.getPath(clazz);
-		final URL classUrl = ClassExtensions.getResource(path);
-		if (classUrl != null)
-		{
-			final String classUrlString = classUrl.toString();
-			if ((classUrlString.startsWith("jar:") && (classUrlString.indexOf(path) > 0))
-				|| (classUrlString.startsWith("war:") && (classUrlString.indexOf(path) > 0))
-				|| (classUrlString.startsWith("ear:") && (classUrlString.indexOf(path) > 0))
-				|| (classUrlString.startsWith("file:") && (classUrlString.indexOf(path) > 0)))
-			{
-				manifestUrl = classUrlString.replace(path, "/META-INF/MANIFEST.MF");
-			}
-		}
-		return manifestUrl;
 	}
 
 	/**
@@ -884,6 +824,18 @@ public final class ClassExtensions
 	public static boolean isMap(final @NonNull Class<?> clazz)
 	{
 		return Map.class.isAssignableFrom(clazz);
+	}
+
+	/**
+	 * Checks if the given class is an array of primitive type
+	 *
+	 * @param clazz
+	 *            The class
+	 * @return true, if the given class is an array of primitive type otherwise false
+	 */
+	public static boolean isPrimitiveArray(final @NonNull Class<?> clazz)
+	{
+		return clazz.isArray() && clazz.getComponentType().isPrimitive();
 	}
 
 	/**

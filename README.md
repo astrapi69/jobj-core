@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/astrapi69/jobj-core.svg?branch=master)](https://travis-ci.org/astrapi69/jobj-core) 
 [![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master) 
+[![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core)
 [![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/jobj-core.svg)](http://www.javadoc.io/doc/de.alpharogroup/jobj-core)
@@ -36,7 +37,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3.3</jobj-core.version>
+		<jobj-core.version>3.4</jobj-core.version>
 			...
 	</properties>
 			...
@@ -58,12 +59,12 @@ You can first define the version in the ext section and add than the following g
 ```
 ext {
 			...
-    jobjCoreVersion = '3.3'
+    jobjCoreVersion = "3.4"
 			...
 }
 dependencies {
 			...
-compile group: 'de.alpharogroup', name: 'jobj-core', version: '${jobjCoreVersion}'
+    compile("de.alpharogroup:jobj-core:$jobjCoreVersion")
 			...
 }
 ```

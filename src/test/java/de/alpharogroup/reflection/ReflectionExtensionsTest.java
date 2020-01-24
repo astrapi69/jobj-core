@@ -110,12 +110,12 @@ public class ReflectionExtensionsTest
 		String[] allDeclaredFieldnames;
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class);
-		expected = 6;
+		expected = 7;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class);
-		expected = 9;
+		expected = 11;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 	}
@@ -132,13 +132,13 @@ public class ReflectionExtensionsTest
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class,
 			ListFactory.newArrayList("serialVersionUID", "name"));
-		expected = 4;
+		expected = 5;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class,
 			ListFactory.newArrayList("dateofbirth", "name"));
-		expected = 7;
+		expected = 9;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 	}
@@ -154,20 +154,20 @@ public class ReflectionExtensionsTest
 		String[] allDeclaredFieldnames;
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class,
-			"serialVersionUID", "name");
+			"serialVersionUID", "name", "$jacocoData");
 		expected = 4;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class,
-			"dateofbirth", "name");
+			"dateofbirth", "name", "$jacocoData");
 		expected = 7;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for {@link ReflectionExtensions#getAllDeclaredFields(Class)}
+	 * Test method for {@link ReflectionExtensions#getAllDeclaredFields(Class, String...)}
 	 */
 	@Test
 	public void testGetAllDeclaredFields()
@@ -177,12 +177,12 @@ public class ReflectionExtensionsTest
 		Field[] allDeclaredFields;
 
 		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Person.class);
-		expected = 6;
+		expected = 7;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Member.class);
-		expected = 9;
+		expected = 11;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 	}
@@ -272,24 +272,24 @@ public class ReflectionExtensionsTest
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
 			ListFactory.newArrayList("serialVersionUID"));
-		expected = 5;
+		expected = 6;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
 			ListFactory.newArrayList("serialVersionUID", "married"));
-		expected = 4;
+		expected = 5;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class,
-			ListFactory.newArrayList("serialVersionUID"));
+			ListFactory.newArrayList("serialVersionUID", "$jacocoData"));
 		expected = 2;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class,
-			ListFactory.newArrayList("serialVersionUID", "dateofMarriage"));
+			ListFactory.newArrayList("serialVersionUID", "dateofMarriage", "$jacocoData"));
 		expected = 1;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
@@ -306,25 +306,25 @@ public class ReflectionExtensionsTest
 		Field[] allDeclaredFields;
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
-			"serialVersionUID");
+			"serialVersionUID", "$jacocoData");
 		expected = 5;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class, "serialVersionUID",
-			"married");
+			"married", "$jacocoData");
 		expected = 4;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class,
-			"serialVersionUID");
+			"serialVersionUID", "$jacocoData");
 		expected = 2;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class, "serialVersionUID",
-			"dateofMarriage");
+			"dateofMarriage", "$jacocoData");
 		expected = 1;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
@@ -487,20 +487,14 @@ public class ReflectionExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ReflectionExtensions#newInstance(Class)}.
-	 *
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its nullary constructor is not accessible.
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no nullary
-	 *             constructor; or if the instantiation fails for some other reason.
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
 	 */
 	@Test
-	public void testNewInstanceClassOfT() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceClassOfT()
 	{
 		Person expected;
 		Person actual;
+
 		final Class<Person> clazz = Person.class;
 		actual = ReflectionExtensions.newInstance(clazz);
 		assertNotNull(actual);
@@ -509,20 +503,10 @@ public class ReflectionExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ReflectionExtensions#newInstance(Object)}.
-	 *
-	 * @throws ClassNotFoundException
-	 *             is thrown if the class cannot be located
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its nullary constructor is not accessible.
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no nullary
-	 *             constructor; or if the instantiation fails for some other reason.
+	 * Test method for {@link ReflectionExtensions#newInstance(Object)}
 	 */
 	@Test
 	public void testNewInstanceT()
-		throws InstantiationException, IllegalAccessException, ClassNotFoundException
 	{
 		Object expected;
 		Object actual;
@@ -533,6 +517,22 @@ public class ReflectionExtensionsTest
 		assertEquals(expected, actual);
 		expected = A.builder().build();
 		assertEquals(expected, actual);
+		// new scenario with object array...
+		Integer[] integerArray = ArrayFactory.newArray(1, 2, 3);
+		actual = ReflectionExtensions.newInstance(integerArray);
+		assertNotNull(actual);
+		assertTrue(actual instanceof Integer[]);
+		Integer[] integerArrayActual = (Integer[])actual;
+		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null);
+		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
+		// new scenario with primitive array...
+		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);
+		actual = ReflectionExtensions.newInstance(intArray);
+		assertNotNull(actual);
+		assertTrue(actual instanceof int[]);
+		int[] intArrayActual = (int[])actual;
+		int[] intArrayExpected = ArrayFactory.newIntArray(0, 0, 0);
+		assertTrue(Arrays.equals(intArrayActual, intArrayExpected));
 	}
 
 	/**
@@ -556,31 +556,7 @@ public class ReflectionExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
-	 *
-	 * @throws NoSuchFieldException
-	 *             is thrown if no such field exists.
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no.
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method.
-	 */
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testSetFieldValueObject()
-		throws NoSuchFieldException, SecurityException, IllegalAccessException
-	{
-		String expected;
-		String actual;
-		final Person person = Person.builder().name("Alex").build();
-		expected = "Leo";
-		ReflectionExtensions.setFieldValue(person, "name", "Leo");
-		actual = person.getName();
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, String, Object)}.
+	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Field, Object)}
 	 *
 	 * @throws NoSuchFieldException
 	 *             is thrown if no such field exists.
@@ -633,12 +609,8 @@ public class ReflectionExtensionsTest
 
 
 	/**
-	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Object, Field)}.
+	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Object, Field)}
 	 *
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason.
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method
 	 * @throws NoSuchFieldException
@@ -647,10 +619,9 @@ public class ReflectionExtensionsTest
 	 *             is thrown if a security manager says no.
 	 */
 	@Test
-	public void testSetFieldValueWithField() throws InstantiationException, IllegalAccessException,
+	public void testSetFieldValueWithField() throws IllegalAccessException,
 		NoSuchFieldException, SecurityException
 	{
-
 		String expected;
 		String actual;
 		expected = "Alex";

@@ -37,6 +37,8 @@ import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
+import de.alpharogroup.lang.ClassExtensions;
+import de.alpharogroup.lang.ClassType;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
@@ -149,34 +151,6 @@ public final class ReflectionExtensions
 		sourceField.setAccessible(true);
 		final Object sourceValue = sourceField.get(source);
 		setFieldValue(target, sourceField, sourceValue);
-	}
-
-	/**
-	 * Sets the field value of the given source object over the field name
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param source
-	 *            the source object
-	 * @param fieldName
-	 *            the field name
-	 * @param newValue
-	 *            the new value
-	 * @throws NoSuchFieldException
-	 *             is thrown if no such field exists.
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no.
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method
-	 * @deprecated use instead the same name method with field instead field name.<br>
-	 *             Note: will be removed on next minor release
-	 */
-	@Deprecated
-	public static <T> void setFieldValue(final @NonNull T source, final @NonNull String fieldName,
-		final Object newValue)
-		throws NoSuchFieldException, SecurityException, IllegalAccessException
-	{
-		setFieldValue(source, getDeclaredField(source, fieldName), newValue);
 	}
 
 	/**
@@ -455,13 +429,21 @@ public final class ReflectionExtensions
 	 * @param object
 	 *            the object
 	 * @return the new instance
-	 * @throws ClassNotFoundException
-	 *             is thrown if the class cannot be located
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstance(final @NonNull T object) throws ClassNotFoundException
+	public static <T> T newInstance(final @NonNull T object)
 	{
-		return newInstance((Class<T>)Class.forName(object.getClass().getCanonicalName()));
+		Class<?> clazz = object.getClass();
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		switch (classType)
+		{
+			case ARRAY :
+				int length = Array.getLength(object);
+				return (T)Array.newInstance(clazz.getComponentType(), length);
+
+			default :
+				return newInstance((Class<T>)object.getClass());
+		}
 	}
 
 	/**
@@ -479,7 +461,8 @@ public final class ReflectionExtensions
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
 	{
 		T newInstance = null;
-		Optional<T> optionalNewInstance = forceNewInstanceWithClass(clazz);
+		Optional<T> optionalNewInstance;
+		optionalNewInstance = forceNewInstanceWithClass(clazz);
 		if (optionalNewInstance.isPresent())
 		{
 			return optionalNewInstance.get();
