@@ -45,8 +45,6 @@ import de.alpharogroup.check.Argument;
  */
 public final class TypeArgumentsExtensions
 {
-	private TypeArgumentsExtensions(){}
-
 	/**
 	 * Get the underlying class for a type, or null if the type is a variable type.
 	 *
@@ -131,8 +129,7 @@ public final class TypeArgumentsExtensions
 	 * @return the type argument from the childClass at the given index or null if it does not
 	 *         exists.
 	 */
-	public static <T> Class<?> getTypeArgument(final Class<? extends T> childClass,
-		final int index)
+	public static <T> Class<?> getTypeArgument(final Class<? extends T> childClass, final int index)
 	{
 		Argument.notNull(childClass, "childClass");
 		@SuppressWarnings("unchecked")
@@ -277,5 +274,9 @@ public final class TypeArgumentsExtensions
 			resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
 		}
 		return resolvedTypes;
+	}
+
+	private TypeArgumentsExtensions()
+	{
 	}
 }

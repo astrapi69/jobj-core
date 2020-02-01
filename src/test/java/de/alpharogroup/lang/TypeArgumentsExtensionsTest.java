@@ -28,8 +28,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -65,8 +63,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	 * @throws NoSuchMethodException
 	 */
 	@Test
-	public void testGetClassType()
-		throws SecurityException, NoSuchMethodException
+	public void testGetClassType() throws SecurityException, NoSuchMethodException
 	{
 		Type type;
 		type = List.class.getMethod("toArray", Object[].class).getGenericReturnType();
@@ -142,7 +139,8 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	}
 
 	/**
-	 * Test method for {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(ParameterizedType)}
+	 * Test method for
+	 * {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(ParameterizedType)}
 	 */
 	@Test(enabled = false)
 	public void testGetTypeArgumentsAndParameters()

@@ -27,12 +27,10 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -305,8 +303,8 @@ public class ReflectionExtensionsTest
 		int actual;
 		Field[] allDeclaredFields;
 
-		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
-			"serialVersionUID", "$jacocoData");
+		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class, "serialVersionUID",
+			"$jacocoData");
 		expected = 5;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
@@ -317,8 +315,8 @@ public class ReflectionExtensionsTest
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
-		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class,
-			"serialVersionUID", "$jacocoData");
+		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Member.class, "serialVersionUID",
+			"$jacocoData");
 		expected = 2;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
@@ -619,8 +617,8 @@ public class ReflectionExtensionsTest
 	 *             is thrown if a security manager says no.
 	 */
 	@Test
-	public void testSetFieldValueWithField() throws IllegalAccessException,
-		NoSuchFieldException, SecurityException
+	public void testSetFieldValueWithField()
+		throws IllegalAccessException, NoSuchFieldException, SecurityException
 	{
 		String expected;
 		String actual;
