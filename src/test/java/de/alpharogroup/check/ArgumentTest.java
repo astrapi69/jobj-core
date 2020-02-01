@@ -187,8 +187,7 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		BeanTester beanTester = new BeanTester();

@@ -1,6 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
 
 plugins {
-    id "io.franzbecker.gradle-lombok" version "3.2.0"
     id "java"
     id "maven-publish"
     id "signing"
@@ -9,9 +16,10 @@ plugins {
 }
 
 apply plugin: "jacoco"
+apply plugin: "kotlin"
 
 group = "de.alpharogroup"
-version = "3.5-SNAPSHOT"
+version = "$projectVersion"
 description = "jobj-core"
 sourceCompatibility = "1.8"
 
@@ -22,8 +30,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:$lombokVersion")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
     compile("org.objenesis:objenesis:$objenesisVersion")
     testCompile("de.alpharogroup:test-objects:$testObjectsVersion")
     testCompile("de.alpharogroup:silly-collections:$sillyCollectionsVersion")
@@ -31,8 +37,7 @@ dependencies {
     testCompile("de.alpharogroup:runtime-compiler:$runtimeCompilerVersion")
     testCompile("org.meanbean:meanbean:$meanbeanVersion")
     testCompile("org.testng:testng:$testngVersion")
-    testCompile("junit:junit:$junitVersion")
-    testCompile("org.mockito:mockito-core:$mockitoCoreVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
 }
 
 def releaseVersion = !version.endsWith("SNAPSHOT")
@@ -40,7 +45,7 @@ def releaseVersion = !version.endsWith("SNAPSHOT")
 license {
     ext.year="2015"
     ext.owner="Asterios Raptis"
-    header rootProject.file('src/main/resources/LICENSE.txt')
+    header rootProject.file("src/main/resources/LICENSE.txt")
     excludes(["**/README",
               "**/README.md",
               "**/LICENSE",
@@ -168,3 +173,14 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

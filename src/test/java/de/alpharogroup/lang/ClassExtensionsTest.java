@@ -144,7 +144,7 @@ public class ClassExtensionsTest
 				@Override
 				public void run()
 				{
-				};
+				}
 			};
 			System.out.println(runnable.getClass().getName());
 			System.out.println("Is anonymous class:" + runnable.getClass().isAnonymousClass());
@@ -159,28 +159,6 @@ public class ClassExtensionsTest
 
 	/** The result. */
 	private boolean result;
-
-	/**
-	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
-	 */
-	@BeforeMethod
-	public void setUp() throws Exception
-	{
-	}
-
-	/**
-	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
-	 */
-	@AfterMethod
-	public void tearDown() throws Exception
-	{
-	}
 
 	/**
 	 * Test method for {@link ClassExtensions#forName(String)}
@@ -292,7 +270,7 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getClass(Object)}.
+	 * Test method for {@link ClassExtensions#getClass(Object)}
 	 */
 	@Test(enabled = true)
 	public void testGetClass()
@@ -302,10 +280,6 @@ public class ClassExtensionsTest
 
 		actual = ClassExtensions.getClass(this);
 		expected = ClassExtensionsTest.class;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClass(null);
-		expected = null;
 		assertEquals(expected, actual);
 	}
 
@@ -348,15 +322,10 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getClassType(Class)}.
-	 *
-	 * @throws InstantiationException
-	 *             if a new instance of the bean's class cannot be instantiated
-	 * @throws IllegalAccessException
-	 *             if the caller does not have access to the property accessor method
+	 * Test method for {@link ClassExtensions#getClassType(Class)}
 	 */
 	@Test(enabled = true)
-	public void testGetClassType() throws InstantiationException, IllegalAccessException
+	public void testGetClassType()
 	{
 		ClassType actual = ClassExtensions.getClassType(OuterClass.class);
 		ClassType expected = ClassType.DEFAULT;
@@ -375,7 +344,7 @@ public class ClassExtensionsTest
 			@Override
 			public void run()
 			{
-			};
+			}
 		}.getClass());
 		expected = ClassType.ANONYMOUS;
 		assertEquals(expected, actual);
@@ -874,7 +843,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

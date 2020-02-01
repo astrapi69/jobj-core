@@ -637,8 +637,7 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		BeanTester beanTester = new BeanTester();

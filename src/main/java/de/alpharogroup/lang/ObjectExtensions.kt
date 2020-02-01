@@ -18,75 +18,66 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.lang;
+package de.alpharogroup.lang
 
-import lombok.experimental.UtilityClass;
+import de.alpharogroup.lang.DefaultValue.get
 
 /**
- * The class {@link ObjectExtensions} provides extension methods to check if the object is the
+ * The class [ObjectExtensions] provides extension methods to check if the object is the
  * default value.
  */
-@UtilityClass
-public final class ObjectExtensions
-{
+object ObjectExtensions {
+    /**
+     * Checks if the given object has the default value.
+     *
+     * @param <T>
+     * the generic type
+     * @param fieldClass
+     * the field class
+     * @param instance
+     * the object instance
+     * @return true, if is default value
+    </T> */
+	@JvmStatic
+	fun <T> isDefaultValue(fieldClass: Class<*>?, instance: T?): Boolean {
+        if (instance == null) {
+            return true
+        }
+        val defaultValue = get(fieldClass!!)
+        return if (defaultValue != null) {
+            get(fieldClass) == instance
+        } else false
+    }
 
-	/**
-	 * Checks if the given object has the default value.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param fieldClass
-	 *            the field class
-	 * @param object
-	 *            the object
-	 * @return true, if is default value
-	 */
-	public static final <T> boolean isDefaultValue(final Class<?> fieldClass, final T object)
-	{
-		if (object == null)
-		{
-			return true;
-		}
-		final Object defaultValue = DefaultValue.get(fieldClass);
-		if (defaultValue != null)
-		{
-			return DefaultValue.get(fieldClass).equals(object);
-		}
-		return false;
-	}
+    /**
+     * Checks if the given object has not the default value.
+     *
+     * @param <T>
+     * the generic type
+     * @param fieldClass
+     * the field class
+     * @param instance
+     * the object instance
+     * @return true, if the given object has not the default value
+    </T> */
+	@JvmStatic
+	fun <T> isNotDefaultValue(fieldClass: Class<*>?, instance: T): Boolean {
+        return !isDefaultValue(fieldClass, instance)
+    }
 
-	/**
-	 * Checks if the given object has not the default value.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param fieldClass
-	 *            the field class
-	 * @param object
-	 *            the object
-	 * @return true, if the given object has not the default value
-	 */
-	public static final <T> boolean isNotDefaultValue(final Class<?> fieldClass, final T object)
-	{
-		return !isDefaultValue(fieldClass, object);
-	}
-
-	/**
-	 * Gets the {@link ClassType} from the given class.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            The class.
-	 * @return the {@link ClassType} from the given class.
-	 */
-	public static <T> ClassType getClassType(final Class<T> clazz)
-	{
-		if (clazz == null)
-		{
-			return null;
-		}
-		return ClassExtensions.getClassType(clazz);
-	}
-
+    /**
+     * Gets the [ClassType] from the given class.
+     *
+     * @param <T>
+     * the generic type
+     * @param clazz
+     * The class.
+     * @return the [ClassType] from the given class.
+    </T> */
+	@JvmStatic
+	fun <T> getClassType(clazz: Class<T>?): ClassType? {
+        return if (clazz == null) {
+            null
+        } else ClassExtensions.getClassType(clazz)
+    }
 }

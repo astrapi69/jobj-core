@@ -18,154 +18,137 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package de.alpharogroup.lang;
-
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+package de.alpharogroup.lang
 
 /**
- * The class {@link PackageExtensions} provides extension methods for the package of a {@link Class}
+ * The class [PackageExtensions] provides extension methods for the package of a [Class]
  * object
  */
-@UtilityClass
-public final class PackageExtensions
-{
+object PackageExtensions {
+    /**
+     * Determines the package name from the given class object.
+     *
+     * @param clazz
+     * The class object.
+     *
+     * @return The package name from the given class object.
+     */
+    @JvmStatic
+    fun getPackageName(clazz: Class<*>): String {
+        return clazz.getPackage().name
+    }
 
-	/**
-	 * Determines the package name from the given class object.
-	 *
-	 * @param clazz
-	 *            The class object.
-	 *
-	 * @return The package name from the given class object.
-	 */
-	public static String getPackageName(final @NonNull Class<?> clazz)
-	{
-		final String packageName = clazz.getPackage().getName();
-		return packageName;
-	}
+    /**
+     * Determines the package name from the given String(this must be the fully qualified class name
+     * without the file extension).
+     *
+     * @param qualifiedClassName
+     * The fully qualified class name without the file extension. For instance:
+     * xy.ab.Test =&gt; xy.ab
+     *
+     * @return The package name from the given String.
+     */
+	@JvmStatic
+	fun getPackageName(qualifiedClassName: String): String {
+        return qualifiedClassName.substring(0,
+                qualifiedClassName.lastIndexOf("."))
+    }
 
-	/**
-	 * Determines the package name from the given String(this must be the fully qualified class name
-	 * without the file extension).
-	 *
-	 * @param qualifiedClassName
-	 *            The fully qualified class name without the file extension. For instance:
-	 *            xy.ab.Test =&gt; xy.ab
-	 *
-	 * @return The package name from the given String.
-	 */
-	public static String getPackageName(final @NonNull String qualifiedClassName)
-	{
-		final String packageName = qualifiedClassName.substring(0,
-			qualifiedClassName.lastIndexOf("."));
-		return packageName;
-	}
+    /**
+     * Determines the package name from the given class object and adds a dot at the end.
+     *
+     * @param clazz
+     * The class object.
+     *
+     * @return The package name from the given class object.
+     */
+	@JvmStatic
+	fun getPackageNameWithDot(clazz: Class<*>): String {
+        return clazz.getPackage().name + "."
+    }
 
-	/**
-	 * Determines the package name from the given class object and adds a dot at the end.
-	 *
-	 * @param clazz
-	 *            The class object.
-	 *
-	 * @return The package name from the given class object.
-	 */
-	public static String getPackageNameWithDot(final @NonNull Class<?> clazz)
-	{
-		final String packageName = clazz.getPackage().getName() + ".";
-		return packageName;
-	}
+    /**
+     * Determines the package path from the given class object.
+     *
+     * @param clazz
+     * The class object.
+     *
+     * @return The package path from the given class object.
+     */
+    fun getPackagePath(clazz: Class<*>): String {
+        return getPackageName(clazz).replace('.', '/') + "/"
+    }
 
-	/**
-	 * Determines the package path from the given class object.
-	 *
-	 * @param clazz
-	 *            The class object.
-	 *
-	 * @return The package path from the given class object.
-	 */
-	public static String getPackagePath(final @NonNull Class<?> clazz)
-	{
-		final String packagePath = getPackageName(clazz).replace('.', '/') + "/";
-		return packagePath;
-	}
+    /**
+     * Determines the package path from the given object.
+     *
+     * @param instance
+     * The object.
+     *
+     * @return The package path from the given object.
+     */
+    @JvmStatic
+    fun getPackagePath(instance: Any): String {
+        return getPackagePath(instance.javaClass)
+    }
 
-	/**
-	 * Determines the package path from the given object.
-	 *
-	 * @param object
-	 *            The object.
-	 *
-	 * @return The package path from the given object.
-	 */
-	public static String getPackagePath(final @NonNull Object object)
-	{
-		return getPackagePath(object.getClass());
-	}
+    /**
+     * Determines the package path from the given String object that is in the dot-format. For
+     * instance: given package string=='org.foo.bar' will result to 'org/foo/bar'
+     *
+     * @param packagePathWithDots
+     * the package path with dots
+     * @return The package path from the given String object
+     */
+    @JvmStatic
+    fun getPackagePath(packagePathWithDots: String): String {
+        return getPackagePath(packagePathWithDots, false)
+    }
 
-	/**
-	 * Determines the package path from the given String object that is in the dot-format. For
-	 * instance: given package string=='org.foo.bar' will result to 'org/foo/bar'
-	 *
-	 * @param packagePathWithDots
-	 *            the package path with dots
-	 * @return The package path from the given String object
-	 */
-	public static String getPackagePath(final @NonNull String packagePathWithDots)
-	{
-		return getPackagePath(packagePathWithDots, false);
-	}
+    /**
+     * Determines the package path from the given String object that is in the dot-format.
+     *
+     * For instance: given package string=='org.foo.bar' will result to 'org/foo/bar/' if flag is
+     * true otherwise 'org/foo/bar'
+     *
+     * @param packagePathWithDots
+     * the package path with dots
+     * @param withEndSlash
+     * flag that indicates if a slash will be appended at the end
+     * @return The package path from the given String object
+     */
+	@JvmStatic
+	fun getPackagePath(packagePathWithDots: String,
+					   withEndSlash: Boolean): String {
+        val sb = StringBuilder()
+        sb.append(packagePathWithDots.replace('.', '/'))
+        if (withEndSlash) {
+            sb.append("/")
+        }
+        return sb.toString()
+    }
 
+    /**
+     * Determines the package path from the given object and adds a slash at the front.
+     *
+     * @param clazz
+     * the clazz
+     * @return The package path from the given object with the added slash at the front.
+     */
+    fun getPackagePathWithSlash(clazz: Class<*>): String {
+        return "/" + getPackagePath(clazz)
+    }
 
-	/**
-	 * Determines the package path from the given String object that is in the dot-format.
-	 *
-	 * For instance: given package string=='org.foo.bar' will result to 'org/foo/bar/' if flag is
-	 * true otherwise 'org/foo/bar'
-	 *
-	 * @param packagePathWithDots
-	 *            the package path with dots
-	 * @param withEndSlash
-	 *            flag that indicates if a slash will be appended at the end
-	 * @return The package path from the given String object
-	 */
-	public static String getPackagePath(final @NonNull String packagePathWithDots,
-		final boolean withEndSlash)
-	{
-		final StringBuilder sb = new StringBuilder();
-		sb.append(packagePathWithDots.replace('.', '/'));
-		if (withEndSlash)
-		{
-			sb.append("/");
-		}
-		final String packagePath = sb.toString();
-		return packagePath;
-	}
-
-	/**
-	 * Determines the package path from the given object and adds a slash at the front.
-	 *
-	 * @param clazz
-	 *            the clazz
-	 * @return The package path from the given object with the added slash at the front.
-	 */
-	public static String getPackagePathWithSlash(final @NonNull Class<?> clazz)
-	{
-		final String packagePath = "/" + getPackagePath(clazz);
-		return packagePath;
-	}
-
-	/**
-	 * Determines the package path from the given object and adds a slash at the front.
-	 *
-	 * @param object
-	 *            The object.
-	 *
-	 * @return The package path from the given object with the added slash at the front.
-	 */
-	public static String getPackagePathWithSlash(final @NonNull Object object)
-	{
-		return getPackagePathWithSlash(object.getClass());
-	}
-
+    /**
+     * Determines the package path from the given object and adds a slash at the front.
+     *
+     * @param object
+     * The object.
+     *
+     * @return The package path from the given object with the added slash at the front.
+     */
+	@JvmStatic
+	fun getPackagePathWithSlash(`object`: Any): String {
+        return getPackagePathWithSlash(`object`.javaClass)
+    }
 }
