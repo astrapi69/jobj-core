@@ -30,8 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import de.alpharogroup.check.Argument;
 
 /**
  * The class {@link TypeArgumentsExtensions} is a utility class for getting the type arguments from
@@ -44,10 +43,8 @@ import lombok.experimental.UtilityClass;
  * In the comments someone asked if we are allowed to use the source code from the article. The
  * answer of Ian Robertson is: Absolutely, you may use this code. "Consider it open sourced".
  */
-@UtilityClass
 public final class TypeArgumentsExtensions
 {
-
 	/**
 	 * Get the underlying class for a type, or null if the type is a variable type.
 	 *
@@ -55,8 +52,9 @@ public final class TypeArgumentsExtensions
 	 *            the type
 	 * @return the underlying class
 	 */
-	public static Class<?> getClass(final @NonNull Type type)
+	public static Class<?> getClass(final Type type)
 	{
+		Argument.notNull(type, "type");
 		if (type instanceof Class)
 		{
 			return (Class<?>)type;
@@ -93,8 +91,9 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @return the first type argument
 	 */
-	public static <T> Class<?> getFirstTypeArgument(final @NonNull Class<? extends T> childClass)
+	public static <T> Class<?> getFirstTypeArgument(final Class<? extends T> childClass)
 	{
+		Argument.notNull(childClass, "childClass");
 		return getTypeArgument(childClass, 0);
 	}
 
@@ -109,9 +108,11 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @return the first type argument
 	 */
-	public static <T> Class<?> getFirstTypeArgument(final @NonNull Class<T> baseClass,
-		final @NonNull Class<? extends T> childClass)
+	public static <T> Class<?> getFirstTypeArgument(final Class<T> baseClass,
+		final Class<? extends T> childClass)
 	{
+		Argument.notNull(baseClass, "baseClass");
+		Argument.notNull(childClass, "childClass");
 		return getTypeArgument(baseClass, childClass, 0);
 	}
 
@@ -128,9 +129,9 @@ public final class TypeArgumentsExtensions
 	 * @return the type argument from the childClass at the given index or null if it does not
 	 *         exists.
 	 */
-	public static <T> Class<?> getTypeArgument(final @NonNull Class<? extends T> childClass,
-		final int index)
+	public static <T> Class<?> getTypeArgument(final Class<? extends T> childClass, final int index)
 	{
+		Argument.notNull(childClass, "childClass");
 		@SuppressWarnings("unchecked")
 		Class<T> baseClass = (Class<T>)ClassExtensions.getBaseClass(childClass);
 		return getTypeArgument(baseClass, childClass, index);
@@ -150,11 +151,13 @@ public final class TypeArgumentsExtensions
 	 * @return the type argument from the childClass at the given index or null if it does not
 	 *         exists.
 	 */
-	public static <T> Class<?> getTypeArgument(final @NonNull Class<T> baseClass,
-		final @NonNull Class<? extends T> childClass, final int index)
+	public static <T> Class<?> getTypeArgument(final Class<T> baseClass,
+		final Class<? extends T> childClass, final int index)
 	{
+		Argument.notNull(baseClass, "baseClass");
+		Argument.notNull(childClass, "childClass");
 		final List<Class<?>> typeArguments = getTypeArguments(baseClass, childClass);
-		if (typeArguments != null && !typeArguments.isEmpty() && index < typeArguments.size())
+		if (!typeArguments.isEmpty() && index < typeArguments.size())
 		{
 			return typeArguments.get(index);
 		}
@@ -171,8 +174,9 @@ public final class TypeArgumentsExtensions
 	 * @return a list of the raw classes for the actual type arguments.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> List<Class<?>> getTypeArguments(final @NonNull Class<? extends T> childClass)
+	public static <T> List<Class<?>> getTypeArguments(final Class<? extends T> childClass)
 	{
+		Argument.notNull(childClass, "childClass");
 		Class<T> baseClass = (Class<T>)ClassExtensions.getBaseClass(childClass);
 		return getTypeArguments(baseClass, childClass);
 	}
@@ -189,9 +193,11 @@ public final class TypeArgumentsExtensions
 	 * @return a list of the raw classes for the actual type arguments.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> List<Class<?>> getTypeArguments(final @NonNull Class<T> baseClass,
-		final @NonNull Class<? extends T> childClass)
+	public static <T> List<Class<?>> getTypeArguments(final Class<T> baseClass,
+		final Class<? extends T> childClass)
 	{
+		Argument.notNull(baseClass, "baseClass");
+		Argument.notNull(childClass, "childClass");
 		Class<T> realBaseClass = baseClass;
 		// handle interface case
 		if (realBaseClass.isInterface())
@@ -201,7 +207,7 @@ public final class TypeArgumentsExtensions
 		final Map<Type, Type> resolvedTypes = new HashMap<>();
 		Type type = childClass;
 		// start walking up the inheritance hierarchy until we hit baseClass
-		while (!getClass(type).equals(realBaseClass))
+		while (getClass(type) != null && !getClass(type).equals(realBaseClass))
 		{
 			if (type instanceof Class)
 			{
@@ -256,8 +262,9 @@ public final class TypeArgumentsExtensions
 	 * @return the type arguments and parameters
 	 */
 	public static Map<Type, Type> getTypeArgumentsAndParameters(
-		final @NonNull ParameterizedType parameterizedType)
+		final ParameterizedType parameterizedType)
 	{
+		Argument.notNull(parameterizedType, "parameterizedType");
 		final Class<?> rawType = (Class<?>)parameterizedType.getRawType();
 		final Map<Type, Type> resolvedTypes = new HashMap<>();
 		final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
@@ -267,5 +274,9 @@ public final class TypeArgumentsExtensions
 			resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
 		}
 		return resolvedTypes;
+	}
+
+	private TypeArgumentsExtensions()
+	{
 	}
 }

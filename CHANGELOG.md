@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 3.5
+-------------
+
+ADDED:
+
+- kotlin nature and ported most classes to kotlin
+
+CHANGED:
+
+- removed lombok dependency
+- removed unused junit dependency
+- removed unused mockito dependency
+
 Version 3.4
 -------------
 

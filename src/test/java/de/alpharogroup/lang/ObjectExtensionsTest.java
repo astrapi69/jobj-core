@@ -22,13 +22,11 @@ package de.alpharogroup.lang;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -198,13 +196,11 @@ public class ObjectExtensionsTest
 	/**
 	 * Test method for {@link ObjectExtensions} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ObjectExtensions.class);
 	}
-
 
 }

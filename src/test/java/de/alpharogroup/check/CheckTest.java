@@ -52,7 +52,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Double, Double, Double, String)}
+	 * Test method for {@link Check#isInRange(double, double, double, String)}
 	 */
 	@Test(expectedExceptions = { IllegalArgumentException.class })
 	public void testIsInRangeDouble()
@@ -69,7 +69,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Double, Double, Double, String)}
+	 * Test method for {@link Check#isInRange(double, double, double, String)}
 	 */
 	@Test
 	public void testIsInRangeDoubleNormalCase()
@@ -88,7 +88,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Float, Float, Float, String)}
+	 * Test method for {@link Check#isInRange(float, float, float, String)}
 	 */
 	@Test(expectedExceptions = { IllegalArgumentException.class })
 	public void testIsInRangeFloat()
@@ -105,7 +105,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Float, Float, Float, String)}
+	 * Test method for {@link Check#isInRange(float, float, float, String)}
 	 */
 	@Test
 	public void testIsInRangeFloatNormalCase()
@@ -124,7 +124,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Integer, Integer, Integer, String)}
+	 * Test method for {@link Check#isInRange(int, int, int, String)}
 	 */
 	@Test(expectedExceptions = { IllegalArgumentException.class })
 	public void testIsInRangeInteger()
@@ -141,7 +141,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Integer, Integer, Integer, String)}
+	 * Test method for {@link Check#isInRange(int, int, int, String)}
 	 */
 	@Test
 	public void testIsInRangeIntegerNormalCase()
@@ -160,7 +160,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Long, Long, Long, String)}
+	 * Test method for {@link Check#isInRange(long, long, long, String)}
 	 */
 	@Test(expectedExceptions = { IllegalArgumentException.class })
 	public void testIsInRangeLong()
@@ -178,7 +178,7 @@ public class CheckTest
 	}
 
 	/**
-	 * Test method for {@link Check#isInRange(Long, Long, Long, String)}
+	 * Test method for {@link Check#isInRange(long, long, long, String)}
 	 */
 	@Test
 	public void testIsInRangeLongNormalCase()

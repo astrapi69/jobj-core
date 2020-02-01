@@ -24,11 +24,10 @@ import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -61,12 +60,10 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	 * Test method for {@link TypeArgumentsExtensions#getClass(Type)}.
 	 *
 	 * @throws SecurityException
-	 * @throws NoSuchFieldException
 	 * @throws NoSuchMethodException
 	 */
 	@Test
-	public void testGetClassType()
-		throws NoSuchFieldException, SecurityException, NoSuchMethodException
+	public void testGetClassType() throws SecurityException, NoSuchMethodException
 	{
 		Type type;
 		type = List.class.getMethod("toArray", Object[].class).getGenericReturnType();
@@ -114,8 +111,6 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		assertEquals(expectedClass, integerClass);
 	}
 
-	// ====================================================================== //
-
 	/**
 	 * Test method for {@link TypeArgumentsExtensions#getTypeArgument(Class, int)}.
 	 */
@@ -136,7 +131,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	public void testGetTypeArguments()
 	{
 		final List<Class<?>> typeArguments = TypeArgumentsExtensions
-			.getTypeArguments(GenericDao.class, new PersonDao().getClass());
+			.getTypeArguments(GenericDao.class, PersonDao.class);
 		assertNotNull(typeArguments);
 		assertEquals(2, typeArguments.size());
 		assertEquals(Person.class, typeArguments.get(0));
@@ -144,20 +139,12 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	}
 
 	/**
-	 * Test method for {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(Type)}.
-	 *
-	 * @throws SecurityException
-	 * @throws NoSuchMethodException
+	 * Test method for
+	 * {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(ParameterizedType)}
 	 */
-	@Test
-	public void testGetTypeArgumentsAndParameters() throws NoSuchMethodException, SecurityException
+	@Test(enabled = false)
+	public void testGetTypeArgumentsAndParameters()
 	{
-		// TODO implement unit test...
-		// ParameterizedType parameterizedType;
-		//
-		// Map<Type, Type> typeArgumentsAndParameters =
-		// TypeArgumentsExtensions.getTypeArgumentsAndParameters(parameterizedType);
-		// System.out.println(type);
 	}
 
 	/**
@@ -176,7 +163,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	/**
 	 * Test method for {@link TypeArgumentsExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

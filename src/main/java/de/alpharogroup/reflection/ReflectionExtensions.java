@@ -31,59 +31,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
+import de.alpharogroup.check.Argument;
 import de.alpharogroup.lang.ClassExtensions;
 import de.alpharogroup.lang.ClassType;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
  */
-@UtilityClass
-@Log
 public final class ReflectionExtensions
 {
-
-	/**
-	 * Creates a new array instance from the same type as the given {@link Class} and the given
-	 * length
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param cls
-	 *            the class object
-	 * @param length
-	 *            the length of the array
-	 * @return the new array instance
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
-	{
-		return (T[])Array.newInstance(cls, length);
-	}
-
-	/**
-	 * Creates a new empty array instance from the given source array the length of the given source
-	 * array
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param source
-	 *            the source array
-	 * @return the new empty array instance
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
-	{
-		return (T[])newArrayInstance(source.getClass().getComponentType(), source.length);
-	}
+	private static final Logger log = Logger.getLogger(ReflectionExtensions.class.getName());
 
 	/**
 	 * Copy the given array object and return a copy of it.
@@ -94,8 +58,9 @@ public final class ReflectionExtensions
 	 *            the source
 	 * @return the copy of the given array object
 	 */
-	public static <T> T[] copyArray(final @NonNull T[] source)
+	public static <T> T[] copyArray(final T[] source)
 	{
+		Argument.notNull(source, "source");
 		T[] destination = newEmptyArrayInstance(source);
 		for (int i = 0; i < Array.getLength(source); i++)
 		{
@@ -122,56 +87,352 @@ public final class ReflectionExtensions
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
-	public static <T> void copyFieldValue(final @NonNull T source, final @NonNull T target,
-		final @NonNull String fieldName)
+	public static <T> void copyFieldValue(final T source, final T target, final String fieldName)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
+		Argument.notNull(source, "source");
+		Argument.notNull(target, "target");
+		Argument.notNull(fieldName, "fieldName");
 		setFieldValue(source, target, getDeclaredField(source, fieldName));
 	}
 
 	/**
-	 * Sets the field value of the given source object over the field
+	 * Sets the first character from the given string to upper case and returns it. Example:<br>
+	 * Given fieldName: userName <br>
+	 * Result: UserName
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param source
-	 *            the source object
-	 * @param target
-	 *            the target
-	 * @param sourceField
-	 *            the source field
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no
+	 * @param fieldName
+	 *            The String to modify.
+	 * @return The modified string.
 	 */
-	public static <T> void setFieldValue(final @NonNull T source, final @NonNull T target,
-		final @NonNull Field sourceField) throws IllegalAccessException
+	public static String firstCharacterToUpperCase(final String fieldName)
 	{
-		sourceField.setAccessible(true);
-		final Object sourceValue = sourceField.get(source);
-		setFieldValue(target, sourceField, sourceValue);
+		Argument.notNull(fieldName, "fieldName");
+		String firstCharacter = fieldName.substring(0, 1);
+		firstCharacter = firstCharacter.toUpperCase();
+		final char[] fc = firstCharacter.toCharArray();
+		final char[] fn = fieldName.toCharArray();
+		fn[0] = fc[0];
+		return new String(fn);
+	}
+
+	private static <T> Optional<T> forceNewInstanceWithClass(final Class<T> clazz)
+	{
+		Argument.notNull(clazz, "clazz");
+
+		Optional<T> optionalNewInstance = Optional.empty();
+		try
+		{
+			optionalNewInstance = Optional.of(newInstanceWithClass(clazz));
+		}
+		catch (InstantiationException | IllegalAccessException e)
+		{
+			log.log(Level.SEVERE, "Failed to create new instance with method Class.newInstance()",
+				e);
+		}
+		return optionalNewInstance;
+	}
+
+	private static <T> Optional<T> forceNewInstanceWithObjenesis(final Class<T> clazz)
+	{
+		Argument.notNull(clazz, "clazz");
+
+		Optional<T> optionalNewInstance = Optional.empty();
+		try
+		{
+			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
+		}
+		catch (Exception e)
+		{
+			log.log(Level.INFO,
+				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
+		}
+		return optionalNewInstance;
 	}
 
 	/**
-	 * Sets the field value of the given source object
+	 * Gets all the declared field names including all fields from all super classes from the given
+	 * class object
+	 *
+	 * @param cls
+	 *            the class object
+	 * @return all the declared field names
+	 */
+	public static String[] getAllDeclaredFieldNames(final Class<?> cls)
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(getAllDeclaredFields(cls)).map(Field::getName).toArray(String[]::new);
+	}
+
+	/**
+	 * Gets all the declared field names including all fields from all super classes from the given
+	 * class object minus the given ignored field names
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 * @return all the declared field names minus the given ignored field names
+	 */
+	public static String[] getAllDeclaredFieldNames(final Class<?> cls,
+		List<String> ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		Field[] allDeclaredFields = getAllDeclaredFields(cls);
+		return Arrays.stream(allDeclaredFields).map(Field::getName)
+			.filter(name -> !ignoreFieldNames.contains(name)).toArray(String[]::new);
+	}
+
+	/**
+	 * Gets all the declared field names including all fields from all super classes from the given
+	 * class object minus the given optional array of ignored field names
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            an optional array with the field names that shell be ignored
+	 * @return all the declared field names minus the given optional array of ignored field names
+	 */
+	public static String[] getAllDeclaredFieldNames(final Class<?> cls, String... ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return getAllDeclaredFieldNames(cls, Arrays.asList(ignoreFieldNames));
+	}
+
+	/**
+	 * Gets all the declared fields including all fields from all super classes from the given class
+	 * object minus the given ignored fields
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 * @return all the declared fields minus the given ignored field names
+	 */
+	public static Field[] getAllDeclaredFields(final Class<?> cls, List<String> ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		Field[] declaredFields = getDeclaredFields(cls, ignoreFieldNames);
+		Class<?> superClass = cls.getSuperclass();
+		if (superClass != null && superClass.equals(Object.class))
+		{
+			return declaredFields;
+		}
+		List<Field> fields = new ArrayList<>(Arrays.asList(declaredFields));
+		while ((superClass != null && superClass.getSuperclass() != null
+			&& superClass.getSuperclass().equals(Object.class)))
+		{
+			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
+			superClass = superClass.getSuperclass();
+		}
+		return fields.toArray(new Field[] { });
+	}
+
+	/**
+	 * Gets all the declared fields including all fields from all super classes from the given class
+	 * object minus the given ignored fields
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            an optional array with field names that shell be ignored
+	 * @return all the declared fields minus the given ignored field names
+	 */
+	public static Field[] getAllDeclaredFields(final Class<?> cls, final String... ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return getAllDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
+	}
+
+	/**
+	 * Gets the {@link Field} that match to the given field name that exists in the given class.
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param fieldName
+	 *            the field name
+	 * @return the declared field
+	 * @throws NoSuchFieldException
+	 *             is thrown if no such field exists.
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 */
+	public static Field getDeclaredField(final Class<?> cls, final String fieldName)
+		throws NoSuchFieldException, SecurityException
+	{
+		Argument.notNull(cls, "cls");
+		Argument.notNull(fieldName, "fieldName");
+		return cls.getDeclaredField(fieldName);
+	}
+
+	/**
+	 * Gets the {@link Field} that match to the given field name that exists in the given object.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param source
-	 *            the source object
-	 * @param field
-	 *            the field
-	 * @param newValue
-	 *            the new value
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method
+	 * @param object
+	 *            the object
+	 * @param fieldName
+	 *            the field name
+	 * @return the declared field
+	 * @throws NoSuchFieldException
+	 *             is thrown if no such field exists.
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
 	 */
-	public static <T> void setFieldValue(final T source, final Field field, final Object newValue)
-		throws IllegalAccessException
+	public static <T> Field getDeclaredField(final T object, final String fieldName)
+		throws NoSuchFieldException, SecurityException
 	{
-		field.setAccessible(true);
-		field.set(source, newValue);
+		Argument.notNull(object, "object");
+		return getDeclaredField(object.getClass(), fieldName);
+	}
+
+	/**
+	 * Gets all the declared field names from the given class object.
+	 *
+	 * Note: without the field names from any superclasses
+	 *
+	 * @param cls
+	 *            the class object
+	 * @return all the declared field names from the given class as an String array
+	 */
+	public static String[] getDeclaredFieldNames(final Class<?> cls)
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
+			.map(Field::getName).toArray(String[]::new);
+	}
+
+	/**
+	 * Gets all the declared field names from the given class object minus the given ignored field
+	 * names
+	 *
+	 * Note: without the field names from any superclasses
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 * @return all the declared field names from the given class as an String array minus the given
+	 *         ignored field names
+	 */
+	public static String[] getDeclaredFieldNames(final Class<?> cls, List<String> ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
+			.map(Field::getName).filter(name -> !ignoreFieldNames.contains(name))
+			.toArray(String[]::new);
+	}
+
+	/**
+	 * Gets all the declared field names from the given class object minus the given ignored field
+	 * names
+	 *
+	 * Note: without the field names from any superclasses
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a optional array with the field names that shell be ignored
+	 * @return all the declared field names from the given class as an String array minus the given
+	 *         optional array of ignored field names
+	 */
+	public static String[] getDeclaredFieldNames(final Class<?> cls, String... ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return getDeclaredFieldNames(cls, Arrays.asList(ignoreFieldNames));
+	}
+
+	/**
+	 * Gets the declared fields from the given class minus the given ignored field names
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 * @return the declared {@link Field} from the given class minus the given ignored field names
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no
+	 */
+	public static Field[] getDeclaredFields(final Class<?> cls, List<String> ignoreFieldNames)
+		throws SecurityException
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(cls.getDeclaredFields())
+			.filter(field -> !ignoreFieldNames.contains(field.getName())).toArray(Field[]::new);
+	}
+
+	/**
+	 * Gets the declared fields from the given class minus the given optional array of ignored field
+	 * names
+	 *
+	 * @param cls
+	 *            the class object
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 * @return the declared {@link Field} from the given class minus the given optional array of
+	 *         ignored field names
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no
+	 */
+	public static Field[] getDeclaredFields(final Class<?> cls, String... ignoreFieldNames)
+		throws SecurityException
+	{
+		Argument.notNull(cls, "cls");
+		return getDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
+	}
+
+	/**
+	 * Gets all field names from the given class as an String list.
+	 *
+	 * @param cls
+	 *            The class object to get the field names.
+	 *
+	 * @return Gets all field names from the given class as an String list.
+	 */
+	public static List<String> getFieldNames(final Class<?> cls)
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
+			.map(Field::getName).collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets all field names from the given class as an String list minus the given ignored field
+	 * names
+	 *
+	 * @param cls
+	 *            The class object to get the field names
+	 * @param ignoreFieldNames
+	 *            a list with field names that shell be ignored
+	 *
+	 * @return Gets all field names from the given class as an String list minus the given ignored
+	 *         field names
+	 */
+	public static List<String> getFieldNames(final Class<?> cls, List<String> ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
+			.map(Field::getName).filter(name -> !ignoreFieldNames.contains(name))
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets all field names from the given class as an String list minus the given optional array of
+	 * ignored field names
+	 *
+	 * @param cls
+	 *            The class object to get the field names
+	 * @param ignoreFieldNames
+	 *            a optional array with the field names that shell be ignored
+	 *
+	 * @return Gets all field names from the given class as an String list minus the given optional
+	 *         array of ignored field names
+	 */
+	public static List<String> getFieldNames(final Class<?> cls, String... ignoreFieldNames)
+	{
+		Argument.notNull(cls, "cls");
+		return getFieldNames(cls, Arrays.asList(ignoreFieldNames));
 	}
 
 	/**
@@ -191,158 +452,14 @@ public final class ReflectionExtensions
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
-	public static <T> Object getFieldValue(final @NonNull T source, final @NonNull String fieldName)
+	public static <T> Object getFieldValue(final T source, final String fieldName)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
+		Argument.notNull(source, "source");
+		Argument.notNull(fieldName, "fieldName");
 		final Field sourceField = getDeclaredField(source, fieldName);
 		sourceField.setAccessible(true);
 		return sourceField.get(source);
-	}
-
-	/**
-	 * Sets the field value of the given class object over the field name.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param cls
-	 *            The class
-	 * @param fieldName
-	 *            the field name
-	 * @param newValue
-	 *            the new value
-	 * @throws NoSuchFieldException
-	 *             is thrown if no such field exists.
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no.
-	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method.
-	 */
-	public static <T> void setFieldValue(final @NonNull Class<?> cls,
-		final @NonNull String fieldName, final Object newValue)
-		throws NoSuchFieldException, SecurityException, IllegalAccessException
-	{
-		final Field sourceField = getDeclaredField(cls, fieldName);
-		sourceField.setAccessible(true);
-		sourceField.set(null, newValue);
-	}
-
-	/**
-	 * Gets all field names from the given class as an String list.
-	 *
-	 * @param cls
-	 *            The class object to get the field names.
-	 *
-	 * @return Gets all field names from the given class as an String list.
-	 */
-	public static List<String> getFieldNames(final @NonNull Class<?> cls)
-	{
-		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
-			.map(Field::getName).collect(Collectors.toList());
-	}
-
-	/**
-	 * Gets all field names from the given class as an String list minus the given ignored field
-	 * names
-	 *
-	 * @param cls
-	 *            The class object to get the field names
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 *
-	 * @return Gets all field names from the given class as an String list minus the given ignored
-	 *         field names
-	 */
-	public static List<String> getFieldNames(final @NonNull Class<?> cls,
-		List<String> ignoreFieldNames)
-	{
-		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
-			.map(Field::getName).filter(name -> !ignoreFieldNames.contains(name))
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Gets all field names from the given class as an String list minus the given optional array of
-	 * ignored field names
-	 *
-	 * @param cls
-	 *            The class object to get the field names
-	 * @param ignoreFieldNames
-	 *            a optional array with the field names that shell be ignored
-	 *
-	 * @return Gets all field names from the given class as an String list minus the given optional
-	 *         array of ignored field names
-	 */
-	public static List<String> getFieldNames(final @NonNull Class<?> cls,
-		String... ignoreFieldNames)
-	{
-		return getFieldNames(cls, Arrays.asList(ignoreFieldNames));
-	}
-
-	/**
-	 * Gets all the declared field names from the given class object.
-	 *
-	 * Note: without the field names from any superclasses
-	 *
-	 * @param cls
-	 *            the class object
-	 * @return all the declared field names from the given class as an String array
-	 */
-	public static String[] getDeclaredFieldNames(final @NonNull Class<?> cls)
-	{
-		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
-			.map(Field::getName).toArray(String[]::new);
-	}
-
-	/**
-	 * Gets all the declared field names from the given class object minus the given ignored field
-	 * names
-	 *
-	 * Note: without the field names from any superclasses
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a optional array with the field names that shell be ignored
-	 * @return all the declared field names from the given class as an String array minus the given
-	 *         optional array of ignored field names
-	 */
-	public static String[] getDeclaredFieldNames(final @NonNull Class<?> cls,
-		String... ignoreFieldNames)
-	{
-		return getDeclaredFieldNames(cls, Arrays.asList(ignoreFieldNames));
-	}
-
-	/**
-	 * Gets all the declared field names from the given class object minus the given ignored field
-	 * names
-	 *
-	 * Note: without the field names from any superclasses
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 * @return all the declared field names from the given class as an String array minus the given
-	 *         ignored field names
-	 */
-	public static String[] getDeclaredFieldNames(final @NonNull Class<?> cls,
-		List<String> ignoreFieldNames)
-	{
-		return Arrays.stream(cls.getDeclaredFields()).filter(ReflectionExtensions::isNotSynthetic)
-			.map(Field::getName).filter(name -> !ignoreFieldNames.contains(name))
-			.toArray(String[]::new);
-	}
-
-	/**
-	 * Checks if the given {@link Field} is not synthetic
-	 *
-	 * @param field
-	 *            the field
-	 * @return true, if the given {@link Field} is not synthetic otherwise false
-	 */
-	public static boolean isNotSynthetic(@NonNull Field field)
-	{
-		return !field.isSynthetic();
 	}
 
 	/**
@@ -353,8 +470,9 @@ public final class ReflectionExtensions
 	 *
 	 * @return Gets all method names from the given class as an String array.
 	 */
-	public static String[] getMethodNames(final @NonNull Class<?> cls)
+	public static String[] getMethodNames(final Class<?> cls)
 	{
+		Argument.notNull(cls, "cls");
 		final Method[] methods = cls.getDeclaredMethods();
 		final String[] methodNames = new String[methods.length];
 		for (int i = 0; i < methods.length; i++)
@@ -376,8 +494,9 @@ public final class ReflectionExtensions
 	 * @return the method names with prefix from field names
 	 */
 	public static Map<String, String> getMethodNamesWithPrefixFromFieldNames(
-		final @NonNull List<String> fieldNames, final String prefix)
+		final List<String> fieldNames, final String prefix)
 	{
+		Argument.notNull(fieldNames, "fieldNames");
 		final Map<String, String> fieldNameMethodMapper = new HashMap<>();
 		for (final String fieldName : fieldNames)
 		{
@@ -389,61 +508,67 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Sets the first character from the given string to upper case and returns it. Example:<br>
-	 * Given fieldName: userName <br>
-	 * Result: UserName
-	 *
-	 * @param fieldName
-	 *            The String to modify.
-	 * @return The modified string.
-	 */
-	public static String firstCharacterToUpperCase(final @NonNull String fieldName)
-	{
-		String firstCharacter = fieldName.substring(0, 1);
-		firstCharacter = firstCharacter.toUpperCase();
-		final char[] fc = firstCharacter.toCharArray();
-		final char[] fn = fieldName.toCharArray();
-		fn[0] = fc[0];
-		return new String(fn);
-	}
-
-	/**
 	 * Gets the modifiers from the given Field as a list of String objects.
 	 *
 	 * @param field
 	 *            The field to get the modifiers.
 	 * @return A list with the modifiers as String objects from the given Field.
 	 */
-	public static List<String> getModifiers(final @NonNull Field field)
+	public static List<String> getModifiers(final Field field)
 	{
+		Argument.notNull(field, "field");
 		final String modifiers = Modifier.toString(field.getModifiers());
 		final String[] modifiersArray = modifiers.split(" ");
 		return Arrays.asList(modifiersArray);
 	}
 
 	/**
-	 * Creates a new instance from the same type as the given object.
+	 * Checks if the given {@link Field} is not synthetic
+	 *
+	 * @param field
+	 *            the field
+	 * @return true, if the given {@link Field} is not synthetic otherwise false
+	 */
+	public static boolean isNotSynthetic(Field field)
+	{
+		Argument.notNull(field, "field");
+		return !field.isSynthetic();
+	}
+
+	/**
+	 * Creates a new array instance from the same type as the given {@link Class} and the given
+	 * length
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param object
-	 *            the object
-	 * @return the new instance
+	 * @param cls
+	 *            the class object
+	 * @param length
+	 *            the length of the array
+	 * @return the new array instance
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstance(final @NonNull T object)
+	public static <T> T[] newArrayInstance(final Class<T> cls, final int length)
 	{
-		Class<?> clazz = object.getClass();
-		ClassType classType = ClassExtensions.getClassType(clazz);
-		switch (classType)
-		{
-			case ARRAY :
-				int length = Array.getLength(object);
-				return (T)Array.newInstance(clazz.getComponentType(), length);
+		Argument.notNull(cls, "cls");
+		return (T[])Array.newInstance(cls, length);
+	}
 
-			default :
-				return newInstance((Class<T>)object.getClass());
-		}
+	/**
+	 * Creates a new empty array instance from the given source array the length of the given source
+	 * array
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source array
+	 * @return the new empty array instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newEmptyArrayInstance(final T[] source)
+	{
+		Argument.notNull(source, "source");
+		return (T[])newArrayInstance(source.getClass().getComponentType(), source.length);
 	}
 
 	/**
@@ -458,8 +583,9 @@ public final class ReflectionExtensions
 	 *            the Class object
 	 * @return the new instance
 	 */
-	public static <T> T newInstance(final @NonNull Class<T> clazz)
+	public static <T> T newInstance(final Class<T> clazz)
 	{
+		Argument.notNull(clazz, "clazz");
 		T newInstance = null;
 		Optional<T> optionalNewInstance;
 		optionalNewInstance = forceNewInstanceWithClass(clazz);
@@ -475,35 +601,30 @@ public final class ReflectionExtensions
 		return newInstance;
 	}
 
-	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz)
+	/**
+	 * Creates a new instance from the same type as the given object.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param instance
+	 *            the object instance
+	 * @return the new instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T newInstance(final T instance)
 	{
+		Argument.notNull(instance, "instance");
+		Class<?> clazz = instance.getClass();
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		switch (classType)
+		{
+			case ARRAY :
+				int length = Array.getLength(instance);
+				return (T)Array.newInstance(clazz.getComponentType(), length);
 
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithClass(clazz));
+			default :
+				return newInstance((Class<T>)instance.getClass());
 		}
-		catch (InstantiationException | IllegalAccessException e)
-		{
-			log.log(Level.INFO, "Failed to create new instance with method Class.newInstance()", e);
-		}
-		return optionalNewInstance;
-	}
-
-	private static <T> Optional<T> forceNewInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
-		}
-		catch (Exception e)
-		{
-			log.log(Level.INFO,
-				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
-		}
-		return optionalNewInstance;
 	}
 
 	/**
@@ -521,9 +642,10 @@ public final class ReflectionExtensions
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
 	 */
-	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
+	public static <T> T newInstanceWithClass(final Class<T> clazz)
 		throws InstantiationException, IllegalAccessException
 	{
+		Argument.notNull(clazz, "clazz");
 		return clazz.newInstance();
 	}
 
@@ -536,180 +658,95 @@ public final class ReflectionExtensions
 	 *            the Class object
 	 * @return the new instance
 	 */
-	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
+	public static <T> T newInstanceWithObjenesis(final Class<T> clazz)
 	{
+		Argument.notNull(clazz, "clazz");
 		Objenesis objenesis = new ObjenesisStd();
 		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
 		return instantiator.newInstance();
 	}
 
 	/**
-	 * Gets the {@link Field} that match to the given field name that exists in the given object.
+	 * Sets the field value of the given class object over the field name.
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param object
-	 *            the object
+	 * @param cls
+	 *            The class
 	 * @param fieldName
 	 *            the field name
-	 * @return the declared field
+	 * @param newValue
+	 *            the new value
 	 * @throws NoSuchFieldException
 	 *             is thrown if no such field exists.
 	 * @throws SecurityException
 	 *             is thrown if a security manager says no.
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method.
 	 */
-	public static <T> Field getDeclaredField(@NonNull final T object,
-		final @NonNull String fieldName) throws NoSuchFieldException, SecurityException
+	public static <T> void setFieldValue(final Class<?> cls, final String fieldName,
+		final Object newValue)
+		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
-		return getDeclaredField(object.getClass(), fieldName);
+		Argument.notNull(cls, "cls");
+		Argument.notNull(fieldName, "fieldName");
+		final Field sourceField = getDeclaredField(cls, fieldName);
+		sourceField.setAccessible(true);
+		sourceField.set(null, newValue);
 	}
 
 	/**
-	 * Gets the {@link Field} that match to the given field name that exists in the given class.
+	 * Sets the field value of the given source object
 	 *
-	 * @param cls
-	 *            the class object
-	 * @param fieldName
-	 *            the field name
-	 * @return the declared field
-	 * @throws NoSuchFieldException
-	 *             is thrown if no such field exists.
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no.
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source object
+	 * @param field
+	 *            the field
+	 * @param newValue
+	 *            the new value
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
 	 */
-	public static Field getDeclaredField(final @NonNull Class<?> cls,
-		final @NonNull String fieldName) throws NoSuchFieldException, SecurityException
+	public static <T> void setFieldValue(final T source, final Field field, final Object newValue)
+		throws IllegalAccessException
 	{
-		return cls.getDeclaredField(fieldName);
+		Argument.notNull(source, "source");
+		Argument.notNull(field, "field");
+		field.setAccessible(true);
+		field.set(source, newValue);
 	}
 
 	/**
-	 * Gets all the declared fields including all fields from all super classes from the given class
-	 * object minus the given ignored fields
+	 * Sets the field value of the given source object over the field
 	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            an optional array with field names that shell be ignored
-	 * @return all the declared fields minus the given ignored field names
-	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
-		final String... ignoreFieldNames)
-	{
-		return getAllDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
-	}
-
-	/**
-	 * Gets all the declared fields including all fields from all super classes from the given class
-	 * object minus the given ignored fields
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 * @return all the declared fields minus the given ignored field names
-	 */
-	public static Field[] getAllDeclaredFields(final @NonNull Class<?> cls,
-		List<String> ignoreFieldNames)
-	{
-		Field[] declaredFields = getDeclaredFields(cls, ignoreFieldNames);
-		Class<?> superClass = cls.getSuperclass();
-		if (superClass != null && superClass.equals(Object.class))
-		{
-			return declaredFields;
-		}
-		List<Field> fields = new ArrayList<>(Arrays.asList(declaredFields));
-		while ((superClass != null && superClass.getSuperclass() != null
-			&& superClass.getSuperclass().equals(Object.class)))
-		{
-			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
-			superClass = superClass.getSuperclass();
-		}
-		return fields.toArray(new Field[] { });
-	}
-
-	/**
-	 * Gets all the declared field names including all fields from all super classes from the given
-	 * class object
-	 *
-	 * @param cls
-	 *            the class object
-	 * @return all the declared field names
-	 */
-	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls)
-	{
-		return Arrays.stream(getAllDeclaredFields(cls)).map(Field::getName).toArray(String[]::new);
-	}
-
-	/**
-	 * Gets all the declared field names including all fields from all super classes from the given
-	 * class object minus the given optional array of ignored field names
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            an optional array with the field names that shell be ignored
-	 * @return all the declared field names minus the given optional array of ignored field names
-	 */
-	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls,
-		String... ignoreFieldNames)
-	{
-		return getAllDeclaredFieldNames(cls, Arrays.asList(ignoreFieldNames));
-	}
-
-	/**
-	 * Gets all the declared field names including all fields from all super classes from the given
-	 * class object minus the given ignored field names
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 * @return all the declared field names minus the given ignored field names
-	 */
-	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls,
-		List<String> ignoreFieldNames)
-	{
-		Field[] allDeclaredFields = getAllDeclaredFields(cls);
-		return Arrays.stream(allDeclaredFields).map(Field::getName)
-			.filter(name -> !ignoreFieldNames.contains(name)).toArray(String[]::new);
-	}
-
-	/**
-	 * Gets the declared fields from the given class minus the given ignored field names
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 * @return the declared {@link Field} from the given class minus the given ignored field names
+	 * @param <T>
+	 *            the generic type
+	 * @param source
+	 *            the source object
+	 * @param target
+	 *            the target
+	 * @param sourceField
+	 *            the source field
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method
 	 * @throws SecurityException
 	 *             is thrown if a security manager says no
 	 */
-	public static Field[] getDeclaredFields(final @NonNull Class<?> cls,
-		List<String> ignoreFieldNames) throws SecurityException
+	public static <T> void setFieldValue(final T source, final T target, final Field sourceField)
+		throws IllegalAccessException
 	{
-		return Arrays.stream(cls.getDeclaredFields())
-			.filter(field -> !ignoreFieldNames.contains(field.getName())).toArray(Field[]::new);
+		Argument.notNull(source, "source");
+		Argument.notNull(target, "target");
+		Argument.notNull(sourceField, "sourceField");
+		sourceField.setAccessible(true);
+		final Object sourceValue = sourceField.get(source);
+		setFieldValue(target, sourceField, sourceValue);
 	}
 
-	/**
-	 * Gets the declared fields from the given class minus the given optional array of ignored field
-	 * names
-	 *
-	 * @param cls
-	 *            the class object
-	 * @param ignoreFieldNames
-	 *            a list with field names that shell be ignored
-	 * @return the declared {@link Field} from the given class minus the given optional array of
-	 *         ignored field names
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no
-	 */
-	public static Field[] getDeclaredFields(final @NonNull Class<?> cls, String... ignoreFieldNames)
-		throws SecurityException
+	private ReflectionExtensions()
 	{
-		return getDeclaredFields(cls, Arrays.asList(ignoreFieldNames));
 	}
 
 }
