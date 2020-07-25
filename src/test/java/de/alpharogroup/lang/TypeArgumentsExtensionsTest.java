@@ -24,10 +24,12 @@ import static org.testng.Assert.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import de.alpharogroup.test.messages.TestMessagesExtensions;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -57,6 +59,48 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	List<String>[] array;
 
 	/**
+	 * Test method for {@link TypeArgumentsExtensions#getGenericReturnClassType(Class, String, Class[])}
+	 *
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 */
+	@Test
+	public void testGetGenericReturnClassType() throws SecurityException, NoSuchMethodException
+	{
+		Type actual;
+//		Type expected;
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnType(List.class, "toArray", Object[].class);
+		assertNotNull(actual);
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getGenericReturnClassType(Class, String, Class[])}
+	 *
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 */
+	@Test
+	public void testGetGenericReturnClassTypeClass() throws SecurityException, NoSuchMethodException
+	{
+		Class<?> actual;
+		Class<?> expected;
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnClassType(List.class, "toArray", Object[].class);
+		Class<Object> objectClass = Object.class;
+		expected = Array.newInstance(objectClass, 0).getClass();
+		assertEquals(expected, actual);
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnClassType(TestMessagesExtensions.class, "newFailMessage", String.class, String.class, String.class);
+		Class<String> stringClass = String.class;
+		expected = stringClass;
+		assertEquals(expected, actual);
+	}
+	
+	/**
 	 * Test method for {@link TypeArgumentsExtensions#getClass(Type)}.
 	 *
 	 * @throws SecurityException
@@ -65,10 +109,14 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	@Test
 	public void testGetClassType() throws SecurityException, NoSuchMethodException
 	{
+		Class<?> actual;
+		Class<?> expected;
 		Type type;
 		type = List.class.getMethod("toArray", Object[].class).getGenericReturnType();
-		Class<?> class1 = TypeArgumentsExtensions.getClass(type);
-		assertNull(class1);
+		actual = TypeArgumentsExtensions.getClass(type);
+		Class<Object> objectClass = Object.class;
+		expected = Array.newInstance(objectClass, 0).getClass();
+		assertEquals(expected, actual);
 	}
 
 	/**

@@ -4,6 +4,21 @@
 Version 3.6-SNAPSHOT
 -------------
 
+ADDED:
+
+- added new method that gets the generic return type in the class TypeArgumentsExtensions
+- added new method that gets the class of the generic return type in the class TypeArgumentsExtensions
+
+CHANGED:
+
+- update of gradle to new version 6.5.1
+- update kotlin to new version 1.3.72
+- extracted project properties to gradle.properties
+- extracted project gradle plugin versions to buildscript.ext area in gradle.properties
+- update of test-dependency silly-collections version to 8.2
+- update of test-dependency test-objects version to 8.2
+- update of test-dependency testng version to 7.2.0
+
 Version 3.5
 -------------
 

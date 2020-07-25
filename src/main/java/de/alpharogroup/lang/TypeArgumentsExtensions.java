@@ -20,17 +20,10 @@
  */
 package de.alpharogroup.lang;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.alpharogroup.check.Argument;
+
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * The class {@link TypeArgumentsExtensions} is a utility class for getting the type arguments from
@@ -45,6 +38,45 @@ import de.alpharogroup.check.Argument;
  */
 public final class TypeArgumentsExtensions
 {
+
+	/**
+	 * Get the generic return type
+	 *
+	 * @param classThatContainsMethod
+	 *            the class that contains the method
+	 * @param methodName
+	 * 				the method name
+	 * @param parameterTypes the list of parameters
+	 * @throws NoSuchMethodException is thrown when a particular method cannot be found
+	 * @return the generic return type
+	 */
+	public static Type getGenericReturnType(Class<?> classThatContainsMethod,
+		String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
+	{
+		Objects.requireNonNull(classThatContainsMethod);
+		Objects.requireNonNull(methodName);
+		return classThatContainsMethod.getMethod(methodName, parameterTypes).getGenericReturnType();
+	}
+
+	/**
+	 * Get the underlying class for the generic return type
+	 *
+	 * @param classThatContainsMethod
+	 *            the class that contains the method
+	 * @param methodName
+	 * 				the method name
+	 * @param parameterTypes the list of parameters
+	 * @throws NoSuchMethodException is thrown when a particular method cannot be found
+	 * @return the underlying class of the return type
+	 */
+	public static Class<?> getGenericReturnClassType(Class<?> classThatContainsMethod,
+		String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
+	{
+		Objects.requireNonNull(classThatContainsMethod);
+		Objects.requireNonNull(methodName);
+		return TypeArgumentsExtensions.getClass(getGenericReturnType(classThatContainsMethod,methodName, parameterTypes));
+	}
+
 	/**
 	 * Get the underlying class for a type, or null if the type is a variable type.
 	 *
@@ -75,6 +107,18 @@ public final class TypeArgumentsExtensions
 			{
 				return null;
 			}
+		}
+		else if (type instanceof TypeVariable)
+		{
+			TypeVariable typeVariable = (TypeVariable)type;
+			Type[] bounds = typeVariable.getBounds();
+			if (bounds.length == 1)
+			{
+				Type firstBound = bounds[0];
+				final Class<?> componentClass = getClass(firstBound);
+				return componentClass;
+			}
+			return null;
 		}
 		else
 		{
@@ -132,8 +176,8 @@ public final class TypeArgumentsExtensions
 	public static <T> Class<?> getTypeArgument(final Class<? extends T> childClass, final int index)
 	{
 		Argument.notNull(childClass, "childClass");
-		@SuppressWarnings("unchecked")
-		Class<T> baseClass = (Class<T>)ClassExtensions.getBaseClass(childClass);
+		@SuppressWarnings("unchecked") Class<T> baseClass = (Class<T>)ClassExtensions
+			.getBaseClass(childClass);
 		return getTypeArgument(baseClass, childClass, index);
 	}
 
@@ -173,8 +217,8 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @return a list of the raw classes for the actual type arguments.
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> List<Class<?>> getTypeArguments(final Class<? extends T> childClass)
+	@SuppressWarnings("unchecked") public static <T> List<Class<?>> getTypeArguments(
+		final Class<? extends T> childClass)
 	{
 		Argument.notNull(childClass, "childClass");
 		Class<T> baseClass = (Class<T>)ClassExtensions.getBaseClass(childClass);
@@ -192,9 +236,8 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @return a list of the raw classes for the actual type arguments.
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> List<Class<?>> getTypeArguments(final Class<T> baseClass,
-		final Class<? extends T> childClass)
+	@SuppressWarnings("unchecked") public static <T> List<Class<?>> getTypeArguments(
+		final Class<T> baseClass, final Class<? extends T> childClass)
 	{
 		Argument.notNull(baseClass, "baseClass");
 		Argument.notNull(childClass, "childClass");
@@ -274,6 +317,10 @@ public final class TypeArgumentsExtensions
 			resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
 		}
 		return resolvedTypes;
+	}
+
+	public static <T> Type getType(Class<? extends T> clazz){
+		return clazz;
 	}
 
 	private TypeArgumentsExtensions()
