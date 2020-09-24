@@ -6,8 +6,10 @@ Version 3.6-SNAPSHOT
 
 ADDED:
 
-- added new method that gets the generic return type in the class TypeArgumentsExtensions
-- added new method that gets the class of the generic return type in the class TypeArgumentsExtensions
+- new method in the class TypeArgumentsExtensions that gets the generic return type
+- new method in the class TypeArgumentsExtensions that gets the class of the generic return type
+- new method in the class TypeArgumentsExtensions that gets the ParameterizedType from a given class
+- new method in the class TypeArgumentsExtensions that gets that returns the generic type array from a given class
 
 CHANGED:
 

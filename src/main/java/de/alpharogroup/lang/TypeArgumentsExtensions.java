@@ -25,10 +25,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -47,6 +44,44 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class TypeArgumentsExtensions
 {
+
+	/**
+	 * Get the generic return type
+	 *
+	 * @param classThatContainsMethod
+	 *            the class that contains the method
+	 * @param methodName
+	 * 				the method name
+	 * @param parameterTypes the list of parameters
+	 * @throws NoSuchMethodException is thrown when a particular method cannot be found
+	 * @return the generic return type
+	 */
+	public static Type getGenericReturnType(Class<?> classThatContainsMethod,
+		String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
+	{
+		Objects.requireNonNull(classThatContainsMethod);
+		Objects.requireNonNull(methodName);
+		return classThatContainsMethod.getMethod(methodName, parameterTypes).getGenericReturnType();
+	}
+
+	/**
+	 * Get the underlying class for the generic return type
+	 *
+	 * @param classThatContainsMethod
+	 *            the class that contains the method
+	 * @param methodName
+	 * 				the method name
+	 * @param parameterTypes the list of parameters
+	 * @throws NoSuchMethodException is thrown when a particular method cannot be found
+	 * @return the underlying class of the return type
+	 */
+	public static Class<?> getGenericReturnClassType(Class<?> classThatContainsMethod,
+		String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
+	{
+		Objects.requireNonNull(classThatContainsMethod);
+		Objects.requireNonNull(methodName);
+		return TypeArgumentsExtensions.getClass(getGenericReturnType(classThatContainsMethod,methodName, parameterTypes));
+	}
 
 	/**
 	 * Get the underlying class for a type, or null if the type is a variable type.
@@ -77,6 +112,18 @@ public final class TypeArgumentsExtensions
 			{
 				return null;
 			}
+		}
+		else if (type instanceof TypeVariable)
+		{
+			TypeVariable typeVariable = (TypeVariable)type;
+			Type[] bounds = typeVariable.getBounds();
+			if (bounds.length == 1)
+			{
+				Type firstBound = bounds[0];
+				final Class<?> componentClass = getClass(firstBound);
+				return componentClass;
+			}
+			return null;
 		}
 		else
 		{
@@ -268,4 +315,42 @@ public final class TypeArgumentsExtensions
 		}
 		return resolvedTypes;
 	}
+
+	/**
+	 * Gets an optional from type {@link ParameterizedType} from the given class. The optional is
+	 * empty if not found
+	 *
+	 * @param clazz
+	 *            the clazz class
+	 * @return the optional from type {@link ParameterizedType}. The optional is empty if not found
+	 */
+	public static Optional<ParameterizedType> getParameterizedType(final @NonNull Class<?> clazz) {
+		Type[] types = getGenericTypeArray(clazz);
+		if (0 < types.length && types[0] instanceof ParameterizedType) {
+			return Optional.of((ParameterizedType)types[0]);
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Gets an array of the generic types from the given class
+	 *
+	 * @param clazz
+	 *            the class
+	 * @return an array of the generic types
+	 */
+	public static Type[] getGenericTypeArray(final @NonNull Class<?> clazz) {
+		Type[] genericInterfaceTypes = clazz.getGenericInterfaces();
+		if (0 < genericInterfaceTypes.length) {
+			return genericInterfaceTypes;
+		}
+		Type genericSuperclassType = clazz.getGenericSuperclass();
+		if (genericSuperclassType != null) {
+			if (genericSuperclassType instanceof ParameterizedType) {
+				return new Type[] { genericSuperclassType };
+			}
+		}
+		return new Type[0];
+	}
+
 }

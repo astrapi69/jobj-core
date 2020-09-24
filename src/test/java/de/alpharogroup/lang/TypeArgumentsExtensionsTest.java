@@ -21,12 +21,18 @@
 package de.alpharogroup.lang;
 
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import de.alpharogroup.test.messages.TestMessagesExtensions;
 import org.meanbean.factories.ObjectCreationException;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -58,20 +64,70 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	List<String>[] array;
 
 	/**
+	 * Test method for {@link TypeArgumentsExtensions#getGenericReturnClassType(Class, String, Class[])}
+	 *
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 * @throws NoSuchMethodException
+	 * 			   is thrown when a particular method cannot be found
+	 */
+	@Test
+	public void testGetGenericReturnClassType() throws SecurityException, NoSuchMethodException
+	{
+		Type actual;
+		//		Type expected;
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnType(List.class, "toArray", Object[].class);
+		assertNotNull(actual);
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getGenericReturnClassType(Class, String, Class[])}
+	 *
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 * @throws NoSuchMethodException
+	 * 			   is thrown when a particular method cannot be found
+	 */
+	@Test
+	public void testGetGenericReturnClassTypeClass() throws SecurityException, NoSuchMethodException
+	{
+		Class<?> actual;
+		Class<?> expected;
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnClassType(List.class, "toArray", Object[].class);
+		Class<Object> objectClass = Object.class;
+		expected = Array.newInstance(objectClass, 0).getClass();
+		assertEquals(expected, actual);
+
+		actual = TypeArgumentsExtensions.
+			getGenericReturnClassType(TestMessagesExtensions.class, "newFailMessage", String.class, String.class, String.class);
+		Class<String> stringClass = String.class;
+		expected = stringClass;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * Test method for {@link TypeArgumentsExtensions#getClass(Type)}.
 	 *
 	 * @throws SecurityException
-	 * @throws NoSuchFieldException
+	 *             is thrown if a security manager says no.
 	 * @throws NoSuchMethodException
+	 * 			   is thrown when a particular method cannot be found
 	 */
 	@Test
-	public void testGetClassType()
-		throws NoSuchFieldException, SecurityException, NoSuchMethodException
+	public void testGetClassType1() throws SecurityException, NoSuchMethodException
 	{
+		Class<?> actual;
+		Class<?> expected;
 		Type type;
 		type = List.class.getMethod("toArray", Object[].class).getGenericReturnType();
-		Class<?> class1 = TypeArgumentsExtensions.getClass(type);
-		assertNull(class1);
+		actual = TypeArgumentsExtensions.getClass(type);
+		Class<Object> objectClass = Object.class;
+		expected = Array.newInstance(objectClass, 0).getClass();
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -144,20 +200,26 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	}
 
 	/**
-	 * Test method for {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(Type)}.
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArgumentsAndParameters(ParameterizedType)}.
 	 *
 	 * @throws SecurityException
-	 * @throws NoSuchMethodException
+	 *             is thrown if a security manager says no.
 	 */
 	@Test
-	public void testGetTypeArgumentsAndParameters() throws NoSuchMethodException, SecurityException
+	public void testGetTypeArgumentsAndParameters() throws SecurityException
 	{
-		// TODO implement unit test...
-		// ParameterizedType parameterizedType;
-		//
-		// Map<Type, Type> typeArgumentsAndParameters =
-		// TypeArgumentsExtensions.getTypeArgumentsAndParameters(parameterizedType);
-		// System.out.println(type);
+		Optional<ParameterizedType> parameterizedTypeOptional;
+		parameterizedTypeOptional = TypeArgumentsExtensions.getParameterizedType(PersonDao.class);
+		if(parameterizedTypeOptional.isPresent()){
+			ParameterizedType parameterizedType = parameterizedTypeOptional.get();
+			Map<Type, Type> typeArgumentsAndParameters = TypeArgumentsExtensions
+				.getTypeArgumentsAndParameters(parameterizedType);
+			assertEquals(2, typeArgumentsAndParameters.size());
+			assertTrue(typeArgumentsAndParameters.containsValue(Integer.class));
+			assertTrue(typeArgumentsAndParameters.containsValue(Person.class));
+		} else {
+			org.testng.Assert.fail("parameterizedTypeOptional should not be empty");
+		}
 	}
 
 	/**
