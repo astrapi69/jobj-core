@@ -1,6 +1,37 @@
 ## Change log
 ----------------------
 
+Version 3.6-SNAPSHOT
+-------------
+
+ADDED:
+
+- added new method that gets the generic return type in the class TypeArgumentsExtensions
+- added new method that gets the class of the generic return type in the class TypeArgumentsExtensions
+
+CHANGED:
+
+- update of gradle to new version 6.6.1
+- removed kotlin nature
+- extracted project properties to gradle.properties
+- extracted project gradle plugin versions to buildscript.ext area in gradle.properties
+- update of test-dependency silly-collections version to 8.2
+- update of test-dependency test-objects version to 5.3
+- update of test-dependency testng version to 7.3.0
+
+Version 3.5
+-------------
+
+ADDED:
+
+- kotlin nature and ported most classes to kotlin
+
+CHANGED:
+
+- removed lombok dependency
+- removed unused junit dependency
+- removed unused mockito dependency
+
 Version 3.4
 -------------
 
