@@ -67,13 +67,16 @@ public final class ClassExtensions
 		}
 		catch (final Throwable throwable)
 		{
-			clazz = Class.forName(className, true, getClassLoader());
-			if (clazz == null)
+			try{
+				clazz = Class.forName(className, true, getClassLoader());
+			}catch (final Throwable throwable2)
 			{
-				clazz = Class.forName(className, false, getClassLoader());
-				if (clazz == null)
+				try
 				{
-					throw throwable;
+					clazz = Class.forName(className, false, getClassLoader());
+				}catch (final Throwable throwable3)
+				{
+					throw throwable3;
 				}
 			}
 		}
