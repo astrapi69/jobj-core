@@ -1,6 +1,26 @@
 ## Change log
 ----------------------
 
+Version 3.6
+-------------
+
+ADDED:
+
+- new method in the class TypeArgumentsExtensions that gets the generic return type
+- new method in the class TypeArgumentsExtensions that gets the class of the generic return type
+- new method in the class TypeArgumentsExtensions that gets the ParameterizedType from a given class
+- new method in the class TypeArgumentsExtensions that gets that returns the generic type array from a given class
+
+CHANGED:
+
+- update of gradle to new version 6.6.1
+- removed kotlin nature
+- extracted project properties to gradle.properties
+- extracted project gradle plugin versions to buildscript.ext area in gradle.properties
+- update of test-dependency silly-collections version to 8.2
+- update of test-dependency test-objects version to 5.3
+- update of test-dependency testng version to 7.3.0
+
 Version 3.5
 -------------
 
