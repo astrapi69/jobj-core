@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -67,14 +68,17 @@ public final class ClassExtensions
 		}
 		catch (final Throwable throwable)
 		{
-			try{
+			try
+			{
 				clazz = Class.forName(className, true, getClassLoader());
-			}catch (final Throwable throwable2)
+			}
+			catch (final Throwable throwable2)
 			{
 				try
 				{
 					clazz = Class.forName(className, false, getClassLoader());
-				}catch (final Throwable throwable3)
+				}
+				catch (final Throwable throwable3)
 				{
 					throw throwable3;
 				}
@@ -698,6 +702,50 @@ public final class ClassExtensions
 	public static List<URL> getResources(final @NonNull String path) throws IOException
 	{
 		return Collections.list(ClassExtensions.getClassLoader().getResources(path));
+	}
+
+	/**
+	 * Gets a list with urls from the given path for all resources.
+	 *
+	 * @param path
+	 *            The base path.
+	 * @param excludeJarFiles
+	 * 			flag for exclude jor files from the result
+	 * @return The resources.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static List<URL> getResources(final @NonNull String path, boolean excludeJarFiles)
+		throws IOException
+	{
+		return !excludeJarFiles
+			? getResources(path)
+			: getResources(path).stream().filter(ClassExtensions::isNotJarFile)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Checks if the given {@link URL} is a jar file.
+	 *
+	 * @param url
+	 *            the url to check
+	 * @return true, if the given {@link URL} is a jar file otherwise false
+	 */
+	public static boolean isJarFile(final @NonNull URL url)
+	{
+		return "jar".equals(url.getProtocol());
+	}
+
+	/**
+	 * Checks if the given {@link URL} is not a jar file.
+	 *
+	 * @param url
+	 *            the url to check
+	 * @return true, if the given {@link URL} is not a jar file otherwise false
+	 */
+	public static boolean isNotJarFile(final @NonNull URL url)
+	{
+		return !isJarFile(url);
 	}
 
 	/**

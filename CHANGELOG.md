@@ -4,6 +4,17 @@
 Version 3.7-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in the class ClassExtensions that gets all resources excluding jar files from it
+
+CHANGED:
+
+- update of gradle to new version 6.8
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.36.0
+- update of dependency lombok version to 1.18.16
+- update of test-dependency silly-collections version to 8.4
+
 Version 3.6
 -------------
 
