@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -695,33 +696,21 @@ public final class ClassExtensions
 	 *
 	 * @param path
 	 *            The base path.
+	 * @param excludeUrlProtocols
+	 *            flag for exclude jor files from the result
 	 * @return The resources.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static List<URL> getResources(final @NonNull String path) throws IOException
-	{
-		return Collections.list(ClassExtensions.getClassLoader().getResources(path));
-	}
-
-	/**
-	 * Gets a list with urls from the given path for all resources.
-	 *
-	 * @param path
-	 *            The base path.
-	 * @param excludeJarFiles
-	 * 			flag for exclude jor files from the result
-	 * @return The resources.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public static List<URL> getResources(final @NonNull String path, boolean excludeJarFiles)
+	public static List<URL> getResources(final @NonNull String path, String... excludeUrlProtocols)
 		throws IOException
 	{
-		return !excludeJarFiles
-			? getResources(path)
-			: getResources(path).stream().filter(ClassExtensions::isNotJarFile)
-				.collect(Collectors.toList());
+		ArrayList<URL> urls = Collections.list(ClassExtensions.getClassLoader().getResources(path));
+		return 0 < excludeUrlProtocols.length
+			? urls.stream()
+				.filter(url -> Arrays.asList(excludeUrlProtocols).indexOf(url.getProtocol()) >= 0)
+				.collect(Collectors.toList())
+			: urls;
 	}
 
 	/**

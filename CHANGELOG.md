@@ -6,7 +6,7 @@ Version 3.7-SNAPSHOT
 
 ADDED:
 
-- new method in the class ClassExtensions that gets all resources excluding jar files from it
+- new method in the class ClassExtensions that gets all resources with a optional array of excluding url protocols from it
 
 CHANGED:
 

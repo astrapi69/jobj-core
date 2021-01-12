@@ -35,6 +35,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.meanbean.factories.ObjectCreationException;
@@ -540,6 +541,21 @@ public class ClassExtensionsTest
 		this.result = url != null;
 		assertTrue("", this.result);
 
+	}
+
+
+	/**
+	 * Test method for {@link ClassExtensions#getResources(String, String...)}
+	 */
+	@Test(enabled = true)
+	public void testGetResources() throws IOException
+	{
+		List<URL> urls;
+		String resourcesDirPath;
+
+		resourcesDirPath = "de/alpharogroup/lang";
+		urls = ClassExtensions.getResources(resourcesDirPath);
+		assertTrue(urls.size() == 4);
 	}
 
 	/**
