@@ -543,7 +543,6 @@ public class ClassExtensionsTest
 
 	}
 
-
 	/**
 	 * Test method for {@link ClassExtensions#getResources(String, String...)}
 	 */
@@ -556,6 +555,12 @@ public class ClassExtensionsTest
 		resourcesDirPath = "de/alpharogroup/lang";
 		urls = ClassExtensions.getResources(resourcesDirPath);
 		assertTrue(urls.size() == 4);
+
+		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
+		assertTrue(urls.size() == 3);
+
+		urls = ClassExtensions.getResources(resourcesDirPath, "file");
+		assertTrue(urls.size() == 1);
 	}
 
 	/**

@@ -708,33 +708,9 @@ public final class ClassExtensions
 		ArrayList<URL> urls = Collections.list(ClassExtensions.getClassLoader().getResources(path));
 		return 0 < excludeUrlProtocols.length
 			? urls.stream()
-				.filter(url -> Arrays.asList(excludeUrlProtocols).indexOf(url.getProtocol()) >= 0)
+				.filter(url -> !(Arrays.asList(excludeUrlProtocols).indexOf(url.getProtocol()) >= 0))
 				.collect(Collectors.toList())
 			: urls;
-	}
-
-	/**
-	 * Checks if the given {@link URL} is a jar file.
-	 *
-	 * @param url
-	 *            the url to check
-	 * @return true, if the given {@link URL} is a jar file otherwise false
-	 */
-	public static boolean isJarFile(final @NonNull URL url)
-	{
-		return "jar".equals(url.getProtocol());
-	}
-
-	/**
-	 * Checks if the given {@link URL} is not a jar file.
-	 *
-	 * @param url
-	 *            the url to check
-	 * @return true, if the given {@link URL} is not a jar file otherwise false
-	 */
-	public static boolean isNotJarFile(final @NonNull URL url)
-	{
-		return !isJarFile(url);
 	}
 
 	/**
