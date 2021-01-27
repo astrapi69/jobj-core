@@ -54,7 +54,16 @@ Than you can add the dependency to your dependencies:
 			
 ## gradle dependency
 
-You can first define the version in the ext section and add than the following gradle dependency to your project `build.gradle` if you want to import the core functionality of jobj-core:
+You can first define the version in the ext section and add than the following gradle dependency to 
+your project `build.gradle` if you want to import the core functionality of jobj-core:
+
+define version in file gradle.properties
+
+```
+jobjCoreVersion=3.6
+```
+
+or in build.gradle ext area
 
 ```
 ext {
@@ -62,9 +71,14 @@ ext {
     jobjCoreVersion = "3.6"
 			...
 }
+```
+
+and than add the dependency to the dependencies area
+
+```
 dependencies {
 			...
-    compile("de.alpharogroup:jobj-core:$jobjCoreVersion")
+    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
 			...
 }
 ```
