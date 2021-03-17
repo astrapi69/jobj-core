@@ -28,18 +28,6 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    compileOnly("org.projectlombok:lombok:$lombokVersion")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    compile("org.objenesis:objenesis:$objenesisVersion")
-    testCompile("de.alpharogroup:test-objects:$testObjectsVersion")
-    testCompile("de.alpharogroup:silly-collections:$sillyCollectionsVersion")
-    testCompile("cglib:cglib:$cglibVersion")
-    testCompile("de.alpharogroup:runtime-compiler:$runtimeCompilerVersion")
-    testCompile("org.meanbean:meanbean:$meanbeanVersion")
-    testCompile("org.testng:testng:$testngVersion")
-}
-
 def releaseVersion = !version.endsWith("SNAPSHOT")
 
 license {
@@ -168,8 +156,21 @@ test {
 jacocoTestReport {
     reports {
         xml.enabled true
-        html.enabled false
+        html.enabled true
     }
 }
 
 check.dependsOn jacocoTestReport
+
+dependencies {
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    implementation("org.objenesis:objenesis:$objenesisVersion")
+    testImplementation("io.github.astrapi69:test-objects:$testObjectsVersion")
+    testImplementation("io.github.astrapi69:silly-collections:$sillyCollectionsVersion")
+    testImplementation("cglib:cglib:$cglibVersion")
+    testImplementation("io.github.astrapi69:runtime-compiler:$runtimeCompilerVersion")
+    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
+    testImplementation("org.testng:testng:$testngVersion")
+}
+

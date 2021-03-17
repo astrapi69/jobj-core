@@ -6,8 +6,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master) 
 [![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues) 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.alpharogroup/jobj-core)
-[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/jobj-core.svg)](http://www.javadoc.io/doc/de.alpharogroup/jobj-core)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
+[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 
@@ -28,7 +28,7 @@ The source code comes under the liberal MIT License, making jobj-core great for 
 ## Maven dependency
 
 Maven dependency is now on sonatype.
-Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~jobj-core~~~) for latest snapshots and releases.
+Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~) for latest snapshots and releases.
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of jobj-core:
 
@@ -45,7 +45,7 @@ Than you can add the dependency to your dependencies:
 			...
 			<!-- JOBJ-CORE DEPENDENCY -->
 			<dependency>
-				<groupId>de.alpharogroup</groupId>
+				<groupId>io.github.astrapi69</groupId>
 				<artifactId>jobj-core</artifactId>
 				<version>${jobj-core.version}</version>
 			</dependency>
@@ -78,7 +78,7 @@ and than add the dependency to the dependencies area
 ```
 dependencies {
 			...
-    implementation("de.alpharogroup:jobj-core:$jobjCoreVersion")
+    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
 			...
 }
 ```
@@ -118,7 +118,7 @@ Do not hesitate to contact the jobj-core developers with your questions, concern
 
 |**Nexus Sonatype repositories**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/de.alpharogroup/jobj-core.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~de.alpharogroup~jobj-core~~~)|
+|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/jobj-core.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
@@ -130,6 +130,6 @@ Do not hesitate to contact the jobj-core developers with your questions, concern
 
 |**javadoc.io**|
 |     :---:      |
-|[![Javadocs](http://www.javadoc.io/badge/de.alpharogroup/jobj-core.svg)](http://www.javadoc.io/doc/de.alpharogroup/jobj-core)|
+|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)|
 |Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
 |     <img width=1000/>     |
