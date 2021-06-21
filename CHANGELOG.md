@@ -1,10 +1,7 @@
 ## Change log
 ----------------------
 
-Version 4.1-SNAPSHOT
--------------
-
-Version 4
+Version 3.7
 -------------
 
 ADDED:
@@ -13,11 +10,10 @@ ADDED:
 
 CHANGED:
 
-- update jdk from version 8 to 11
-- update of gradle to new version 6.8.3
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.38.0
-- update of dependency lombok version to 1.18.18
-- update of test-dependency silly-collections version to 9.1
+- update of gradle to new version 6.9
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
+- update of dependency lombok version to 1.18.20
+- update of test-dependency silly-collections version to 8.6
 - update of test-dependency test-objects version to 5.4
 - update of test-dependency runtime-compiler version to 1.3
 - update of test-dependency testng version to 7.4.0
