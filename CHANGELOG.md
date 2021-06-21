@@ -11,6 +11,7 @@ ADDED:
 CHANGED:
 
 - update of gradle to new version 6.9
+- update of objenesis dependency version to 3.2
 - update of com.github.ben-manes.versions.gradle.plugin to new version 0.39.0
 - update of dependency lombok version to 1.18.20
 - update of test-dependency silly-collections version to 8.6
