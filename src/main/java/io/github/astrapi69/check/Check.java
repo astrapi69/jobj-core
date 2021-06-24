@@ -23,6 +23,7 @@ package io.github.astrapi69.check;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The class {@link Check} can validate arguments in a chainable manner like a builder.
@@ -72,9 +73,9 @@ public final class Check implements Serializable
 	public Check isInRange(final Double min, final Double max, final Double value,
 		final String name)
 	{
-		nullCheck(min, "min");
-		nullCheck(max, "max");
-		nullCheck(value, name);
+		Argument.notNull(min, "min");
+		Argument.notNull(max, "max");
+		Argument.notNull(value, name);
 		if (!((min < value) && (value < max)))
 		{
 			throw new IllegalArgumentException(String.format(
@@ -102,9 +103,9 @@ public final class Check implements Serializable
 	 */
 	public Check isInRange(final Float min, final Float max, final Float value, final String name)
 	{
-		nullCheck(min, "min");
-		nullCheck(max, "max");
-		nullCheck(value, name);
+		Argument.notNull(min, "min");
+		Argument.notNull(max, "max");
+		Argument.notNull(value, name);
 		if (!((min < value) && (value < max)))
 		{
 			throw new IllegalArgumentException(String.format(
@@ -133,9 +134,9 @@ public final class Check implements Serializable
 	public Check isInRange(final Integer min, final Integer max, final Integer value,
 		final String name)
 	{
-		nullCheck(min, "min");
-		nullCheck(max, "max");
-		nullCheck(value, name);
+		Argument.notNull(min, "min");
+		Argument.notNull(max, "max");
+		Argument.notNull(value, name);
 		if (!((min < value) && (value < max)))
 		{
 			throw new IllegalArgumentException(String.format(
@@ -163,9 +164,9 @@ public final class Check implements Serializable
 	 */
 	public Check isInRange(final Long min, final Long max, final Long value, final String name)
 	{
-		nullCheck(min, "min");
-		nullCheck(max, "max");
-		nullCheck(value, name);
+		Argument.notNull(min, "min");
+		Argument.notNull(max, "max");
+		Argument.notNull(value, name);
 		if (!((min < value) && (value < max)))
 		{
 			throw new IllegalArgumentException(String.format(
@@ -193,11 +194,7 @@ public final class Check implements Serializable
 	 */
 	public <T, C extends Collection<T>> Check notEmpty(final C collection, final String name)
 	{
-		nullCheck(collection, name);
-		if (collection.isEmpty())
-		{
-			throw new IllegalArgumentException("Given collection '" + name + "' may not be empty.");
-		}
+		Argument.notEmpty(collection, name);
 		return this;
 	}
 
@@ -221,11 +218,7 @@ public final class Check implements Serializable
 	 */
 	public <K, V, M extends Map<K, V>> Check notEmpty(final M map, final String name)
 	{
-		nullCheck(map, name);
-		if (map.isEmpty())
-		{
-			throw new IllegalArgumentException("Given map '" + name + "' may not be empty.");
-		}
+		Argument.notEmpty(map, name);
 		return this;
 	}
 
@@ -245,11 +238,151 @@ public final class Check implements Serializable
 	 */
 	public <T extends CharSequence> Check notEmpty(final T argument, final String name)
 	{
-		nullCheck(argument, name);
-		if ((argument.length() == 0) || (argument.toString().trim().length() == 0))
-		{
-			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
-		}
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given byte array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final byte[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given int array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final int[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given char array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final char[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given boolean array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final boolean[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given double array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final double[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given float array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final float[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given long array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final long[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
+		return this;
+	}
+
+	/**
+	 * Checks if the given short array argument is not empty
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful a reference to this object. This case is if the given
+	 *         argument is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public Check notEmpty(final short[] argument, final String name)
+	{
+		Argument.notEmpty(argument, name);
 		return this;
 	}
 
@@ -269,29 +402,8 @@ public final class Check implements Serializable
 	 */
 	public <T> Check notNull(final T argument, final String name)
 	{
-		nullCheck(argument, name);
+		Argument.notNull(argument, name);
 		return this;
-	}
-
-
-	/**
-	 * Checks if the given argument is null.
-	 *
-	 * @param <T>
-	 *            the generic type of the given argument
-	 * @param argument
-	 *            the argument to check.
-	 * @param name
-	 *            the name of the given argument
-	 * @throws IllegalArgumentException
-	 *             when the given {@code argument} is null.
-	 */
-	private <T> void nullCheck(final T argument, final String name)
-	{
-		if (argument == null)
-		{
-			throw new IllegalArgumentException("Given argument '" + name + "' may not be null.");
-		}
 	}
 
 }

@@ -28,7 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.astrapi69.collections.array.ArrayFactory;
 import org.meanbean.test.BeanTester;
+import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.test.objects.Person;
@@ -306,6 +308,231 @@ public class CheckTest
 		Check check = Check.get().notNull(Person.builder().build(), name);
 		assertNotNull(check);
 	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(boolean[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyBooleanArrayEmptyCase()
+	{
+		boolean[] actual;
+
+		actual = new boolean[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(byte[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyByteArrayEmptyCase()
+	{
+		byte[] actual;
+
+		actual = new byte[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(char[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyCharArrayEmptyCase()
+	{
+		char[] actual;
+
+		actual = new char[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(short[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyShortArrayEmptyCase()
+	{
+		short[] actual;
+
+		actual = new short[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(int[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyIntArrayEmptyCase()
+	{
+		int[] actual;
+
+		actual = new int[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(long[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyLongArrayEmptyCase()
+	{
+		long[] actual;
+
+		actual = new long[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(float[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyFloatArrayEmptyCase()
+	{
+		float[] actual;
+
+		actual = new float[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(double[], String)}
+	 */
+	@Test(expectedExceptions = { IllegalArgumentException.class })
+	public void testNotEmptyDoubleArrayEmptyCase()
+	{
+		double[] actual;
+
+		actual = new double[0];
+
+		Check.get().notEmpty(actual, name);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(boolean[], String)}
+	 */
+	@Test
+	public void testNotEmptyBooleanArray()
+	{
+		boolean[] actual;
+		boolean[] expected;
+
+		actual = ArrayFactory.newBooleanArray(true);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(byte[], String)}
+	 */
+	@Test
+	public void testNotEmptyByteArray()
+	{
+		byte[] actual;
+		byte[] expected;
+
+		actual = ArrayFactory.newByteArray((byte)1);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(char[], String)}
+	 */
+	@Test
+	public void testNotEmptyCharArray()
+	{
+		char[] actual;
+		char[] expected;
+
+		actual = ArrayFactory.newCharArray('c');
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(short[], String)}
+	 */
+	@Test
+	public void testNotEmptyShortArray()
+	{
+		short[] actual;
+		short[] expected;
+
+		actual = ArrayFactory.newShortArray((short)1, (short)2, (short)3);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(int[], String)}
+	 */
+	@Test
+	public void testNotEmptyIntArray()
+	{
+		int[] actual;
+		int[] expected;
+
+		actual = ArrayFactory.newIntArray(1,2);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(long[], String)}
+	 */
+	@Test
+	public void testNotEmptyLongArray()
+	{
+		long[] actual;
+		long[] expected;
+
+		actual = ArrayFactory.newLongArray(1L, 2L, 3L);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(float[], String)}
+	 */
+	@Test
+	public void testNotEmptyFloatArray()
+	{
+		float[] actual;
+		float[] expected;
+
+		actual = ArrayFactory.newFloatArray(1.0F, 2.0F, 3.0F);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
+	/**
+	 * Test method for {@link Check#notEmpty(double[], String)}
+	 */
+	@Test
+	public void testNotEmptyDoubleArray()
+	{
+		double[] actual;
+		double[] expected;
+
+		actual = ArrayFactory.newDoubleArray(1.1D, 2.1D, 3.1D);
+
+		Check check = Check.get().notEmpty(actual, name);
+		assertNotNull(check);
+	}
+
 
 	/**
 	 * Test method for {@link Check} with {@link BeanTester}
