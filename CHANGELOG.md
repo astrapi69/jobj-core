@@ -1,6 +1,14 @@
 ## Change log
 ----------------------
 
+Version 3.8
+-------------
+
+ADDED:
+
+- new methods in the class Argument for cover the checks for the primitive array types
+- new methods in the class Check for cover the checks for the primitive array types
+
 Version 3.7
 -------------
 
