@@ -156,7 +156,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> boolean[] notEmpty(final boolean[] argument, final String name)
+	public static boolean[] notEmpty(final boolean[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -178,7 +178,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> byte[] notEmpty(final byte[] argument, final String name)
+	public static byte[] notEmpty(final byte[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -200,7 +200,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> char[] notEmpty(final char[] argument, final String name)
+	public static char[] notEmpty(final char[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -222,7 +222,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> short[] notEmpty(final short[] argument, final String name)
+	public static short[] notEmpty(final short[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -244,7 +244,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> int[] notEmpty(final int[] argument, final String name)
+	public static int[] notEmpty(final int[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -266,7 +266,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> long[] notEmpty(final long[] argument, final String name)
+	public static long[] notEmpty(final long[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -288,7 +288,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> float[] notEmpty(final float[] argument, final String name)
+	public static float[] notEmpty(final float[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
@@ -310,7 +310,7 @@ public class Argument
 	 * @throws IllegalArgumentException
 	 *             when the given {@code argument} is null or empty.
 	 */
-	public static <T extends CharSequence> double[] notEmpty(final double[] argument, final String name)
+	public static double[] notEmpty(final double[] argument, final String name)
 	{
 		notNull(argument, name);
 		if (argument.length == 0)
