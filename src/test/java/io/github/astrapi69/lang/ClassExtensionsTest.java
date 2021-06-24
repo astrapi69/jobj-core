@@ -658,7 +658,7 @@ public class ClassExtensionsTest
 	public void testGetURL()
 	{
 		final URL actual = ClassExtensions.getURL(Object.class);
-		assertTrue(actual.toString().startsWith("jrt:"));
+		assertTrue(actual.toString().startsWith("jar:"));
 		assertTrue(actual.toString().endsWith("/java/lang/Object.class"));
 	}
 

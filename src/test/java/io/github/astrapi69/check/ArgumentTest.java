@@ -29,10 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.astrapi69.collections.array.ArrayFactory;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import io.github.astrapi69.collections.array.ArrayFactory;
 
 
 /**
@@ -199,7 +200,7 @@ public class ArgumentTest
 
 		Argument.notEmpty(actual, name);
 	}
-	
+
 	/**
 	 * Test method for {@link Argument#notEmpty(boolean[], String)}
 	 */
