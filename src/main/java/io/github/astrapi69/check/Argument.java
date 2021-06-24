@@ -145,6 +145,182 @@ public class Argument
 	}
 
 	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static boolean[] notEmpty(final boolean[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static byte[] notEmpty(final byte[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static char[] notEmpty(final char[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static short[] notEmpty(final short[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static int[] notEmpty(final int[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static long[] notEmpty(final long[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static float[] notEmpty(final float[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
+	 * Checks if the given {@code argument} is not empty.
+	 *
+	 * @param argument
+	 *            the argument
+	 * @param name
+	 *            the name of the given argument
+	 * @return if the check is successful the {@code argument} object. This case is if the given
+	 *         {@code argument} is not null or empty.
+	 * @throws IllegalArgumentException
+	 *             when the given {@code argument} is null or empty.
+	 */
+	public static double[] notEmpty(final double[] argument, final String name)
+	{
+		notNull(argument, name);
+		if (argument.length == 0)
+		{
+			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
+		}
+		return argument;
+	}
+
+	/**
 	 * Checks if the given {@code argument} is not null.
 	 *
 	 * @param <T>
