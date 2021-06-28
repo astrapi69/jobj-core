@@ -4,7 +4,12 @@
 Version 3.9-SNAPSHOT
 -------------
 
-Version 3.8
+ADDED:
+
+- new model classes for hold java class fields like method, field, class and annotation
+- new model classes for hold thread related fields
+  
+  Version 3.8
 -------------
 
 ADDED:
