@@ -89,7 +89,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3.8</jobj-core.version>
+		<jobj-core.version>3.9</jobj-core.version>
 			...
 	</properties>
 			...
@@ -112,7 +112,7 @@ your project `build.gradle` if you want to import the core functionality of jobj
 define version in file gradle.properties
 
 ```
-jobjCoreVersion=3.8
+jobjCoreVersion=3.9
 ```
 
 or in build.gradle ext area
@@ -120,7 +120,7 @@ or in build.gradle ext area
 ```
 ext {
 			...
-    jobjCoreVersion = "3.8"
+    jobjCoreVersion = "3.9"
 			...
 }
 ```

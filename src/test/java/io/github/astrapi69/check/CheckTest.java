@@ -481,7 +481,7 @@ public class CheckTest
 		int[] actual;
 		int[] expected;
 
-		actual = ArrayFactory.newIntArray(1,2);
+		actual = ArrayFactory.newIntArray(1, 2);
 
 		Check check = Check.get().notEmpty(actual, name);
 		assertNotNull(check);
