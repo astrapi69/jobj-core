@@ -44,13 +44,6 @@ public class ObjectExtensionsTest
 {
 
 	/**
-	 * The interface {@link Member} that represents the member class
-	 */
-	interface Member
-	{
-	}
-
-	/**
 	 * Test method for {@link ObjectExtensions#getClassType(Class)}
 	 */
 	@Test
@@ -107,18 +100,18 @@ public class ObjectExtensionsTest
 		assertEquals(expected, actual);
 
 		expected = ClassType.ANONYMOUS;
-		actual = ObjectExtensions.getClassType(new Runnable()
+		actual = ObjectExtensions.getClassType(new 		class Local
+		{
+		}.getClass());
+		assertEquals(expected, actual);
+
+Runnable()
 		{
 
 			@Override
 			public void run()
 			{
 			}
-		}.getClass());
-		assertEquals(expected, actual);
-
-		class Local
-		{
 		}
 		expected = ClassType.LOCAL;
 		actual = ObjectExtensions.getClassType(Local.class);
@@ -204,6 +197,13 @@ public class ObjectExtensionsTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ObjectExtensions.class);
+	}
+
+	/**
+	 * The interface {@link Member} that represents the member class
+	 */
+	interface Member
+	{
 	}
 
 

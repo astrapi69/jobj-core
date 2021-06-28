@@ -28,9 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.astrapi69.collections.array.ArrayFactory;
 import org.meanbean.test.BeanTester;
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.array.ArrayFactory;
@@ -483,7 +481,7 @@ public class CheckTest
 		int[] actual;
 		int[] expected;
 
-		actual = ArrayFactory.newIntArray(1,2);
+		actual = ArrayFactory.newIntArray(1, 2);
 
 		Check check = Check.get().notEmpty(actual, name);
 		assertNotNull(check);

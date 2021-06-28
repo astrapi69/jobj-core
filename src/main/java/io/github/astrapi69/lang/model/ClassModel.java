@@ -45,8 +45,8 @@ import lombok.experimental.FieldDefaults;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = { "classAnnotations" }, onlyExplicitlyIncluded = false,
-	callSuper = false)
+@EqualsAndHashCode(exclude = {
+		"classAnnotations" }, onlyExplicitlyIncluded = false, callSuper = false)
 @ToString(exclude = { "classAnnotations" })
 @NoArgsConstructor
 @AllArgsConstructor

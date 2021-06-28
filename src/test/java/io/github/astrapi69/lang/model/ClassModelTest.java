@@ -26,15 +26,12 @@ package io.github.astrapi69.lang.model;
 
 import static org.testng.AssertJUnit.assertNotNull;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 

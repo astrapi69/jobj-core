@@ -23,7 +23,6 @@ package io.github.astrapi69.check;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * The class {@link Check} can validate arguments in a chainable manner like a builder.

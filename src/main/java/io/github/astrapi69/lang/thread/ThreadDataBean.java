@@ -38,18 +38,17 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class ThreadDataBean
 {
+	private boolean alive;
+	private boolean daemon;
+	private boolean interrupted;
+	private String name;
+	private Integer priority;
+	private String threadGroup;
+
 	public static ThreadDataBean of(final Thread thread)
 	{
 		return ThreadDataBean.builder().priority(thread.getPriority()).alive(thread.isAlive())
 			.daemon(thread.isDaemon()).interrupted(thread.isInterrupted())
 			.threadGroup(thread.getThreadGroup().getName()).name(thread.getName()).build();
 	}
-
-	private boolean alive;
-	private boolean daemon;
-	private boolean interrupted;
-	private String name;
-	private Integer priority;
-
-	private String threadGroup;
 }

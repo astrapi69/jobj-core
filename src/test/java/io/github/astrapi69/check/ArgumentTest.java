@@ -270,7 +270,7 @@ public class ArgumentTest
 		int[] actual;
 		int[] expected;
 
-		actual = ArrayFactory.newIntArray(1,2);
+		actual = ArrayFactory.newIntArray(1, 2);
 
 		expected = Argument.notEmpty(actual, name);
 		assertNotNull(expected);

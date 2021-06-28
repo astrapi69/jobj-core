@@ -24,16 +24,14 @@
  */
 package io.github.astrapi69.lang.model;
 
-import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -71,11 +69,11 @@ public class FieldModelTest
 	}
 
 	/**
-	 * Test method for {@link FieldModel#equals(Object)} ,
-	 * {@link FieldModel#hashCode()}
+	 * Test method for {@link FieldModel#equals(Object)} , {@link FieldModel#hashCode()}
 	 */
 	@Test
-	public void equalsContract() {
+	public void equalsContract()
+	{
 		EqualsVerifier.simple().forClass(FieldModel.class).verify();
 	}
 

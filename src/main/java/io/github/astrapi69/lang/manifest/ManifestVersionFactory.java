@@ -34,9 +34,9 @@ import java.time.ZoneId;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import io.github.astrapi69.lang.ClassExtensions;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import io.github.astrapi69.lang.ClassExtensions;
 
 /**
  * Simple bean to hold information about the version of a Manifest. Can be used for JAR, EAR and WAR
@@ -106,16 +106,25 @@ public class ManifestVersionFactory
 	 *            The class.
 	 * @return the manifest url as String if the given class is in a JAR, WAR or EAR file.
 	 */
-	public static String getManifestUrl(@NonNull Class<?> clazz) {
-		if (clazz == null) {
+	public static String getManifestUrl(@NonNull Class<?> clazz)
+	{
+		if (clazz == null)
+		{
 			throw new NullPointerException("clazz is marked non-null but is null");
-		} else {
+		}
+		else
+		{
 			String manifestUrl = null;
 			String path = ClassExtensions.getPath(clazz);
 			URL classUrl = ClassExtensions.getResource(path);
-			if (classUrl != null) {
+			if (classUrl != null)
+			{
 				String classUrlString = classUrl.toString();
-				if (classUrlString.startsWith("jar:") && classUrlString.indexOf(path) > 0 || classUrlString.startsWith("war:") && classUrlString.indexOf(path) > 0 || classUrlString.startsWith("ear:") && classUrlString.indexOf(path) > 0 || classUrlString.startsWith("file:") && classUrlString.indexOf(path) > 0) {
+				if (classUrlString.startsWith("jar:") && classUrlString.indexOf(path) > 0
+					|| classUrlString.startsWith("war:") && classUrlString.indexOf(path) > 0
+					|| classUrlString.startsWith("ear:") && classUrlString.indexOf(path) > 0
+					|| classUrlString.startsWith("file:") && classUrlString.indexOf(path) > 0)
+				{
 					manifestUrl = classUrlString.replace(path, "/META-INF/MANIFEST.MF");
 				}
 			}

@@ -27,6 +27,7 @@ package io.github.astrapi69.lang.model;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -61,11 +62,11 @@ public class AnnotationModelTest
 	}
 
 	/**
-	 * Test method for {@link AnnotationModel#equals(Object)} ,
-	 * {@link AnnotationModel#hashCode()}
+	 * Test method for {@link AnnotationModel#equals(Object)} , {@link AnnotationModel#hashCode()}
 	 */
 	@Test
-	public void equalsContract() {
+	public void equalsContract()
+	{
 		EqualsVerifier.simple().forClass(AnnotationModel.class).verify();
 	}
 }

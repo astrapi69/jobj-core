@@ -72,7 +72,7 @@ public class ThreadExtensionsTest extends BaseTestCase
 	}
 
 	/**
-	 * Test method for {@link ThreadExtensions#runAsyncSupplierWithCpuCores(Supplier, int)} 
+	 * Test method for {@link ThreadExtensions#runAsyncSupplierWithCpuCores(Supplier, int)}
 	 */
 	@Test
 	public void testRunAsyncSupplierWithCpuCores() throws ExecutionException, InterruptedException

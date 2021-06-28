@@ -27,6 +27,7 @@ package io.github.astrapi69.lang.model;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+
 import org.meanbean.lang.Factory;
 import org.meanbean.test.BeanTester;
 import org.meanbean.test.Configuration;
@@ -65,7 +66,8 @@ public class PropertiesKeyAndParametersTest
 	 * {@link PropertiesKeyAndParameters#hashCode()}
 	 */
 	@Test
-	public void equalsContract() {
+	public void equalsContract()
+	{
 		EqualsVerifier.simple().forClass(PropertiesKeyAndParameters.class).verify();
 	}
 
@@ -76,8 +78,10 @@ public class PropertiesKeyAndParametersTest
 	public void testWithBeanTester()
 	{
 		final Configuration configuration = new ConfigurationBuilder()
-			.overrideFactory("parameters", new Factory<Object[]>(){
-				@Override public Object[] create()
+			.overrideFactory("parameters", new Factory<Object[]>()
+			{
+				@Override
+				public Object[] create()
 				{
 					return new Object[] { "foo", "bar", "john", "doe" };
 				}
