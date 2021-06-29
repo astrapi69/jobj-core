@@ -11,6 +11,7 @@ buildscript {
 }
 
 apply plugin: "java"
+apply plugin: "java-library"
 apply plugin: "maven-publish"
 apply plugin: "signing"
 apply plugin: "com.github.ben-manes.versions"
@@ -175,4 +176,3 @@ dependencies {
     testImplementation("org.meanbean:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
 }
-
