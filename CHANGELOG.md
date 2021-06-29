@@ -4,6 +4,10 @@
 Version 3.10-SNAPSHOT
 -------------
 
+ADDED:
+
+- new extension class for resolve the free memory and the memory status and freeing memory that is available for the application by running the garbage collector 
+  
 Version 3.9
 -------------
 
