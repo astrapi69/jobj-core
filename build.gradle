@@ -26,7 +26,6 @@ sourceCompatibility = "$projectSourceCompatibility"
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 def releaseVersion = !version.endsWith("SNAPSHOT")
