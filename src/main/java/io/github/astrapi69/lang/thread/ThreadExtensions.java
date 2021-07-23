@@ -117,4 +117,24 @@ public final class ThreadExtensions
 		return snapshotOfThreadDataBeans;
 	}
 
+	/**
+	 * Set the given priority of the current thread<br>
+	 * <br>
+	 * Note: the thread priority is between 1 till 10, if smaller or greater the minimum priority 1
+	 * will be taken
+	 * 
+	 * @param threadPriority
+	 */
+	public static void setCurrentThreadPriority(int threadPriority)
+	{
+		if (threadPriority >= 1 && threadPriority <= 10)
+		{
+			Thread.currentThread().setPriority(threadPriority);
+		}
+		else
+		{
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+		}
+	}
+
 }
