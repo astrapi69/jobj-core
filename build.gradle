@@ -1,3 +1,7 @@
+group = "$groupPackage"
+version = "$projectVersion"
+description = "$rootProject.name"
+
 buildscript {
     repositories {
         maven {
@@ -18,9 +22,6 @@ apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.github.hierynomus.license"
 apply plugin: "jacoco"
 
-group = "$groupPackage"
-version = "$projectVersion"
-description = "$rootProject.name"
 sourceCompatibility = "$projectSourceCompatibility"
 
 repositories {
@@ -80,6 +81,12 @@ task javadocJar(type: Jar) {
     javadoc.properties.failOnError = true
 }
 
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption("html5", true)
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -136,12 +143,6 @@ publishing {
 signing {
     if (releaseVersion) {
         sign publishing.publications.mavenJava
-    }
-}
-
-javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption("html5", true)
     }
 }
 

@@ -1,13 +1,23 @@
 ## Change log
 ----------------------
 
-Version 3.10-SNAPSHOT
+Version 5-SNAPSHOT
 -------------
 
 ADDED:
 
 - new extension class for resolve the free memory and the memory status and freeing memory that is available for the application by running the garbage collector 
 - new method created that set the current thread priority
+- improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
+
+CHANGED:
+
+- update gradle to new version 7.3
+- update of lombok version to 1.18.22
+- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin to new version 0.16.1
+- update of test-dependency silly-collections version to 18
+- update of test-dependency test-objects version to 5.5
+- update of test-dependency equalsverifier version to 3.7.2
 
 Version 3.9
 -------------

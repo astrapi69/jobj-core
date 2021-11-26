@@ -124,6 +124,7 @@ public final class ThreadExtensions
 	 * will be taken
 	 * 
 	 * @param threadPriority
+	 *            the priority for the current thread to set
 	 */
 	public static void setCurrentThreadPriority(int threadPriority)
 	{
