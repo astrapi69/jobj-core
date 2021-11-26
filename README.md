@@ -25,6 +25,64 @@ No animals were harmed in the making of this library.
 
 The source code comes under the liberal MIT License, making jobj-core great for all types of applications.
 
+## Maven dependency
+
+Maven dependency is now on sonatype.
+Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~) for latest snapshots and releases.
+
+Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of jobj-core:
+
+Than you can add the dependency to your dependencies:
+
+	<properties>
+			...
+		<!-- JOBJ-CORE version -->
+		<jobj-core.version>5</jobj-core.version>
+			...
+	</properties>
+			...
+		<dependencies>
+			...
+			<!-- JOBJ-CORE DEPENDENCY -->
+			<dependency>
+				<groupId>io.github.astrapi69</groupId>
+				<artifactId>jobj-core</artifactId>
+				<version>${jobj-core.version}</version>
+			</dependency>
+			...
+		</dependencies>
+
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to
+your project `build.gradle` if you want to import the core functionality of jobj-core:
+
+define version in file gradle.properties
+
+```
+jobjCoreVersion=5
+```
+
+or in build.gradle ext area
+
+```
+ext {
+			...
+    jobjCoreVersion = "5"
+			...
+}
+```
+
+and than add the dependency to the dependencies area
+
+```
+dependencies {
+			...
+    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
+			...
+}
+```
+
 # Donations
 
 This project is kept as an open source product and relies on contributions to remain being
@@ -76,64 +134,6 @@ or over Monero(XMR) with:
 
 <img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
 alt="Donation Monero Wallet" width="250"/>
-
-## Maven dependency
-
-Maven dependency is now on sonatype.
-Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~) for latest snapshots and releases.
-
-Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of jobj-core:
-
-Than you can add the dependency to your dependencies:
-
-	<properties>
-			...
-		<!-- JOBJ-CORE version -->
-		<jobj-core.version>3.9</jobj-core.version>
-			...
-	</properties>
-			...
-		<dependencies>
-			...
-			<!-- JOBJ-CORE DEPENDENCY -->
-			<dependency>
-				<groupId>io.github.astrapi69</groupId>
-				<artifactId>jobj-core</artifactId>
-				<version>${jobj-core.version}</version>
-			</dependency>
-			...
-		</dependencies>
-			
-## gradle dependency
-
-You can first define the version in the ext section and add than the following gradle dependency to 
-your project `build.gradle` if you want to import the core functionality of jobj-core:
-
-define version in file gradle.properties
-
-```
-jobjCoreVersion=3.9
-```
-
-or in build.gradle ext area
-
-```
-ext {
-			...
-    jobjCoreVersion = "3.9"
-			...
-}
-```
-
-and than add the dependency to the dependencies area
-
-```
-dependencies {
-			...
-    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
-			...
-}
-```
 
 ## Semantic Versioning
 

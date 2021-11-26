@@ -1,3 +1,7 @@
+group = "$groupPackage"
+version = "$projectVersion"
+description = "$rootProject.name"
+
 buildscript {
     repositories {
         maven {
@@ -11,21 +15,18 @@ buildscript {
 }
 
 apply plugin: "java"
+apply plugin: "java-library"
 apply plugin: "maven-publish"
 apply plugin: "signing"
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.github.hierynomus.license"
 apply plugin: "jacoco"
 
-group = "$groupPackage"
-version = "$projectVersion"
-description = "$rootProject.name"
 sourceCompatibility = "$projectSourceCompatibility"
 
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 def releaseVersion = !version.endsWith("SNAPSHOT")
@@ -78,6 +79,12 @@ task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier.set("javadoc")
     javadoc.properties.failOnError = true
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption("html5", true)
+    }
 }
 
 publishing {
@@ -139,12 +146,6 @@ signing {
     }
 }
 
-javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption("html5", true)
-    }
-}
-
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
@@ -175,4 +176,3 @@ dependencies {
     testImplementation("org.meanbean:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
 }
-
