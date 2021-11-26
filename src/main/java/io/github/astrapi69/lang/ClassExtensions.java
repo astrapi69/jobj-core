@@ -49,7 +49,7 @@ public final class ClassExtensions
 {
 
 	/** The Constant CGLIB_TAG contains the tag of a cglib class name. */
-	protected static final String CGLIB_TAG = "$$";
+	private static final String CGLIB_TAG = "$$";
 
 	/**
 	 * Look up the class in the "current" ClassLoader.
@@ -393,12 +393,11 @@ public final class ClassExtensions
 	 */
 	public static Class<?>[] getJdkProxyInterfaces(final @NonNull Class<?> clazz)
 	{
-		final Class<?> found = clazz;
-		if (isJdkProxy(found))
+		if (isJdkProxy(clazz))
 		{
-			return found.getInterfaces();
+			return clazz.getInterfaces();
 		}
-		return new Class<?>[] { found };
+		return new Class<?>[] { clazz };
 	}
 
 	/**
@@ -477,7 +476,12 @@ public final class ClassExtensions
 		{
 			return null;
 		}
-		return obj.getClass().getResource(ClassExtensions.getClassnameWithSuffix(obj)).getPath();
+		URL resource = obj.getClass().getResource(ClassExtensions.getClassnameWithSuffix(obj));
+		if (resource == null)
+		{
+			return null;
+		}
+		return resource.getPath();
 	}
 
 	/**
@@ -529,7 +533,7 @@ public final class ClassExtensions
 		String path = name;
 		if (name.startsWith("/"))
 		{
-			path = name.substring(1, name.length());
+			path = name.substring(1);
 		}
 		return ClassExtensions.getClassLoader().getResource(path);
 	}

@@ -284,7 +284,7 @@ public class ClassExtensionsTest
 			@Override
 			public void run()
 			{
-			};
+			}
 		}.getClass());
 		expected = ClassType.ANONYMOUS;
 		assertEquals(expected, actual);
@@ -875,13 +875,13 @@ public class ClassExtensionsTest
 				@Override
 				public void run()
 				{
-				};
+				}
 			};
 			System.out.println(runnable.getClass().getName());
 			System.out.println("Is anonymous class:" + runnable.getClass().isAnonymousClass());
 			System.out.println("Enclosing class:" + runnable.getClass().getEnclosingClass());
 			System.out.println("Canonical Name:" + runnable.getClass().getCanonicalName());
-			System.out.println("toString:" + runnable.getClass().toString());
+			System.out.println("toString:" + runnable.getClass());
 			System.out.println(StaticNestedClass.class.getName());
 			System.out.println("getEnclosingMethod():" + runnable.getClass().getEnclosingMethod());
 			// Object[] objects = { runnable };
