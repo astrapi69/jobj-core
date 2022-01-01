@@ -6,8 +6,8 @@ Version 5.1-SNAPSHOT
 
 CHANGED:
 
-- update gradle to new version 7.3.2
-- update of test-dependency test-objects version to 5.5
+- update gradle to new version 7.3.3
+- update of test-dependency test-objects version to 5.6
 - update of test-dependency equalsverifier version to 3.8.1
 
 Version 5
