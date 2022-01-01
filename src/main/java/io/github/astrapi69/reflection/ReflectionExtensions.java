@@ -525,7 +525,16 @@ public final class ReflectionExtensions
 	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
 		throws InstantiationException, IllegalAccessException
 	{
-		return clazz.newInstance();
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		switch (classType)
+		{
+			case ARRAY :
+				int length = 3;
+				return (T)Array.newInstance(clazz.getComponentType(), length);
+
+			default :
+				return clazz.newInstance();
+		}
 	}
 
 	/**

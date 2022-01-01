@@ -1,6 +1,21 @@
 ## Change log
 ----------------------
 
+Version 5.1
+-------------
+
+ADDED:
+
+- new class type check for array in the method newInstanceWithClass in ReflectionExtensions class
+
+CHANGED:
+
+- update gradle to new version 7.3.3
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.40.0
+- new gradle-plugin dependency of 'org.ajoberstar.grgit:grgit-gradle' in version 4.4.1 for create git release tags
+- update of test-dependency test-objects version to 5.6
+- update of test-dependency equalsverifier version to 3.8.1
+
 Version 5
 -------------
 

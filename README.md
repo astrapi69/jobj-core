@@ -25,6 +25,29 @@ No animals were harmed in the making of this library.
 
 The source code comes under the liberal MIT License, making jobj-core great for all types of applications.
 
+## gradle dependency
+
+You can first define the version in the ext section and add than the following gradle dependency to
+your project `build.gradle` if you want to import the core functionality of jobj-core:
+
+define version in file gradle.properties
+
+```
+jobjCoreVersion=5.1
+```
+
+or in build.gradle ext area
+
+```
+    jobjCoreVersion = "5.1"
+```
+
+and than add the dependency to the dependencies area
+
+```
+    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
+```
+
 ## Maven dependency
 
 Maven dependency is now on sonatype.
@@ -37,7 +60,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>5</jobj-core.version>
+		<jobj-core.version>5.1</jobj-core.version>
 			...
 	</properties>
 			...
@@ -51,37 +74,6 @@ Than you can add the dependency to your dependencies:
 			</dependency>
 			...
 		</dependencies>
-
-## gradle dependency
-
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of jobj-core:
-
-define version in file gradle.properties
-
-```
-jobjCoreVersion=5
-```
-
-or in build.gradle ext area
-
-```
-ext {
-			...
-    jobjCoreVersion = "5"
-			...
-}
-```
-
-and than add the dependency to the dependencies area
-
-```
-dependencies {
-			...
-    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
-			...
-}
-```
 
 # Donations
 
@@ -164,7 +156,8 @@ Do not hesitate to contact the jobj-core developers with your questions, concern
 
 |**Travis CI**|
 |     :---:      |
-|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)]
+|[![Travis CI](https://travis-ci.com/images/logos/TravisCI-Full-Color.png)]|
+|[![Build Status](https://travis-ci.com/astrapi69/jobj-core.svg?branch=develop)](https://travis-ci.com/astrapi69/jobj-core)|
 |Special thanks to [Travis CI](https://travis-ci.com) for providing a free continuous integration service for open source projects|
 |     <img width=1000/>     |
 

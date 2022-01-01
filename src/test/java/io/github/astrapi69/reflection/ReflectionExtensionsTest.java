@@ -25,6 +25,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -500,6 +501,22 @@ public class ReflectionExtensionsTest
 		assertNotNull(actual);
 		expected = new Person();
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 */
+	@Test
+	public void testNewInstanceClassOfTArray()
+	{
+		int[] expected;
+		int[] actual;
+
+		final Class<int[]> intArrayClass = int[].class;
+		actual = ReflectionExtensions.newInstance(intArrayClass);
+		assertNotNull(actual);
+		expected = ArrayFactory.newIntArray(0, 0, 0);
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
