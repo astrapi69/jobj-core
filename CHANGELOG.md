@@ -1,8 +1,12 @@
 ## Change log
 ----------------------
 
-Version 5.1-SNAPSHOT
+Version 5.1
 -------------
+
+ADDED:
+
+- new class type check for array in the method newInstanceWithClass in ReflectionExtensions class
 
 CHANGED:
 
