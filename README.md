@@ -33,13 +33,13 @@ your project `build.gradle` if you want to import the core functionality of jobj
 define version in file gradle.properties
 
 ```
-jobjCoreVersion=5.1
+jobjCoreVersion=5.2
 ```
 
 or in build.gradle ext area
 
 ```
-    jobjCoreVersion = "5.1"
+    jobjCoreVersion = "5.2"
 ```
 
 and than add the dependency to the dependencies area

@@ -1,6 +1,17 @@
 ## Change log
 ----------------------
 
+Version 5.2
+-------------
+
+ADDED:
+
+- new method for get the default field names that can be always ignored that can be used in unit tests
+
+CHANGED:
+
+- bugfix for method ReflectionExtensions#getAllDeclaredFields(Class, String...) for find all declared fields
+
 Version 5.1
 -------------
 
