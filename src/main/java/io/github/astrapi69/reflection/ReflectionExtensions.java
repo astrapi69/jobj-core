@@ -610,6 +610,16 @@ public final class ReflectionExtensions
 	}
 
 	/**
+	 * Gets the default field names that can be always ignored
+	 * 
+	 * @return the default field names that can be always ignored
+	 */
+	public static String[] getDefaultIgnoreFieldNames()
+	{
+		return new String[] { "serialVersionUID", "$jacocoData" };
+	}
+
+	/**
 	 * Gets all the declared fields including all fields from all super classes from the given class
 	 * object minus the given ignored fields
 	 *
@@ -629,13 +639,13 @@ public final class ReflectionExtensions
 			return declaredFields;
 		}
 		List<Field> fields = new ArrayList<>(Arrays.asList(declaredFields));
-		while ((superClass != null && superClass.getSuperclass() != null
-			&& superClass.getSuperclass().equals(Object.class)))
+		while (superClass != null
+			&& !(superClass.getSuperclass() != null && superClass.equals(Object.class)))
 		{
 			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
 			superClass = superClass.getSuperclass();
 		}
-		return fields.toArray(new Field[] { });
+		return fields.toArray(newArrayInstance(Field.class, fields.size()));
 	}
 
 	/**
@@ -699,7 +709,8 @@ public final class ReflectionExtensions
 	public static Field[] getDeclaredFields(final @NonNull Class<?> cls,
 		List<String> ignoreFieldNames) throws SecurityException
 	{
-		return Arrays.stream(cls.getDeclaredFields())
+		Field[] declaredFields = cls.getDeclaredFields();
+		return Arrays.stream(declaredFields)
 			.filter(field -> !ignoreFieldNames.contains(field.getName())).toArray(Field[]::new);
 	}
 

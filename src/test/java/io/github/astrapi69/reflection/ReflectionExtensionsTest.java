@@ -42,6 +42,7 @@ import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.test.objects.A;
 import io.github.astrapi69.test.objects.Member;
 import io.github.astrapi69.test.objects.Person;
+import io.github.astrapi69.test.objects.PremiumMember;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}
@@ -177,15 +178,36 @@ public class ReflectionExtensionsTest
 		int actual;
 		Field[] allDeclaredFields;
 
-		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Person.class);
+		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Person.class,
+			ReflectionExtensions.getDefaultIgnoreFieldNames());
+		expected = 5;
+		actual = allDeclaredFields.length;
+		assertEquals(expected, actual);
+
+		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Member.class,
+			ReflectionExtensions.getDefaultIgnoreFieldNames());
 		expected = 7;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
-		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(Member.class);
-		expected = 11;
+		allDeclaredFields = ReflectionExtensions.getAllDeclaredFields(PremiumMember.class,
+			ReflectionExtensions.getDefaultIgnoreFieldNames());
+		expected = 8;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#getDefaultIgnoreFieldNames()}
+	 */
+	@Test
+	public void testGetDefaultIgnoreFieldNames()
+	{
+		String[] expected;
+		String[] actual;
+		actual = ReflectionExtensions.getDefaultIgnoreFieldNames();
+		expected = new String[] { "serialVersionUID", "$jacocoData" };
+		assertArrayEquals(actual, expected);
 	}
 
 	/**
