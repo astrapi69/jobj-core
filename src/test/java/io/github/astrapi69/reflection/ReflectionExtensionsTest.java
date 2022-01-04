@@ -21,10 +21,11 @@
 package io.github.astrapi69.reflection;
 
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertNull;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.lang.reflect.Field;
@@ -33,6 +34,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import io.github.astrapi69.bundlemanagement.viewmodel.BundleApplication;
+import io.github.astrapi69.test.objects.PrimitiveArrays;
+import io.github.astrapi69.test.objects.enums.Gender;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
@@ -51,6 +55,128 @@ public class ReflectionExtensionsTest
 {
 
 	/**
+	 * Test method for {@link ReflectionExtensions#newArray(Class, int)}
+	 */
+	@Test
+	public void testNewArray()
+	{
+		Object expected;
+		Object actual;
+		int length;
+
+		length = 2;
+
+		expected = new Person();
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertNull(actual);
+
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(boolean[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((boolean[])expected, (boolean[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(byte[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((byte[])expected, (byte[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(char[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((char[])expected, (char[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(short[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((short[])expected, (short[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(int[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((int[])expected, (int[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(long[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((long[])expected, (long[])actual);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(float[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((float[])expected, (float[])actual, 0);
+		// new scenario ...
+		expected =  ReflectionExtensions.newArray(double[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((double[])expected, (double[])actual, 0);
+		// new scenario ...
+		expected = ReflectionExtensions.newArray(Double[].class, length);
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((Object[])expected, (Object[])actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyOfArray(Object)}
+	 */
+	@Test
+	public void testCopyOfArray()
+	{
+		Object expected;
+		Object actual;
+
+		expected = new Person();
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertNull(actual);
+		// new scenario ...
+		expected = new boolean[] { false, true };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((boolean[])expected, (boolean[])actual);
+		// new scenario ...
+		expected = new byte[] { 1, 2 };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((byte[])expected, (byte[])actual);
+		// new scenario ...
+		expected = new char[] { 1, 2 };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((char[])expected, (char[])actual);
+		// new scenario ...
+		expected = new short[] { 1, 2 };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((short[])expected, (short[])actual);
+		// new scenario ...
+		expected = new int[] { 1, 2 };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((int[])expected, (int[])actual);
+		// new scenario ...
+		expected = new long[] { 1, 2 };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((long[])expected, (long[])actual);
+		// new scenario ...
+		expected = new float[] { 1.0f, 2.0f };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((float[])expected, (float[])actual, 0);
+		// new scenario ...
+		expected = new double[] { 1.0d, 2.0d };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((double[])expected, (double[])actual, 0);
+
+		expected = new Double[] { 1.0d, 2.0d };
+		actual = ReflectionExtensions.copyOfArray(expected);
+		assertArrayEquals((Double[])expected, (Double[])actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyOfEnumValue(Object, Class)}
+	 */
+	@Test
+	public void testCopyOfEnumValue()
+	{
+		Object actual;
+		Object expected;
+		// test new scenario ...
+		actual = ReflectionExtensions.copyOfEnumValue(Gender.FEMALE, Gender.class);
+		expected = Gender.FEMALE;
+		assertEquals(actual, expected);
+		// test new scenario ...
+		actual = ReflectionExtensions.copyOfEnumValue(Person.builder().build(), Person.class);
+		expected = null;
+		assertEquals(actual, expected);
+	}
+
+	/**
 	 * Test method for {@link ReflectionExtensions#copyArray(Object[])}
 	 */
 	@Test
@@ -62,6 +188,35 @@ public class ReflectionExtensionsTest
 		actual = ReflectionExtensions.copyArray(expected);
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newArrayInstance(Class, int)}
+	 */
+	@Test
+	public void testNewArrayInstance()
+	{
+		Integer[] actual;
+		Integer[] expected;
+		Class<Integer[]> integerClass = Integer[].class;
+		expected = ReflectionExtensions.newArrayInstance(Integer.class, 3);
+		actual = ReflectionExtensions.copyArray(expected);
+		assertTrue(Arrays.deepEquals(actual, expected));
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyOfArray(Object)}
+	 */
+	@Test
+	public void testCopyBooleanArray()
+	{
+		boolean[] actual;
+		boolean[] expected;
+		expected = ArrayFactory.newBooleanArray(false, true, true);
+		actual = (boolean[])ReflectionExtensions.copyOfArray(expected);
+		assertTrue(Arrays.equals(actual, expected));
+	}
+
+
 
 	/**
 	 * Test method for {@link ReflectionExtensions#copyFieldValue(Object, Object, String)}.
@@ -111,13 +266,15 @@ public class ReflectionExtensionsTest
 		int actual;
 		String[] allDeclaredFieldnames;
 
-		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class);
-		expected = 7;
+		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class,
+			ReflectionExtensions.getDefaultIgnoreFieldNames());
+		expected = 5;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 
-		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class);
-		expected = 11;
+		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class,
+			ReflectionExtensions.getDefaultIgnoreFieldNames());
+		expected = 7;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 	}
@@ -524,6 +681,21 @@ public class ReflectionExtensionsTest
 		expected = new Person();
 		assertEquals(expected, actual);
 	}
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 */
+	@Test
+	public void testNewInstanceClassOfBundleApplication()
+	{
+		BundleApplication expected;
+		BundleApplication actual;
+
+		final Class<BundleApplication> clazz = BundleApplication.class;
+		actual = ReflectionExtensions.newInstance(clazz);
+		assertNotNull(actual);
+		expected = new BundleApplication();
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
@@ -663,13 +835,31 @@ public class ReflectionExtensionsTest
 	{
 		String expected;
 		String actual;
+		Person person;
+		Person destination;
+		Field declaredField;
+
 		expected = "Alex";
-		final Person person = Person.builder().name(expected).build();
-		Person destination = ReflectionExtensions.newInstance(Person.class);
-		Field declaredField = ReflectionExtensions.getDeclaredField(destination, "name");
+		person = Person.builder().name(expected).build();
+		destination = ReflectionExtensions.newInstance(Person.class);
+		declaredField = ReflectionExtensions.getDeclaredField(destination, "name");
 		ReflectionExtensions.setFieldValue(person, destination, declaredField);
 		actual = destination.getName();
 		assertEquals(expected, actual);
+
+		person.setGender(Gender.FEMALE);
+		declaredField = ReflectionExtensions.getDeclaredField(destination, "gender");
+		ReflectionExtensions.setFieldValue(person, destination, declaredField);
+		assertEquals(destination.getGender(), person.getGender());
+
+		PrimitiveArrays primitiveArrays = PrimitiveArrays.builder()
+			.booleanArray(new boolean[] { false, true }).build();
+		PrimitiveArrays dest = PrimitiveArrays.builder()
+			.booleanArray(new boolean[] { false, true }).build();
+		declaredField = ReflectionExtensions.getDeclaredField(dest, "booleanArray");
+		ReflectionExtensions.setFieldValue(primitiveArrays, dest, declaredField);
+		assertArrayEquals(primitiveArrays.getBooleanArray(), dest.getBooleanArray());
+
 	}
 
 
