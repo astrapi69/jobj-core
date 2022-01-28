@@ -108,6 +108,26 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#forName(String)}
+	 *
+	 * @throws ClassNotFoundException
+	 *             is thrown if the class was not found or could not be located
+	 */
+	@Test(enabled = true)
+	public void testGetRunningJarFile() throws URISyntaxException
+	{
+		String actual;
+		String expected;
+
+		File runningJarFile = ClassExtensions.getRunningJarFile(Person.class);
+		assertNotNull(runningJarFile);
+
+		String absolutePath = runningJarFile.getAbsolutePath();
+		assertTrue(absolutePath.endsWith(".jar"));
+		assertTrue(absolutePath.contains("test-objects"));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#forName(String)} in case of ClassNotFoundException
 	 *
 	 * @throws ClassNotFoundException

@@ -52,6 +52,21 @@ public final class ClassExtensions
 	private static final String CGLIB_TAG = "$$";
 
 	/**
+	 * Get the jar file from where the given class is running
+	 *
+	 * @param clazz
+	 *            the class
+	 * @return The directory or null if the directory does not exists.
+	 *
+	 * @throws URISyntaxException
+	 *             occurs by creation of the file with an uri.
+	 */
+	public static File getRunningJarFile(final @NonNull Class<?> clazz) throws URISyntaxException
+	{
+		return new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI());
+	}
+
+	/**
 	 * Look up the class in the "current" ClassLoader.
 	 *
 	 * @param className

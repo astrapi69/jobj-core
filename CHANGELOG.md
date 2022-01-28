@@ -4,6 +4,9 @@
 Version 5.3-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method for get from a given class the running jar file 
 
 
 Version 5.2
