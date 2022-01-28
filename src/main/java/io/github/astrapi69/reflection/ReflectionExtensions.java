@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import io.github.astrapi69.lang.ObjectExtensions;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
@@ -46,6 +45,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
 
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
+import io.github.astrapi69.lang.ObjectExtensions;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
@@ -288,8 +288,8 @@ public final class ReflectionExtensions
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method
 	 */
-	public static <T> void setFieldValue(final T target, final Field sourceField, final Object sourceValue)
-		throws IllegalAccessException
+	public static <T> void setFieldValue(final T target, final Field sourceField,
+		final Object sourceValue) throws IllegalAccessException
 	{
 		sourceField.setAccessible(true);
 		Class<?> fieldType = sourceField.getType();
@@ -302,7 +302,7 @@ public final class ReflectionExtensions
 			case ENUM :
 				sourceField.set(target, copyOfEnumValue(sourceValue, fieldType));
 				break;
-			default:
+			default :
 				sourceField.set(target, sourceValue);
 				break;
 		}
@@ -682,8 +682,9 @@ public final class ReflectionExtensions
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
 		{
-			case COLLECTION:
-				if(classType.equals(Set.class)) {
+			case COLLECTION :
+				if (classType.equals(Set.class))
+				{
 					return (T)new HashSet();
 				} // TODO create collection new instance
 			case ARRAY :

@@ -21,11 +21,11 @@
 package io.github.astrapi69.reflection;
 
 
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.lang.reflect.Field;
@@ -34,19 +34,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import io.github.astrapi69.bundlemanagement.viewmodel.BundleApplication;
-import io.github.astrapi69.test.objects.PrimitiveArrays;
-import io.github.astrapi69.test.objects.enums.Gender;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+import io.github.astrapi69.bundlemanagement.viewmodel.BundleApplication;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.test.objects.A;
 import io.github.astrapi69.test.objects.Member;
 import io.github.astrapi69.test.objects.Person;
 import io.github.astrapi69.test.objects.PremiumMember;
+import io.github.astrapi69.test.objects.PrimitiveArrays;
+import io.github.astrapi69.test.objects.enums.Gender;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}
@@ -71,35 +71,35 @@ public class ReflectionExtensionsTest
 		assertNull(actual);
 
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(boolean[].class, length);
+		expected = ReflectionExtensions.newArray(boolean[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((boolean[])expected, (boolean[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(byte[].class, length);
+		expected = ReflectionExtensions.newArray(byte[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((byte[])expected, (byte[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(char[].class, length);
+		expected = ReflectionExtensions.newArray(char[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((char[])expected, (char[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(short[].class, length);
+		expected = ReflectionExtensions.newArray(short[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((short[])expected, (short[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(int[].class, length);
+		expected = ReflectionExtensions.newArray(int[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((int[])expected, (int[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(long[].class, length);
+		expected = ReflectionExtensions.newArray(long[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((long[])expected, (long[])actual);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(float[].class, length);
+		expected = ReflectionExtensions.newArray(float[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((float[])expected, (float[])actual, 0);
 		// new scenario ...
-		expected =  ReflectionExtensions.newArray(double[].class, length);
+		expected = ReflectionExtensions.newArray(double[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertArrayEquals((double[])expected, (double[])actual, 0);
 		// new scenario ...
@@ -215,7 +215,6 @@ public class ReflectionExtensionsTest
 		actual = (boolean[])ReflectionExtensions.copyOfArray(expected);
 		assertTrue(Arrays.equals(actual, expected));
 	}
-
 
 
 	/**
@@ -681,6 +680,7 @@ public class ReflectionExtensionsTest
 		expected = new Person();
 		assertEquals(expected, actual);
 	}
+
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
 	 */
@@ -854,8 +854,8 @@ public class ReflectionExtensionsTest
 
 		PrimitiveArrays primitiveArrays = PrimitiveArrays.builder()
 			.booleanArray(new boolean[] { false, true }).build();
-		PrimitiveArrays dest = PrimitiveArrays.builder()
-			.booleanArray(new boolean[] { false, true }).build();
+		PrimitiveArrays dest = PrimitiveArrays.builder().booleanArray(new boolean[] { false, true })
+			.build();
 		declaredField = ReflectionExtensions.getDeclaredField(dest, "booleanArray");
 		ReflectionExtensions.setFieldValue(primitiveArrays, dest, declaredField);
 		assertArrayEquals(primitiveArrays.getBooleanArray(), dest.getBooleanArray());
