@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -159,9 +161,7 @@ public final class ReflectionExtensions
 	 */
 	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-
-		T[] destination = (T[])copyOfArray(source);
-		return destination;
+		return (T[])copyOfArray(source);
 	}
 
 	/**
@@ -592,6 +592,24 @@ public final class ReflectionExtensions
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
 		{
+			case MAP :
+				if (clazz.equals(Map.class))
+				{
+					return (T)new HashMap<>();
+				}
+			case COLLECTION :
+				if (clazz.equals(Set.class))
+				{
+					return (T)new HashSet();
+				}
+				if (clazz.equals(List.class))
+				{
+					return (T)new ArrayList<>();
+				}
+				if (clazz.equals(Queue.class))
+				{
+					return (T)new LinkedList<>();
+				}
 			case ARRAY :
 				int length = Array.getLength(object);
 				return (T)Array.newInstance(clazz.getComponentType(), length);
@@ -682,11 +700,24 @@ public final class ReflectionExtensions
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
 		{
-			case COLLECTION :
-				if (classType.equals(Set.class))
+			case MAP :
+				if (clazz.equals(Map.class))
 				{
-					return (T)new HashSet();
-				} // TODO create collection new instance
+					return (T)new HashMap<>();
+				}
+			case COLLECTION :
+				if (clazz.equals(Set.class))
+				{
+					return (T)new HashSet<>();
+				}
+				if (clazz.equals(List.class))
+				{
+					return (T)new ArrayList<>();
+				}
+				if (clazz.equals(Queue.class))
+				{
+					return (T)new LinkedList<>();
+				}
 			case ARRAY :
 				int length = 3;
 				return (T)Array.newInstance(clazz.getComponentType(), length);

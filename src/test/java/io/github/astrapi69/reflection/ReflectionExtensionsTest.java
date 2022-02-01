@@ -30,15 +30,20 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.bundlemanagement.viewmodel.BundleApplication;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.list.ListFactory;
 import io.github.astrapi69.test.objects.A;
@@ -683,17 +688,95 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible.
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
 	 */
 	@Test
-	public void testNewInstanceClassOfBundleApplication()
+	public void testNewInstanceWithSetClass() throws InstantiationException, IllegalAccessException
 	{
-		BundleApplication expected;
-		BundleApplication actual;
+		Set expected;
+		Set actual;
 
-		final Class<BundleApplication> clazz = BundleApplication.class;
-		actual = ReflectionExtensions.newInstance(clazz);
+		final Class<Set> clazz = Set.class;
+		actual = ReflectionExtensions.newInstanceWithClass(clazz);
 		assertNotNull(actual);
-		expected = new BundleApplication();
+		expected = new HashSet();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible.
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
+	 */
+	@Test
+	public void testNewInstanceWithListClass() throws InstantiationException, IllegalAccessException
+	{
+		List expected;
+		List actual;
+
+		final Class<List> clazz = List.class;
+		actual = ReflectionExtensions.newInstanceWithClass(clazz);
+		assertNotNull(actual);
+		expected = new ArrayList();
+		assertEquals(expected, actual);
+	}
+
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible.
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
+	 */
+	@Test
+	public void testNewInstanceWithQueueClass()
+		throws InstantiationException, IllegalAccessException
+	{
+		Queue expected;
+		Queue actual;
+
+		final Class<Queue> clazz = Queue.class;
+		actual = ReflectionExtensions.newInstanceWithClass(clazz);
+		assertNotNull(actual);
+		expected = new LinkedList();
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible.
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason.
+	 */
+	@Test
+	public void testNewInstanceWithMapClass() throws InstantiationException, IllegalAccessException
+	{
+		Map expected;
+		Map actual;
+
+		final Class<Map> clazz = Map.class;
+		actual = ReflectionExtensions.newInstanceWithClass(clazz);
+		assertNotNull(actual);
+		expected = new HashMap();
 		assertEquals(expected, actual);
 	}
 

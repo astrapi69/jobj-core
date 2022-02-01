@@ -8,6 +8,12 @@ ADDED:
 
 - new method for get from a given class the running jar file 
 
+CHANGED:
+
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.41.0
+- update of test-dependency test-objects version to 5.7
+- update of test-dependency equalsverifier version to 3.9
+- update of test-dependency testng version to 7.5
 
 Version 5.2
 -------------

@@ -204,7 +204,6 @@ dependencies {
     testImplementation("io.github.astrapi69:silly-beans:$sillyBeansVersion")
     testImplementation("io.github.astrapi69:runtime-compiler:$runtimeCompilerVersion")
     testImplementation("cglib:cglib:$cglibVersion")
-    testImplementation("io.github.astrapi69:bundle-viewmodels:$viewModelVersion")
     testImplementation("org.meanbean:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
 }
