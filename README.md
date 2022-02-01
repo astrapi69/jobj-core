@@ -10,6 +10,8 @@
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+[![Hits Of Code](https://hitsofcode.com/github/astrapi69/jobj-core?branch=main)](https://hitsofcode.com/github/astrapi69/jobj-core/view?branch=main)
+[![Lines Of Code](https://tokei.rs/b1/github/astrapi69/jobj-core)](https://github.com/astrapi69/jobj-core)
 
 </div>
 
@@ -33,13 +35,13 @@ your project `build.gradle` if you want to import the core functionality of jobj
 define version in file gradle.properties
 
 ```
-jobjCoreVersion=5.2
+jobjCoreVersion=5.3
 ```
 
 or in build.gradle ext area
 
 ```
-    jobjCoreVersion = "5.2"
+    jobjCoreVersion = "5.3"
 ```
 
 and than add the dependency to the dependencies area
@@ -60,7 +62,7 @@ Than you can add the dependency to your dependencies:
 	<properties>
 			...
 		<!-- JOBJ-CORE version -->
-		<jobj-core.version>5.1</jobj-core.version>
+		<jobj-core.version>5.3</jobj-core.version>
 			...
 	</properties>
 			...

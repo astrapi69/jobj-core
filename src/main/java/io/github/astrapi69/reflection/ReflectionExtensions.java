@@ -27,9 +27,13 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -43,6 +47,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
 
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
+import io.github.astrapi69.lang.ObjectExtensions;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
@@ -59,7 +64,7 @@ public final class ReflectionExtensions
 	 * @param <T>
 	 *            the generic type
 	 * @param cls
-	 *            the class object
+	 *            the component type class object
 	 * @param length
 	 *            the length of the array
 	 * @return the new array instance
@@ -68,6 +73,65 @@ public final class ReflectionExtensions
 	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
 	{
 		return (T[])Array.newInstance(cls, length);
+	}
+
+	/**
+	 * Creates a new array instance of the given array {@link Class} and the given length
+	 *
+	 * @param cls
+	 *            the array class object
+	 * @param length
+	 *            the length of the array
+	 * @return the new array instance of the given array {@link Class} and the given length
+	 */
+	public static Object newArray(final @NonNull Class<?> cls, final int length)
+	{
+		if (!cls.isArray())
+		{
+			return null;
+		}
+		Object destinationArray = null;
+		Class<?> arrayType = cls.getComponentType();
+		if (arrayType.isPrimitive())
+		{
+			if ("boolean".equals(arrayType.getName()))
+			{
+				destinationArray = new boolean[length];
+			}
+			if ("byte".equals(arrayType.getName()))
+			{
+				destinationArray = new byte[length];
+			}
+			if ("char".equals(arrayType.getName()))
+			{
+				destinationArray = new char[length];
+			}
+			if ("short".equals(arrayType.getName()))
+			{
+				destinationArray = new short[length];
+			}
+			if ("int".equals(arrayType.getName()))
+			{
+				destinationArray = new int[length];
+			}
+			if ("long".equals(arrayType.getName()))
+			{
+				destinationArray = new long[length];
+			}
+			if ("float".equals(arrayType.getName()))
+			{
+				destinationArray = new float[length];
+			}
+			if ("double".equals(arrayType.getName()))
+			{
+				destinationArray = new double[length];
+			}
+		}
+		else
+		{
+			destinationArray = Array.newInstance(cls, length);
+		}
+		return destinationArray;
 	}
 
 	/**
@@ -97,12 +161,68 @@ public final class ReflectionExtensions
 	 */
 	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		T[] destination = newEmptyArrayInstance(source);
-		for (int i = 0; i < Array.getLength(source); i++)
+		return (T[])copyOfArray(source);
+	}
+
+	/**
+	 * Copy the given array object over reflection and return a copy of it
+	 *
+	 * @param source
+	 *            the array object
+	 * @return the new array object that is a copy of the given array object
+	 */
+	public static Object copyOfArray(Object source)
+	{
+		if (!source.getClass().isArray())
 		{
-			Array.set(destination, i, Array.get(source, i));
+			return null;
 		}
-		return destination;
+		Object destinationArray = null;
+		Class<?> arrayType = source.getClass().getComponentType();
+		if (arrayType.isPrimitive())
+		{
+			if ("boolean".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((boolean[])source, Array.getLength(source));
+			}
+			if ("byte".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((byte[])source, Array.getLength(source));
+			}
+			if ("char".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((char[])source, Array.getLength(source));
+			}
+			if ("short".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((short[])source, Array.getLength(source));
+			}
+			if ("int".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((int[])source, Array.getLength(source));
+			}
+			if ("long".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((long[])source, Array.getLength(source));
+			}
+			if ("float".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((float[])source, Array.getLength(source));
+			}
+			if ("double".equals(arrayType.getName()))
+			{
+				destinationArray = Arrays.copyOf((double[])source, Array.getLength(source));
+			}
+		}
+		else
+		{
+			destinationArray = Array.newInstance(arrayType, Array.getLength(source));
+			for (int i = 0; i < Array.getLength(source); i++)
+			{
+				Array.set(destinationArray, i, Array.get(source, i));
+			}
+		}
+		return destinationArray;
 	}
 
 	/**
@@ -138,7 +258,7 @@ public final class ReflectionExtensions
 	 * @param source
 	 *            the source object
 	 * @param target
-	 *            the target
+	 *            the target object
 	 * @param sourceField
 	 *            the source field
 	 * @throws IllegalAccessException
@@ -155,24 +275,58 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Sets the field value of the given source object
+	 * Sets the sourceField value of the given target object
 	 *
 	 * @param <T>
 	 *            the generic type
-	 * @param source
-	 *            the source object
-	 * @param field
-	 *            the field
-	 * @param newValue
-	 *            the new value
+	 * @param target
+	 *            the target object
+	 * @param sourceField
+	 *            the source field
+	 * @param sourceValue
+	 *            the new value to set to the target
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method
 	 */
-	public static <T> void setFieldValue(final T source, final Field field, final Object newValue)
-		throws IllegalAccessException
+	public static <T> void setFieldValue(final T target, final Field sourceField,
+		final Object sourceValue) throws IllegalAccessException
 	{
-		field.setAccessible(true);
-		field.set(source, newValue);
+		sourceField.setAccessible(true);
+		Class<?> fieldType = sourceField.getType();
+		ClassType classType = ObjectExtensions.getClassType(fieldType);
+		switch (classType)
+		{
+			case ARRAY :
+				sourceField.set(target, copyOfArray(sourceValue));
+				break;
+			case ENUM :
+				sourceField.set(target, copyOfEnumValue(sourceValue, fieldType));
+				break;
+			default :
+				sourceField.set(target, sourceValue);
+				break;
+		}
+	}
+
+	/**
+	 * Copy the given enum object over reflection and return a copy of it
+	 *
+	 * @param value
+	 *            the enum object
+	 * @param fieldType
+	 *            the type of the given field value
+	 * @return the new enum object that is a copy of the given enum object
+	 */
+	public static Object copyOfEnumValue(Object value, Class<?> fieldType)
+	{
+		ClassType classType = ObjectExtensions.getClassType(fieldType);
+		if (classType.equals(ClassType.ENUM))
+		{
+			Enum<?> enumValue = (Enum<?>)value;
+			String name = enumValue.name();
+			return Enum.valueOf(fieldType.asSubclass(Enum.class), name);
+		}
+		return null;
 	}
 
 	/**
@@ -438,6 +592,24 @@ public final class ReflectionExtensions
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
 		{
+			case MAP :
+				if (clazz.equals(Map.class))
+				{
+					return (T)new HashMap<>();
+				}
+			case COLLECTION :
+				if (clazz.equals(Set.class))
+				{
+					return (T)new HashSet();
+				}
+				if (clazz.equals(List.class))
+				{
+					return (T)new ArrayList<>();
+				}
+				if (clazz.equals(Queue.class))
+				{
+					return (T)new LinkedList<>();
+				}
 			case ARRAY :
 				int length = Array.getLength(object);
 				return (T)Array.newInstance(clazz.getComponentType(), length);
@@ -484,7 +656,7 @@ public final class ReflectionExtensions
 		{
 			optionalNewInstance = Optional.of(newInstanceWithClass(clazz));
 		}
-		catch (InstantiationException | IllegalAccessException e)
+		catch (Exception | Error e)
 		{
 			log.log(Level.INFO, "Failed to create new instance with method Class.newInstance()", e);
 		}
@@ -499,7 +671,7 @@ public final class ReflectionExtensions
 		{
 			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
 		}
-		catch (Exception e)
+		catch (Exception | Error e)
 		{
 			log.log(Level.INFO,
 				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
@@ -528,6 +700,24 @@ public final class ReflectionExtensions
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
 		{
+			case MAP :
+				if (clazz.equals(Map.class))
+				{
+					return (T)new HashMap<>();
+				}
+			case COLLECTION :
+				if (clazz.equals(Set.class))
+				{
+					return (T)new HashSet<>();
+				}
+				if (clazz.equals(List.class))
+				{
+					return (T)new ArrayList<>();
+				}
+				if (clazz.equals(Queue.class))
+				{
+					return (T)new LinkedList<>();
+				}
 			case ARRAY :
 				int length = 3;
 				return (T)Array.newInstance(clazz.getComponentType(), length);
@@ -690,7 +880,7 @@ public final class ReflectionExtensions
 	public static String[] getAllDeclaredFieldNames(final @NonNull Class<?> cls,
 		List<String> ignoreFieldNames)
 	{
-		Field[] allDeclaredFields = getAllDeclaredFields(cls);
+		Field[] allDeclaredFields = getAllDeclaredFields(cls, ignoreFieldNames);
 		return Arrays.stream(allDeclaredFields).map(Field::getName)
 			.filter(name -> !ignoreFieldNames.contains(name)).toArray(String[]::new);
 	}
