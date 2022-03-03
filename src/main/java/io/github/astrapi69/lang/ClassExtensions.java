@@ -267,6 +267,18 @@ public final class ClassExtensions
 	}
 
 	/**
+	 * Gets the classname from the given class.
+	 *
+	 * @param clazz
+	 *            The class.
+	 * @return The classname.
+	 */
+	public static String getClassCanonicalName(final @NonNull Class<?> clazz)
+	{
+		return clazz.getCanonicalName();
+	}
+
+	/**
 	 * Gets the classname and concats the suffix ".class" from the class.
 	 *
 	 * @param clazz

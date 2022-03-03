@@ -277,6 +277,30 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getClassnameWithSuffix(Class)}
+	 */
+	@Test(enabled = true)
+	public void testGetClassnameWithSuffixFromClass()
+	{
+		final String expected = "ClassExtensionsTest.class";
+		final String classname = ClassExtensions.getClassnameWithSuffix(ClassExtensionsTest.class);
+		this.result = expected.equals(classname);
+		assertTrue("", this.result);
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getClassCanonicalName(Class)}
+	 */
+	@Test(enabled = true)
+	public void testGetClassCanonicalName()
+	{
+		final String expected = "io.github.astrapi69.lang.ClassExtensionsTest";
+		final String classname = ClassExtensions.getClassCanonicalName(ClassExtensionsTest.class);
+		this.result = expected.equals(classname);
+		assertTrue("", this.result);
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getClassType(Class)}.
 	 *
 	 * @throws InstantiationException
@@ -482,13 +506,13 @@ public class ClassExtensionsTest
 
 		resourcesDirPath = "io/github/astrapi69/lang";
 		urls = ClassExtensions.getResources(resourcesDirPath);
-		assertTrue(urls.size() == 4);
+		assertTrue(urls.size() == 3);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
 		assertTrue(urls.size() == 3);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "file");
-		assertTrue(urls.size() == 1);
+		assertTrue(urls.size() == 0);
 	}
 
 	/**
