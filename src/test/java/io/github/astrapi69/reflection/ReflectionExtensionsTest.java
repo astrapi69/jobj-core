@@ -233,7 +233,7 @@ public class ReflectionExtensionsTest
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
 	@Test
-	public void testCopyFieldValue()
+	public void testCopyFieldValueWithFieldName()
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
 		String expected;
@@ -242,6 +242,28 @@ public class ReflectionExtensionsTest
 		final Person nik = Person.builder().name("Nik").build();
 		expected = "Alex";
 		ReflectionExtensions.copyFieldValue(alex, nik, "name");
+		actual = nik.getName();
+		assertEquals(expected, actual);
+	}
+
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyFieldValue(Object, Object, Field)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method.
+	 */
+	@Test
+	public void testCopyFieldValueWithField()
+		throws NoSuchFieldException, SecurityException, IllegalAccessException
+	{
+		String expected;
+		String actual;
+		final Person alex = Person.builder().name("Alex").build();
+		final Person nik = Person.builder().name("Nik").build();
+		expected = "Alex";
+		Field declaredField = ReflectionExtensions.getDeclaredField(alex, "name");
+		ReflectionExtensions.copyFieldValue(alex, nik, declaredField);
 		actual = nik.getName();
 		assertEquals(expected, actual);
 	}

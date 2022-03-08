@@ -6,6 +6,7 @@ Version 5.4-SNAPSHOT
 
 ADDED:
 
+- new method in ReflectionExtensions for copy a field from a source object to a target object
 - new gradle plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' for formatting source code with gradle build task
 
 CHANGED:

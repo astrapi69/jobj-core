@@ -226,6 +226,37 @@ public final class ReflectionExtensions
 	}
 
 	/**
+	 * Copy the given original object to the given destination object. This also works on private
+	 * fields
+	 *
+	 * @param <ORIGINAL>
+	 *            the generic type of the source object
+	 * @param <DESTINATION>
+	 *            the generic type of the target object
+	 * @param source
+	 *            the original object
+	 * @param target
+	 *            the destination object
+	 * @param field
+	 *            the field
+	 * @return true if the field is null or final otherwise false
+	 * @throws IllegalAccessException
+	 *             if the caller does not have access to the property accessor method
+	 */
+	public static <ORIGINAL, DESTINATION> boolean copyFieldValue(final @NonNull ORIGINAL source,
+		final @NonNull DESTINATION target, final @NonNull Field field) throws IllegalAccessException
+	{
+		field.setAccessible(true);
+		Object newValue = field.get(source);
+		if (newValue == null || Modifier.isFinal(field.getModifiers()))
+		{
+			return true;
+		}
+		ReflectionExtensions.setFieldValue(target, field, newValue);
+		return false;
+	}
+
+	/**
 	 * Copies the field value of the given source object to the given target object.
 	 *
 	 * @param <T>
