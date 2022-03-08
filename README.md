@@ -2,10 +2,10 @@
 
 <div style="text-align: center">
 
-[![Build Status](https://api.travis-ci.com/astrapi69/jobj-core.svg?branch=master)](https://travis-ci.com/github/astrapi69/jobj-core) 
-[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master) 
+[![Build Status](https://api.travis-ci.com/astrapi69/jobj-core.svg?branch=master)](https://travis-ci.com/github/astrapi69/jobj-core)
+[![Coverage Status](https://coveralls.io/repos/github/astrapi69/jobj-core/badge.svg?branch=master)](https://coveralls.io/github/astrapi69/jobj-core?branch=master)
 [![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)
-[![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues) 
+[![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
@@ -59,23 +59,23 @@ Add the following maven dependency to your project `pom.xml` if you want to impo
 
 Than you can add the dependency to your dependencies:
 
-	<properties>
-			...
-		<!-- JOBJ-CORE version -->
-		<jobj-core.version>5.3</jobj-core.version>
-			...
-	</properties>
-			...
-		<dependencies>
-			...
-			<!-- JOBJ-CORE DEPENDENCY -->
-			<dependency>
-				<groupId>io.github.astrapi69</groupId>
-				<artifactId>jobj-core</artifactId>
-				<version>${jobj-core.version}</version>
-			</dependency>
-			...
-		</dependencies>
+    <properties>
+            ...
+        <!-- JOBJ-CORE version -->
+        <jobj-core.version>5.3</jobj-core.version>
+            ...
+    </properties>
+            ...
+        <dependencies>
+            ...
+            <!-- JOBJ-CORE DEPENDENCY -->
+            <dependency>
+                <groupId>io.github.astrapi69</groupId>
+                <artifactId>jobj-core</artifactId>
+                <version>${jobj-core.version}</version>
+            </dependency>
+            ...
+        </dependencies>
 
 # Donations
 

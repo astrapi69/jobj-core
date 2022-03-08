@@ -355,7 +355,8 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Sets the field value of the given class object over the field name.
+	 * Sets the field value of the given class object over the field name. This method is for set
+	 * static fields from a class
 	 *
 	 * @param <T>
 	 *            the generic type
