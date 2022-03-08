@@ -110,16 +110,16 @@ public class ObjectExtensionsTest
 		}.getClass());
 		assertEquals(expected, actual);
 
+
+		expected = ClassType.MEMBER;
+		actual = ObjectExtensions.getClassType(Member.class);
+		assertEquals(expected, actual);
+
 		class Local
 		{
 		}
 		expected = ClassType.LOCAL;
 		actual = ObjectExtensions.getClassType(Local.class);
-		assertEquals(expected, actual);
-
-
-		expected = ClassType.MEMBER;
-		actual = ObjectExtensions.getClassType(Member.class);
 		assertEquals(expected, actual);
 
 	}
