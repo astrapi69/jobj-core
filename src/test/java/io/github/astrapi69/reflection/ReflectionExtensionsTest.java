@@ -46,12 +46,12 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.test.objects.A;
-import io.github.astrapi69.test.objects.Member;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.PremiumMember;
-import io.github.astrapi69.test.objects.PrimitiveArrays;
-import io.github.astrapi69.test.objects.enums.Gender;
+import io.github.astrapi69.test.object.A;
+import io.github.astrapi69.test.object.Member;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.PremiumMember;
+import io.github.astrapi69.test.object.PrimitiveArrays;
+import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}

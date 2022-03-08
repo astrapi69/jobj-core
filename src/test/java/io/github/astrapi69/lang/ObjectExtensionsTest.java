@@ -32,10 +32,10 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.test.objects.Company;
-import io.github.astrapi69.test.objects.annotations.Mandatory;
-import io.github.astrapi69.test.objects.annotations.interfaces.AnnotatedInterface;
-import io.github.astrapi69.test.objects.enums.Gender;
+import io.github.astrapi69.test.object.Company;
+import io.github.astrapi69.test.object.annotation.Mandatory;
+import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
+import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
  * The unit test class for the class {@link ObjectExtensions}.

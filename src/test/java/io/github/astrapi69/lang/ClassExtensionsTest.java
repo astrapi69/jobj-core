@@ -52,13 +52,13 @@ import org.testng.annotations.Test;
 import io.github.astrapi69.classes.inner.OuterClass;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
-import io.github.astrapi69.test.objects.Member;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.PremiumMember;
-import io.github.astrapi69.test.objects.annotations.TestAnnotation;
-import io.github.astrapi69.test.objects.annotations.interfaces.AnnotatedInterface;
-import io.github.astrapi69.test.objects.enums.Brands;
-import io.github.astrapi69.test.objects.generics.PersonDao;
+import io.github.astrapi69.test.object.Member;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.PremiumMember;
+import io.github.astrapi69.test.object.annotation.TestAnnotation;
+import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
+import io.github.astrapi69.test.object.enumtype.Brand;
+import io.github.astrapi69.test.object.generic.PersonDao;
 
 /**
  * The unit test class for the class {@link ClassExtensions}.
@@ -260,7 +260,7 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getClassname(Person.class);
-		expected = "io.github.astrapi69.test.objects.Person";
+		expected = "io.github.astrapi69.test.object.Person";
 		assertEquals(expected, actual);
 	}
 
@@ -333,7 +333,7 @@ public class ClassExtensionsTest
 		expected = ClassType.ANONYMOUS;
 		assertEquals(expected, actual);
 
-		actual = ClassExtensions.getClassType(Brands.class);
+		actual = ClassExtensions.getClassType(Brand.class);
 		expected = ClassType.ENUM;
 		assertEquals(expected, actual);
 
@@ -470,11 +470,11 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getPathFromObject(Person.builder().build());
-		assertTrue(actual.endsWith("/io/github/astrapi69/test/objects/Person.class"));
+		assertTrue(actual.endsWith("/io/github/astrapi69/test/object/Person.class"));
 		assertTrue(actual.startsWith("file:"));
 
 		actual = ClassExtensions.getPathFromObject(new PersonDao());
-		assertTrue(actual.endsWith("/io/github/astrapi69/test/objects/generics/PersonDao.class"));
+		assertTrue(actual.endsWith("/io/github/astrapi69/test/object/generic/PersonDao.class"));
 
 		actual = ClassExtensions.getPathFromObject(null);
 		expected = null;
@@ -501,18 +501,26 @@ public class ClassExtensionsTest
 	@Test(enabled = true)
 	public void testGetResources() throws IOException
 	{
+		int actual;
+		int expected;
 		List<URL> urls;
 		String resourcesDirPath;
 
 		resourcesDirPath = "io/github/astrapi69/lang";
 		urls = ClassExtensions.getResources(resourcesDirPath);
-		assertTrue(urls.size() == 3);
+		actual = urls.size();
+		expected = 4;
+		assertEquals(expected, actual);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
-		assertTrue(urls.size() == 3);
+		actual = urls.size();
+		expected = 3;
+		assertEquals(expected, actual);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "file");
-		assertTrue(urls.size() == 0);
+		actual = urls.size();
+		expected = 1;
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -540,7 +548,7 @@ public class ClassExtensionsTest
 	@Test(enabled = true)
 	public void testGetResourceAsFileStringObject() throws URISyntaxException, IOException
 	{
-		final String filename = "/io/github/astrapi69/test/objects/Person.class";
+		final String filename = "/io/github/astrapi69/test/object/Person.class";
 
 		final File file = ClassExtensions.getResourceAsFile(filename, Person.builder().build());
 		this.result = file != null;
@@ -558,7 +566,7 @@ public class ClassExtensionsTest
 	@Test(expectedExceptions = URISyntaxException.class)
 	public void testGetResourceAsFileStringThrowsURISyntaxException() throws URISyntaxException
 	{
-		ClassExtensions.getResourceAsFile("io/github/astrapi69/test/objects/Person.class");
+		ClassExtensions.getResourceAsFile("io/github/astrapi69/test/object/Person.class");
 	}
 
 	/**
@@ -568,7 +576,7 @@ public class ClassExtensionsTest
 	public void testGetResourceAsStreamClassOfQString()
 	{
 		InputStream inputStream = ClassExtensions.getResourceAsStream(Person.class,
-			"io/github/astrapi69/test/objects/Person.class");
+			"io/github/astrapi69/test/object/Person.class");
 		assertNotNull(inputStream);
 	}
 
@@ -597,7 +605,7 @@ public class ClassExtensionsTest
 	@Test
 	public void testGetResourceAsStreamStringObject()
 	{
-		final String filename = "io/github/astrapi69/test/objects/Person.class";
+		final String filename = "io/github/astrapi69/test/object/Person.class";
 
 		InputStream inputStream = ClassExtensions.getResourceAsStream(filename,
 			Person.builder().build());
