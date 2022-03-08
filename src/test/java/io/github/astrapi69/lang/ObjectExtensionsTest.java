@@ -44,13 +44,6 @@ public class ObjectExtensionsTest
 {
 
 	/**
-	 * The interface {@link Member} that represents the member class
-	 */
-	interface Member
-	{
-	}
-
-	/**
 	 * Test method for {@link ObjectExtensions#getClassType(Class)}
 	 */
 	@Test
@@ -206,5 +199,11 @@ public class ObjectExtensionsTest
 		beanTester.testBean(ObjectExtensions.class);
 	}
 
+	/**
+	 * The interface {@link Member} that represents the member class
+	 */
+	interface Member
+	{
+	}
 
 }
