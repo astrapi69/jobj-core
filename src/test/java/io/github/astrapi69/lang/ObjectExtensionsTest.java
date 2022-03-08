@@ -52,7 +52,6 @@ public class ObjectExtensionsTest
 		ClassType expected;
 		ClassType actual;
 
-
 		class Local
 		{
 		}
