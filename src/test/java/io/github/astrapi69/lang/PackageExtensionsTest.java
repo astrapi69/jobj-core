@@ -28,7 +28,7 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.test.messages.TestMessagesExtensions;
+import io.github.astrapi69.test.message.TestMessagesExtensions;
 
 /**
  * The unit test class for the class {@link PackageExtensions}.

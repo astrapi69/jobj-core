@@ -52,13 +52,13 @@ import org.testng.annotations.Test;
 import io.github.astrapi69.classes.inner.OuterClass;
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
-import io.github.astrapi69.test.objects.Member;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.PremiumMember;
-import io.github.astrapi69.test.objects.annotations.TestAnnotation;
-import io.github.astrapi69.test.objects.annotations.interfaces.AnnotatedInterface;
-import io.github.astrapi69.test.objects.enums.Brands;
-import io.github.astrapi69.test.objects.generics.PersonDao;
+import io.github.astrapi69.test.object.Member;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.PremiumMember;
+import io.github.astrapi69.test.object.annotation.TestAnnotation;
+import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
+import io.github.astrapi69.test.object.enumtype.Brand;
+import io.github.astrapi69.test.object.generic.PersonDao;
 
 /**
  * The unit test class for the class {@link ClassExtensions}.
@@ -71,23 +71,17 @@ public class ClassExtensionsTest
 
 	/**
 	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	public void setUp() throws Exception
+	public void setUp()
 	{
 	}
 
 	/**
 	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 	}
 
@@ -97,7 +91,7 @@ public class ClassExtensionsTest
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class was not found or could not be located
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testForName() throws ClassNotFoundException
 	{
 		final Class<?> expected = this.getClass();
@@ -110,10 +104,10 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#forName(String)}
 	 *
-	 * @throws ClassNotFoundException
-	 *             is thrown if the class was not found or could not be located
+	 * @throws URISyntaxException
+	 *             occurs by creation of the file with an uri
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetRunningJarFile() throws URISyntaxException
 	{
 		String actual;
@@ -133,7 +127,7 @@ public class ClassExtensionsTest
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class was not found or could not be located
 	 */
-	@Test(enabled = true, expectedExceptions = ClassNotFoundException.class)
+	@Test(expectedExceptions = ClassNotFoundException.class)
 	public void testForNameClassNotFoundException() throws ClassNotFoundException
 	{
 		ClassExtensions.forName("ClassExtensionsTe");
@@ -142,7 +136,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetArrayClass()
 	{
 		Class<ClassExtensionsTest> expected;
@@ -157,7 +151,6 @@ public class ClassExtensionsTest
 		objectArray = new ClassExtensionsTest[1];
 		objectArray[0] = this;
 		actual = ClassExtensions.getComponentClassType(objectArray);
-		expected = ClassExtensionsTest.class;
 		assertEquals(expected, actual);
 
 	}
@@ -165,7 +158,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getBaseClass(Class)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetBaseClass()
 	{
 		Class<?> expected;
@@ -183,11 +176,9 @@ public class ClassExtensionsTest
 		actual = ClassExtensions.getBaseClass(PremiumMember.class);
 		assertEquals(expected, actual);
 
-		expected = Person.class;
 		actual = ClassExtensions.getBaseClass(Member.class);
 		assertEquals(expected, actual);
 
-		expected = Person.class;
 		actual = ClassExtensions.getBaseClass(Person.class);
 		assertEquals(expected, actual);
 	}
@@ -223,7 +214,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getClass(Object)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClass()
 	{
 		Class<ClassExtensionsTest> expected;
@@ -260,14 +251,14 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getClassname(Person.class);
-		expected = "io.github.astrapi69.test.objects.Person";
+		expected = "io.github.astrapi69.test.object.Person";
 		assertEquals(expected, actual);
 	}
 
 	/**
 	 * Test method for {@link ClassExtensions#getClassnameWithSuffix(Object)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClassnameWithSuffix()
 	{
 		final String expected = "ClassExtensionsTest.class";
@@ -277,26 +268,40 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getClassType(Class)}.
-	 *
-	 * @throws InstantiationException
-	 *             if a new instance of the bean's class cannot be instantiated
-	 * @throws IllegalAccessException
-	 *             if the caller does not have access to the property accessor method
+	 * Test method for {@link ClassExtensions#getClassnameWithSuffix(Class)}
 	 */
-	@Test(enabled = true)
-	public void testGetClassType() throws InstantiationException, IllegalAccessException
+	@Test
+	public void testGetClassnameWithSuffixFromClass()
 	{
-		ClassType actual = ClassExtensions.getClassType(OuterClass.class);
-		ClassType expected = ClassType.DEFAULT;
-		assertEquals(expected, actual);
+		final String expected = "ClassExtensionsTest.class";
+		final String classname = ClassExtensions.getClassnameWithSuffix(ClassExtensionsTest.class);
+		this.result = expected.equals(classname);
+		assertTrue("", this.result);
+	}
 
-		actual = ClassExtensions.getClassType(OuterClass.InnerClass.class);
-		expected = ClassType.MEMBER;
-		assertEquals(expected, actual);
+	/**
+	 * Test method for {@link ClassExtensions#getClassCanonicalName(Class)}
+	 */
+	@Test
+	public void testGetClassCanonicalName()
+	{
+		final String expected = "io.github.astrapi69.lang.ClassExtensionsTest";
+		final String classname = ClassExtensions.getClassCanonicalName(ClassExtensionsTest.class);
+		this.result = expected.equals(classname);
+		assertTrue("", this.result);
+	}
 
-		actual = ClassExtensions.getClassType(StaticNestedClass.class);
-		expected = ClassType.MEMBER;
+	/**
+	 * Test method for {@link ClassExtensions#getClassType(Class)}
+	 */
+	@Test
+	public void testGetClassType()
+	{
+		ClassType actual;
+		ClassType expected;
+
+		actual = ClassExtensions.getClassType(TestAnnotation.class);
+		expected = ClassType.ANNOTATION;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.getClassType(new Runnable()
@@ -309,14 +314,6 @@ public class ClassExtensionsTest
 		expected = ClassType.ANONYMOUS;
 		assertEquals(expected, actual);
 
-		actual = ClassExtensions.getClassType(Brands.class);
-		expected = ClassType.ENUM;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(TestAnnotation.class);
-		expected = ClassType.ANNOTATION;
-		assertEquals(expected, actual);
-
 		final String[] foo = { "foo" };
 		actual = ClassExtensions.getClassType(foo.getClass());
 		expected = ClassType.ARRAY;
@@ -326,16 +323,8 @@ public class ClassExtensionsTest
 		expected = ClassType.COLLECTION;
 		assertEquals(expected, actual);
 
-		actual = ClassExtensions.getClassType(HashMap.class);
-		expected = ClassType.MAP;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(AnnotatedInterface.class);
-		expected = ClassType.INTERFACE;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(int.class);
-		expected = ClassType.PRIMITIVE;
+		actual = ClassExtensions.getClassType(OuterClass.class);
+		expected = ClassType.DEFAULT;
 		assertEquals(expected, actual);
 
 		final JavaSourceCompiler<Runnable> runtimeCompiler = new JavaSourceCompiler<>();
@@ -345,6 +334,48 @@ public class ClassExtensionsTest
 
 		actual = ClassExtensions.getClassType(clazz);
 		expected = ClassType.DEFAULT;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(Brand.class);
+		expected = ClassType.ENUM;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(AnnotatedInterface.class);
+		expected = ClassType.INTERFACE;
+		assertEquals(expected, actual);
+		// local class example
+		class LocalClass
+		{
+			String foo;
+
+			LocalClass(String bar)
+			{
+				foo = bar;
+			}
+		}
+
+		actual = ClassExtensions.getClassType(LocalClass.class);
+		expected = ClassType.LOCAL;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(HashMap.class);
+		expected = ClassType.MAP;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(OuterClass.InnerClass.class);
+		expected = ClassType.MEMBER;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(StaticNestedClass.class);
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(int.class);
+		expected = ClassType.PRIMITIVE;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(((Runnable)() -> {
+		}).getClass());
+		expected = ClassType.SYNTHETIC;
 		assertEquals(expected, actual);
 	}
 
@@ -446,11 +477,11 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getPathFromObject(Person.builder().build());
-		assertTrue(actual.endsWith("/io/github/astrapi69/test/objects/Person.class"));
+		assertTrue(actual.endsWith("/io/github/astrapi69/test/object/Person.class"));
 		assertTrue(actual.startsWith("file:"));
 
 		actual = ClassExtensions.getPathFromObject(new PersonDao());
-		assertTrue(actual.endsWith("/io/github/astrapi69/test/objects/generics/PersonDao.class"));
+		assertTrue(actual.endsWith("/io/github/astrapi69/test/object/generic/PersonDao.class"));
 
 		actual = ClassExtensions.getPathFromObject(null);
 		expected = null;
@@ -477,18 +508,26 @@ public class ClassExtensionsTest
 	@Test(enabled = true)
 	public void testGetResources() throws IOException
 	{
+		int actual;
+		int expected;
 		List<URL> urls;
 		String resourcesDirPath;
 
 		resourcesDirPath = "io/github/astrapi69/lang";
 		urls = ClassExtensions.getResources(resourcesDirPath);
-		assertTrue(urls.size() == 4);
+		actual = urls.size();
+		expected = 4;
+		assertEquals(expected, actual);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
-		assertTrue(urls.size() == 3);
+		actual = urls.size();
+		expected = 3;
+		assertEquals(expected, actual);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "file");
-		assertTrue(urls.size() == 1);
+		actual = urls.size();
+		expected = 1;
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -516,7 +555,7 @@ public class ClassExtensionsTest
 	@Test(enabled = true)
 	public void testGetResourceAsFileStringObject() throws URISyntaxException, IOException
 	{
-		final String filename = "/io/github/astrapi69/test/objects/Person.class";
+		final String filename = "/io/github/astrapi69/test/object/Person.class";
 
 		final File file = ClassExtensions.getResourceAsFile(filename, Person.builder().build());
 		this.result = file != null;
@@ -534,7 +573,7 @@ public class ClassExtensionsTest
 	@Test(expectedExceptions = URISyntaxException.class)
 	public void testGetResourceAsFileStringThrowsURISyntaxException() throws URISyntaxException
 	{
-		ClassExtensions.getResourceAsFile("io/github/astrapi69/test/objects/Person.class");
+		ClassExtensions.getResourceAsFile("io/github/astrapi69/test/object/Person.class");
 	}
 
 	/**
@@ -544,7 +583,7 @@ public class ClassExtensionsTest
 	public void testGetResourceAsStreamClassOfQString()
 	{
 		InputStream inputStream = ClassExtensions.getResourceAsStream(Person.class,
-			"io/github/astrapi69/test/objects/Person.class");
+			"io/github/astrapi69/test/object/Person.class");
 		assertNotNull(inputStream);
 	}
 
@@ -573,7 +612,7 @@ public class ClassExtensionsTest
 	@Test
 	public void testGetResourceAsStreamStringObject()
 	{
-		final String filename = "io/github/astrapi69/test/objects/Person.class";
+		final String filename = "io/github/astrapi69/test/object/Person.class";
 
 		InputStream inputStream = ClassExtensions.getResourceAsStream(filename,
 			Person.builder().build());
@@ -677,9 +716,11 @@ public class ClassExtensionsTest
 	@Test
 	public void testGetURL()
 	{
-		final URL actual = ClassExtensions.getURL(Object.class);
-		assertTrue(actual.toString().startsWith("jar:"));
-		assertTrue(actual.toString().endsWith("/java/lang/Object.class"));
+		URL actualUrl;
+		actualUrl = ClassExtensions.getURL(Object.class);
+		String urlAsString = actualUrl.toString();
+		assertTrue(urlAsString.startsWith("jrt:"));
+		assertTrue(urlAsString.endsWith("/java/lang/Object.class"));
 	}
 
 	/**

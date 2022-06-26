@@ -1,12 +1,33 @@
 ## Change log
 ----------------------
 
+Version 6
+-------------
+
+ADDED:
+
+- new method in ReflectionExtensions for copy a field from a source object to a target object
+- new gradle plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' for formatting source code with gradle build task
+- new module-info.java file with definition of required modules and packages to export
+
+CHANGED:
+
+- update of jdk to version 11
+- update of gradle to new version 7.5-rc-2
+- update of lombok version to 1.18.24
+- update of com.github.ben-manes.versions.gradle.plugin to new minor version 0.42.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.0.0
+- update of test-dependency silly-collections version to 18.2
+- update of test-dependency test-objects to new minor version 6.1
+- update of test-dependency equalsverifier version to 3.10
+- update of test-dependency testng version to 7.6.0
+
 Version 5.3
 -------------
 
 ADDED:
 
-- new method for get from a given class the running jar file 
+- new method for get from a given class the running jar file
 
 CHANGED:
 
@@ -46,7 +67,7 @@ Version 5
 
 ADDED:
 
-- new extension class for resolve the free memory and the memory status and freeing memory that is available for the application by running the garbage collector 
+- new extension class for resolve the free memory and the memory status and freeing memory that is available for the application by running the garbage collector
 - new method created that set the current thread priority
 - improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
 
@@ -66,7 +87,7 @@ ADDED:
 
 - new model classes for hold java class fields like method, field, class and annotation
 - new model classes for hold thread related fields
-  
+
   Version 3.8
 -------------
 
@@ -177,21 +198,19 @@ Version 3.1
 -------------
 
 ADDED:
- 
+
 - new method created for create new instance of an array with reflection with capacity
-- new method created for copy an existing array 
+- new method created for copy an existing array
 - new methods created for set a field value from a given source object over a field and field name
 
 Version 3
 -------------
 
 ADDED:
- 
+
 - this changelog file
 - created PULL_REQUEST_TEMPLATE.md file
 - created CODE_OF_CONDUCT.md file
 - created CONTRIBUTING.md file
 - provide package.html for the javadoc of packages
 - moved classes from obsolet jobject-core project
-
-

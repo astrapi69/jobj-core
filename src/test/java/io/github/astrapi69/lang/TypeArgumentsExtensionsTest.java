@@ -37,10 +37,10 @@ import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.BaseTestCase;
-import io.github.astrapi69.test.messages.TestMessagesExtensions;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.generics.GenericDao;
-import io.github.astrapi69.test.objects.generics.PersonDao;
+import io.github.astrapi69.test.message.TestMessagesExtensions;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.generic.GenericDao;
+import io.github.astrapi69.test.object.generic.PersonDao;
 
 /**
  * The unit test class for the class {@link TypeArgumentsExtensions}.

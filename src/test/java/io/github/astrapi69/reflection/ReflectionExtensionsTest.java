@@ -46,12 +46,12 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.collections.array.ArrayFactory;
 import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.test.objects.A;
-import io.github.astrapi69.test.objects.Member;
-import io.github.astrapi69.test.objects.Person;
-import io.github.astrapi69.test.objects.PremiumMember;
-import io.github.astrapi69.test.objects.PrimitiveArrays;
-import io.github.astrapi69.test.objects.enums.Gender;
+import io.github.astrapi69.test.object.A;
+import io.github.astrapi69.test.object.Member;
+import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.PremiumMember;
+import io.github.astrapi69.test.object.PrimitiveArrays;
+import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}
@@ -218,7 +218,7 @@ public class ReflectionExtensionsTest
 		boolean[] expected;
 		expected = ArrayFactory.newBooleanArray(false, true, true);
 		actual = (boolean[])ReflectionExtensions.copyOfArray(expected);
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 
@@ -233,7 +233,7 @@ public class ReflectionExtensionsTest
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
 	@Test
-	public void testCopyFieldValue()
+	public void testCopyFieldValueWithFieldName()
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
 		String expected;
@@ -242,6 +242,28 @@ public class ReflectionExtensionsTest
 		final Person nik = Person.builder().name("Nik").build();
 		expected = "Alex";
 		ReflectionExtensions.copyFieldValue(alex, nik, "name");
+		actual = nik.getName();
+		assertEquals(expected, actual);
+	}
+
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyFieldValue(Object, Object, Field)}
+	 * 
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method.
+	 */
+	@Test
+	public void testCopyFieldValueWithField()
+		throws NoSuchFieldException, SecurityException, IllegalAccessException
+	{
+		String expected;
+		String actual;
+		final Person alex = Person.builder().name("Alex").build();
+		final Person nik = Person.builder().name("Nik").build();
+		expected = "Alex";
+		Field declaredField = ReflectionExtensions.getDeclaredField(alex, "name");
+		ReflectionExtensions.copyFieldValue(alex, nik, declaredField);
 		actual = nik.getName();
 		assertEquals(expected, actual);
 	}
@@ -695,9 +717,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithSetClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithSetClass() throws InstantiationException, IllegalAccessException,
+		NoSuchMethodException, InvocationTargetException
 	{
 		Set expected;
 		Set actual;
@@ -718,9 +745,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithListClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithListClass() throws InstantiationException,
+		IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		List expected;
 		List actual;
@@ -742,10 +774,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithQueueClass()
-		throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithQueueClass() throws InstantiationException,
+		IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		Queue expected;
 		Queue actual;
@@ -766,9 +802,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithMapClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithMapClass() throws InstantiationException, IllegalAccessException,
+		NoSuchMethodException, InvocationTargetException
 	{
 		Map expected;
 		Map actual;
@@ -817,7 +858,7 @@ public class ReflectionExtensionsTest
 		assertNotNull(actual);
 		assertTrue(actual instanceof Integer[]);
 		Integer[] integerArrayActual = (Integer[])actual;
-		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null);
+		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null, null);
 		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
 		// new scenario with primitive array...
 		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);
