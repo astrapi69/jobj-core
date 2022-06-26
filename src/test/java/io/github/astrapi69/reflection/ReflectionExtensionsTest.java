@@ -218,7 +218,7 @@ public class ReflectionExtensionsTest
 		boolean[] expected;
 		expected = ArrayFactory.newBooleanArray(false, true, true);
 		actual = (boolean[])ReflectionExtensions.copyOfArray(expected);
-		assertTrue(Arrays.equals(actual, expected));
+		assertArrayEquals(actual, expected);
 	}
 
 
@@ -717,9 +717,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithSetClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithSetClass() throws InstantiationException, IllegalAccessException,
+		NoSuchMethodException, InvocationTargetException
 	{
 		Set expected;
 		Set actual;
@@ -740,9 +745,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithListClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithListClass() throws InstantiationException,
+		IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		List expected;
 		List actual;
@@ -764,10 +774,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithQueueClass()
-		throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithQueueClass() throws InstantiationException,
+		IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		Queue expected;
 		Queue actual;
@@ -788,9 +802,14 @@ public class ReflectionExtensionsTest
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason.
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Test
-	public void testNewInstanceWithMapClass() throws InstantiationException, IllegalAccessException
+	public void testNewInstanceWithMapClass() throws InstantiationException, IllegalAccessException,
+		NoSuchMethodException, InvocationTargetException
 	{
 		Map expected;
 		Map actual;
@@ -839,7 +858,7 @@ public class ReflectionExtensionsTest
 		assertNotNull(actual);
 		assertTrue(actual instanceof Integer[]);
 		Integer[] integerArrayActual = (Integer[])actual;
-		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null);
+		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null, null);
 		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
 		// new scenario with primitive array...
 		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);

@@ -1,19 +1,26 @@
 ## Change log
 ----------------------
 
-Version 5.4-SNAPSHOT
+Version 6-SNAPSHOT
 -------------
 
 ADDED:
 
 - new method in ReflectionExtensions for copy a field from a source object to a target object
 - new gradle plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' for formatting source code with gradle build task
+- new module-info.java file with definition of required modules and packages to export
 
 CHANGED:
 
-- update gradle to new version 7.4
+- update of jdk to version 11
+- update of gradle to new version 7.5-rc-2
+- update of lombok version to 1.18.24
 - update of com.github.ben-manes.versions.gradle.plugin to new minor version 0.42.0
-- update of test-dependency test-objects to new major version 6
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.0.0
+- update of test-dependency silly-collections version to 18.2
+- update of test-dependency test-objects to new minor version 6.1
+- update of test-dependency equalsverifier version to 3.10
+- update of test-dependency testng version to 7.6.0
 
 Version 5.3
 -------------

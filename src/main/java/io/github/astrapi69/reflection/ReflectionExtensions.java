@@ -22,6 +22,7 @@ package io.github.astrapi69.reflection;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -161,7 +162,8 @@ public final class ReflectionExtensions
 	 */
 	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		return (T[])copyOfArray(source);
+		Object copyOfArray = copyOfArray(source);
+		return (T[])copyOfArray;
 	}
 
 	/**
@@ -720,14 +722,19 @@ public final class ReflectionExtensions
 	 *            the Class object
 	 * @return the new instance
 	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible.
+	 *             is thrown if the class or its default constructor is not accessible
 	 * @throws InstantiationException
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason.
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
-		throws InstantiationException, IllegalAccessException
+		throws InstantiationException, IllegalAccessException, NoSuchMethodException,
+		InvocationTargetException
 	{
 		ClassType classType = ClassExtensions.getClassType(clazz);
 		switch (classType)
@@ -753,9 +760,17 @@ public final class ReflectionExtensions
 			case ARRAY :
 				int length = 3;
 				return (T)Array.newInstance(clazz.getComponentType(), length);
-
+			case ANNOTATION :
+			case ANONYMOUS :
+			case DEFAULT :
+			case ENUM :
+			case INTERFACE :
+			case LOCAL :
+			case MEMBER :
+			case PRIMITIVE :
+			case SYNTHETIC :
 			default :
-				return clazz.newInstance();
+				return clazz.getDeclaredConstructor().newInstance();
 		}
 	}
 

@@ -71,23 +71,17 @@ public class ClassExtensionsTest
 
 	/**
 	 * Sets up method will be invoked before every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@BeforeMethod
-	public void setUp() throws Exception
+	public void setUp()
 	{
 	}
 
 	/**
 	 * Tear down method will be invoked after every unit test method
-	 *
-	 * @throws Exception
-	 *             is thrown if an exception occurs
 	 */
 	@AfterMethod
-	public void tearDown() throws Exception
+	public void tearDown()
 	{
 	}
 
@@ -97,7 +91,7 @@ public class ClassExtensionsTest
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class was not found or could not be located
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testForName() throws ClassNotFoundException
 	{
 		final Class<?> expected = this.getClass();
@@ -110,10 +104,10 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#forName(String)}
 	 *
-	 * @throws ClassNotFoundException
-	 *             is thrown if the class was not found or could not be located
+	 * @throws URISyntaxException
+	 *             occurs by creation of the file with an uri
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetRunningJarFile() throws URISyntaxException
 	{
 		String actual;
@@ -133,7 +127,7 @@ public class ClassExtensionsTest
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class was not found or could not be located
 	 */
-	@Test(enabled = true, expectedExceptions = ClassNotFoundException.class)
+	@Test(expectedExceptions = ClassNotFoundException.class)
 	public void testForNameClassNotFoundException() throws ClassNotFoundException
 	{
 		ClassExtensions.forName("ClassExtensionsTe");
@@ -142,7 +136,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetArrayClass()
 	{
 		Class<ClassExtensionsTest> expected;
@@ -157,7 +151,6 @@ public class ClassExtensionsTest
 		objectArray = new ClassExtensionsTest[1];
 		objectArray[0] = this;
 		actual = ClassExtensions.getComponentClassType(objectArray);
-		expected = ClassExtensionsTest.class;
 		assertEquals(expected, actual);
 
 	}
@@ -165,7 +158,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getBaseClass(Class)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetBaseClass()
 	{
 		Class<?> expected;
@@ -183,11 +176,9 @@ public class ClassExtensionsTest
 		actual = ClassExtensions.getBaseClass(PremiumMember.class);
 		assertEquals(expected, actual);
 
-		expected = Person.class;
 		actual = ClassExtensions.getBaseClass(Member.class);
 		assertEquals(expected, actual);
 
-		expected = Person.class;
 		actual = ClassExtensions.getBaseClass(Person.class);
 		assertEquals(expected, actual);
 	}
@@ -223,7 +214,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getClass(Object)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClass()
 	{
 		Class<ClassExtensionsTest> expected;
@@ -267,7 +258,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getClassnameWithSuffix(Object)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClassnameWithSuffix()
 	{
 		final String expected = "ClassExtensionsTest.class";
@@ -279,7 +270,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getClassnameWithSuffix(Class)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClassnameWithSuffixFromClass()
 	{
 		final String expected = "ClassExtensionsTest.class";
@@ -291,7 +282,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getClassCanonicalName(Class)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetClassCanonicalName()
 	{
 		final String expected = "io.github.astrapi69.lang.ClassExtensionsTest";
@@ -301,26 +292,16 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getClassType(Class)}.
-	 *
-	 * @throws InstantiationException
-	 *             if a new instance of the bean's class cannot be instantiated
-	 * @throws IllegalAccessException
-	 *             if the caller does not have access to the property accessor method
+	 * Test method for {@link ClassExtensions#getClassType(Class)}
 	 */
-	@Test(enabled = true)
-	public void testGetClassType() throws InstantiationException, IllegalAccessException
+	@Test
+	public void testGetClassType()
 	{
-		ClassType actual = ClassExtensions.getClassType(OuterClass.class);
-		ClassType expected = ClassType.DEFAULT;
-		assertEquals(expected, actual);
+		ClassType actual;
+		ClassType expected;
 
-		actual = ClassExtensions.getClassType(OuterClass.InnerClass.class);
-		expected = ClassType.MEMBER;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(StaticNestedClass.class);
-		expected = ClassType.MEMBER;
+		actual = ClassExtensions.getClassType(TestAnnotation.class);
+		expected = ClassType.ANNOTATION;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.getClassType(new Runnable()
@@ -333,14 +314,6 @@ public class ClassExtensionsTest
 		expected = ClassType.ANONYMOUS;
 		assertEquals(expected, actual);
 
-		actual = ClassExtensions.getClassType(Brand.class);
-		expected = ClassType.ENUM;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(TestAnnotation.class);
-		expected = ClassType.ANNOTATION;
-		assertEquals(expected, actual);
-
 		final String[] foo = { "foo" };
 		actual = ClassExtensions.getClassType(foo.getClass());
 		expected = ClassType.ARRAY;
@@ -350,16 +323,8 @@ public class ClassExtensionsTest
 		expected = ClassType.COLLECTION;
 		assertEquals(expected, actual);
 
-		actual = ClassExtensions.getClassType(HashMap.class);
-		expected = ClassType.MAP;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(AnnotatedInterface.class);
-		expected = ClassType.INTERFACE;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.getClassType(int.class);
-		expected = ClassType.PRIMITIVE;
+		actual = ClassExtensions.getClassType(OuterClass.class);
+		expected = ClassType.DEFAULT;
 		assertEquals(expected, actual);
 
 		final JavaSourceCompiler<Runnable> runtimeCompiler = new JavaSourceCompiler<>();
@@ -369,6 +334,48 @@ public class ClassExtensionsTest
 
 		actual = ClassExtensions.getClassType(clazz);
 		expected = ClassType.DEFAULT;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(Brand.class);
+		expected = ClassType.ENUM;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(AnnotatedInterface.class);
+		expected = ClassType.INTERFACE;
+		assertEquals(expected, actual);
+		// local class example
+		class LocalClass
+		{
+			String foo;
+
+			LocalClass(String bar)
+			{
+				foo = bar;
+			}
+		}
+
+		actual = ClassExtensions.getClassType(LocalClass.class);
+		expected = ClassType.LOCAL;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(HashMap.class);
+		expected = ClassType.MAP;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(OuterClass.InnerClass.class);
+		expected = ClassType.MEMBER;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(StaticNestedClass.class);
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(int.class);
+		expected = ClassType.PRIMITIVE;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getClassType(((Runnable)() -> {
+		}).getClass());
+		expected = ClassType.SYNTHETIC;
 		assertEquals(expected, actual);
 	}
 
@@ -709,9 +716,11 @@ public class ClassExtensionsTest
 	@Test
 	public void testGetURL()
 	{
-		final URL actual = ClassExtensions.getURL(Object.class);
-		assertTrue(actual.toString().startsWith("jar:"));
-		assertTrue(actual.toString().endsWith("/java/lang/Object.class"));
+		URL actualUrl;
+		actualUrl = ClassExtensions.getURL(Object.class);
+		String urlAsString = actualUrl.toString();
+		assertTrue(urlAsString.startsWith("jrt:"));
+		assertTrue(urlAsString.endsWith("/java/lang/Object.class"));
 	}
 
 	/**
