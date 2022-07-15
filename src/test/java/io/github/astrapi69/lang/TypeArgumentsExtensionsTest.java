@@ -92,10 +92,9 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		Class<Object> objectClass = Object.class;
 		expected = Array.newInstance(objectClass, 0).getClass();
 		assertEquals(expected, actual);
-
-		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesExtensions.class,
-			"newFailMessage", String.class, String.class, String.class);
 		Class<String> stringClass = String.class;
+		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesExtensions.class,
+			"newFailMessage", stringClass, stringClass, stringClass);
 		expected = stringClass;
 		assertEquals(expected, actual);
 	}
@@ -124,19 +123,27 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	/**
 	 * Test method for {@link TypeArgumentsExtensions#getFirstTypeArgument(Class, Class)}.
 	 */
-	@Test(enabled = true)
+	@Test
+	@SuppressWarnings("unchecked")
 	public void testGetFirstTypeArgument()
 	{
-		final Class<Person> expectedClass = Person.class;
+		Class<Person> actualClass;
+		Class<Person> expectedClass;
+		Class baseClass;
 
-		@SuppressWarnings("unchecked")
-		final Class<Person> personClass = (Class<Person>)TypeArgumentsExtensions
+		expectedClass = Person.class;
+		actualClass = (Class<Person>)TypeArgumentsExtensions
 			.getFirstTypeArgument(GenericDao.class, PersonDao.class);
-		assertEquals(expectedClass, personClass);
+		assertEquals(expectedClass, actualClass);
+
+		baseClass = ClassExtensions.getBaseClass(PersonDao.class);
+		actualClass = TypeArgumentsExtensions.getFirstTypeArgument(baseClass,
+			PersonDao.class);
+		assertEquals(expectedClass, actualClass);
 	}
 
 	/**
-	 * Test method for {@link TypeArgumentsExtensions#getFirstTypeArgument(Class)}.
+	 * Test method for {@link TypeArgumentsExtensions#getFirstTypeArgument(Class)}
 	 */
 	@Test
 	public void testGetFirstTypeArgumentClassOfQextendsT()
@@ -152,7 +159,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	 * Test method for {@link TypeArgumentsExtensions#getTypeArgument(Class, Class, int)}.
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(enabled = true)
+	@Test
 	public void testGetTypeArgumentClassClassInt()
 	{
 		final Class<Integer> expectedClass = Integer.class;
@@ -165,7 +172,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	 * Test method for {@link TypeArgumentsExtensions#getTypeArgument(Class, int)}.
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(enabled = true)
+	@Test
 	public void testGetTypeArgumentClassInt()
 	{
 		final Class<Person> expectedPersonClass = Person.class;
@@ -181,7 +188,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	public void testGetTypeArguments()
 	{
 		final List<Class<?>> typeArguments = TypeArgumentsExtensions
-			.getTypeArguments(GenericDao.class, new PersonDao().getClass());
+			.getTypeArguments(GenericDao.class, PersonDao.class);
 		assertNotNull(typeArguments);
 		assertEquals(2, typeArguments.size());
 		assertEquals(Person.class, typeArguments.get(0));
