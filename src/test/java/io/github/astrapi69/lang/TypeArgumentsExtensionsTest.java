@@ -132,13 +132,12 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		Class baseClass;
 
 		expectedClass = Person.class;
-		actualClass = (Class<Person>)TypeArgumentsExtensions
-			.getFirstTypeArgument(GenericDao.class, PersonDao.class);
+		actualClass = (Class<Person>)TypeArgumentsExtensions.getFirstTypeArgument(GenericDao.class,
+			PersonDao.class);
 		assertEquals(expectedClass, actualClass);
 
 		baseClass = ClassExtensions.getBaseClass(PersonDao.class);
-		actualClass = TypeArgumentsExtensions.getFirstTypeArgument(baseClass,
-			PersonDao.class);
+		actualClass = TypeArgumentsExtensions.getFirstTypeArgument(baseClass, PersonDao.class);
 		assertEquals(expectedClass, actualClass);
 	}
 
