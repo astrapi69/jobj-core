@@ -50,7 +50,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.classes.inner.OuterClass;
-import io.github.astrapi69.collections.array.ArrayFactory;
+import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
 import io.github.astrapi69.test.object.Member;
 import io.github.astrapi69.test.object.Person;
@@ -94,10 +94,18 @@ public class ClassExtensionsTest
 	@Test
 	public void testForName() throws ClassNotFoundException
 	{
-		final Class<?> expected = this.getClass();
-		final String classname = "io.github.astrapi69.lang.ClassExtensionsTest";
-		final Class<?> actual = ClassExtensions.forName(classname);
+		Class<?> expected;
+		Class<?> actual;
+		String classname;
 
+		classname = "io.github.astrapi69.lang.ClassExtensionsTest";
+		actual = ClassExtensions.forName(classname);
+		expected = this.getClass();
+		assertEquals(expected, actual);
+
+		classname = "io.github.astrapi69.test.object.Person";
+		actual = ClassExtensions.forName(classname);
+		expected = Person.class;
 		assertEquals(expected, actual);
 	}
 
@@ -118,7 +126,7 @@ public class ClassExtensionsTest
 
 		String absolutePath = runningJarFile.getAbsolutePath();
 		assertTrue(absolutePath.endsWith(".jar"));
-		assertTrue(absolutePath.contains("test-objects"));
+		assertTrue(absolutePath.contains("test-object"));
 	}
 
 	/**

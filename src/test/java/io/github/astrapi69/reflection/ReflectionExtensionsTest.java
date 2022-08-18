@@ -44,8 +44,8 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.array.ArrayFactory;
-import io.github.astrapi69.collections.list.ListFactory;
+import io.github.astrapi69.collection.array.ArrayFactory;
+import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Member;
 import io.github.astrapi69.test.object.Person;
@@ -317,13 +317,13 @@ public class ReflectionExtensionsTest
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class,
 			ListFactory.newArrayList("serialVersionUID", "name"));
-		expected = 5;
+		expected = 4;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class,
 			ListFactory.newArrayList("dateofbirth", "name"));
-		expected = 9;
+		expected = 7;
 		actual = allDeclaredFieldnames.length;
 		assertEquals(expected, actual);
 	}
@@ -478,13 +478,13 @@ public class ReflectionExtensionsTest
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
 			ListFactory.newArrayList("serialVersionUID"));
-		expected = 6;
+		expected = 5;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
 		allDeclaredFields = ReflectionExtensions.getDeclaredFields(Person.class,
 			ListFactory.newArrayList("serialVersionUID", "married"));
-		expected = 5;
+		expected = 4;
 		actual = allDeclaredFields.length;
 		assertEquals(expected, actual);
 
