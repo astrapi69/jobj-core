@@ -1,6 +1,24 @@
 ## Change log
 ----------------------
 
+Version 6.1
+-------------
+
+ADDED:
+
+- new method in ClassExtensions that checks if the given class is instantiable
+
+CHANGED:
+
+- update of gradle to new version 7.5.1
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.9.1
+- update of dependency objenesis to new version to 3.3
+- update of test-dependency test-object to new version 7
+- update of test-dependency silly-collection to new version 20
+- update of test-dependency silly-bean to new version 2
+- update of test-dependency equalsverifier version to 3.10.1
+- update of test-dependency testng version to 7.6.1
+
 Version 6
 -------------
 

@@ -23,6 +23,7 @@ package io.github.astrapi69.lang;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -90,14 +91,7 @@ public final class ClassExtensions
 			}
 			catch (final Throwable throwable2)
 			{
-				try
-				{
-					clazz = Class.forName(className, false, getClassLoader());
-				}
-				catch (final Throwable throwable3)
-				{
-					throw throwable3;
-				}
+				clazz = Class.forName(className, false, getClassLoader());
 			}
 		}
 		return clazz;
@@ -405,8 +399,7 @@ public final class ClassExtensions
 		final List<File> dirs = new ArrayList<>();
 		for (final URL resource : resources)
 		{
-			dirs.add(
-				new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8.name())));
+			dirs.add(new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8)));
 		}
 		return dirs;
 	}
@@ -739,8 +732,7 @@ public final class ClassExtensions
 		ArrayList<URL> urls = Collections.list(ClassExtensions.getClassLoader().getResources(path));
 		return 0 < excludeUrlProtocols.length
 			? urls.stream()
-				.filter(
-					url -> !(Arrays.asList(excludeUrlProtocols).indexOf(url.getProtocol()) >= 0))
+				.filter(url -> !Arrays.asList(excludeUrlProtocols).contains(url.getProtocol()))
 				.collect(Collectors.toList())
 			: urls;
 	}
@@ -848,6 +840,35 @@ public final class ClassExtensions
 		return false;
 	}
 
+
+	/**
+	 * Checks if the given {@link Class} is instantiable
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the class to check
+	 * @return true, if the given {@link Class} is instantiable otherwise false
+	 */
+	public static <T> boolean isInstantiable(final Class<T> clazz)
+	{
+		try
+		{
+			ClassType classType = ClassExtensions.getClassType(clazz);
+			if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
+				|| classType.equals(ClassType.COLLECTION))
+			{
+				return true;
+			}
+			final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
+			return declaredConstructor != null;
+		}
+		catch (NoSuchMethodException throwable)
+		{
+			return false;
+		}
+	}
+
 	/**
 	 * Checks if the given {@link Class} is a JDK proxy class.
 	 *
@@ -911,7 +932,7 @@ public final class ClassExtensions
 	{
 		if (clazz == null)
 		{
-			return null;
+			return new Class<?>[] { };
 		}
 		Class<?> found = clazz;
 		if (isCglib(found))

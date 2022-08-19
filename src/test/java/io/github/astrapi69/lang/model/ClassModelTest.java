@@ -31,8 +31,8 @@ import javax.lang.model.element.Modifier;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.collections.list.ListFactory;
-import io.github.astrapi69.collections.map.MapFactory;
+import io.github.astrapi69.collection.list.ListFactory;
+import io.github.astrapi69.collection.map.MapFactory;
 
 /**
  * The unit test class for the class {@link ClassModel}.
