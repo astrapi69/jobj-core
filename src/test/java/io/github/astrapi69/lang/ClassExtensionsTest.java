@@ -86,6 +86,28 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#isInstantiable(Class)}
+	 */
+	@Test
+	public void testIsInstantiable()
+	{
+		boolean expected;
+		boolean actual;
+
+		actual = ClassExtensions.isInstantiable(Brand.class);
+		expected = false;
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.isInstantiable(Integer.class);
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.isInstantiable(Person.class);
+		expected = true;
+		assertEquals(expected, actual);
+
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#forName(String)}
 	 *
 	 * @throws ClassNotFoundException
@@ -118,9 +140,6 @@ public class ClassExtensionsTest
 	@Test
 	public void testGetRunningJarFile() throws URISyntaxException
 	{
-		String actual;
-		String expected;
-
 		File runningJarFile = ClassExtensions.getRunningJarFile(Person.class);
 		assertNotNull(runningJarFile);
 
@@ -341,7 +360,6 @@ public class ClassExtensionsTest
 			"FooRunnable", source);
 
 		actual = ClassExtensions.getClassType(clazz);
-		expected = ClassType.DEFAULT;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.getClassType(Brand.class);
@@ -761,11 +779,9 @@ public class ClassExtensionsTest
 
 
 		actual = ClassExtensions.isDerivate(null, null);
-		expected = true;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.isDerivate(null, ClassExtensions.getClassLoader());
-		expected = true;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.isDerivate(ClassExtensions.getClassLoader(), null);
@@ -863,7 +879,6 @@ public class ClassExtensionsTest
 		InvocationHandler invocationHandler = new InvocationHandlerHandler<>(bla);
 		Foo proxy = (Foo)Proxy.newProxyInstance(ClassExtensions.getClassLoader(),
 			new Class[] { Foo.class }, invocationHandler);
-		expected = true;
 		actual = ClassExtensions.isProxy(proxy.getClass());
 		assertEquals(expected, actual);
 	}
@@ -902,8 +917,7 @@ public class ClassExtensionsTest
 		public Object invoke(Object proxy, Method method, Object[] args)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
-			Object object = method.invoke(original, args);
-			return object;
+			return method.invoke(original, args);
 		}
 	}
 
@@ -923,8 +937,7 @@ public class ClassExtensionsTest
 		public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy)
 			throws Throwable
 		{
-			Object object = method.invoke(origin, args);
-			return object;
+			return method.invoke(origin, args);
 		}
 	}
 

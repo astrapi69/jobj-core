@@ -4,6 +4,10 @@
 Version 6.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in ClassExtensions that checks if the given class is instantiable
+
 CHANGED:
 
 - update of gradle to new version 7.5.1
