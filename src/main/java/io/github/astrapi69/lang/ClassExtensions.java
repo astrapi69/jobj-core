@@ -854,6 +854,12 @@ public final class ClassExtensions
 	{
 		try
 		{
+			ClassType classType = ClassExtensions.getClassType(clazz);
+			if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
+				|| classType.equals(ClassType.COLLECTION))
+			{
+				return true;
+			}
 			final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
 			return declaredConstructor != null;
 		}
