@@ -622,40 +622,35 @@ public final class ReflectionExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> T newInstance(final @NonNull T object)
 	{
-		T newInstance = null;
 		Class<?> clazz = object.getClass();
-		if (ClassExtensions.isInstantiable(clazz))
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		switch (classType)
 		{
-			ClassType classType = ClassExtensions.getClassType(clazz);
-			switch (classType)
-			{
-				case MAP :
-					if (clazz.equals(Map.class))
-					{
-						return (T)new HashMap<>();
-					}
-				case COLLECTION :
-					if (clazz.equals(Set.class))
-					{
-						return (T)new HashSet();
-					}
-					if (clazz.equals(List.class))
-					{
-						return (T)new ArrayList<>();
-					}
-					if (clazz.equals(Queue.class))
-					{
-						return (T)new LinkedList<>();
-					}
-				case ARRAY :
-					int length = Array.getLength(object);
-					return (T)Array.newInstance(clazz.getComponentType(), length);
+			case MAP :
+				if (clazz.equals(Map.class))
+				{
+					return (T)new HashMap<>();
+				}
+			case COLLECTION :
+				if (clazz.equals(Set.class))
+				{
+					return (T)new HashSet();
+				}
+				if (clazz.equals(List.class))
+				{
+					return (T)new ArrayList<>();
+				}
+				if (clazz.equals(Queue.class))
+				{
+					return (T)new LinkedList<>();
+				}
+			case ARRAY :
+				int length = Array.getLength(object);
+				return (T)Array.newInstance(clazz.getComponentType(), length);
 
-				default :
-					return newInstance((Class<T>)object.getClass());
-			}
+			default :
+				return newInstance((Class<T>)object.getClass());
 		}
-		return newInstance;
 	}
 
 	/**
@@ -673,19 +668,16 @@ public final class ReflectionExtensions
 	public static <T> T newInstance(final @NonNull Class<T> clazz)
 	{
 		T newInstance = null;
-		if (ClassExtensions.isInstantiable(clazz))
+		Optional<T> optionalNewInstance;
+		optionalNewInstance = forceNewInstanceWithClass(clazz);
+		if (optionalNewInstance.isPresent())
 		{
-			Optional<T> optionalNewInstance;
-			optionalNewInstance = forceNewInstanceWithClass(clazz);
-			if (optionalNewInstance.isPresent())
-			{
-				return optionalNewInstance.get();
-			}
-			optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
-			if (optionalNewInstance.isPresent())
-			{
-				return optionalNewInstance.get();
-			}
+			return optionalNewInstance.get();
+		}
+		optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
+		if (optionalNewInstance.isPresent())
+		{
+			return optionalNewInstance.get();
 		}
 		return newInstance;
 	}
