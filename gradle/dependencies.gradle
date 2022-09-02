@@ -12,4 +12,6 @@ dependencies {
     testImplementation("cglib:cglib:$cglibVersion")
     testImplementation("org.meanbean:meanbean:$meanbeanVersion")
     testImplementation("org.testng:testng:$testngVersion")
+    testImplementation("com.google.guava:guava:$guavaVersion")
+    testImplementation("io.github.astrapi69:throwable:$throwableVersion")
 }

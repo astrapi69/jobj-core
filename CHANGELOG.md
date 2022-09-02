@@ -4,6 +4,11 @@
 Version 6.2-SNAPSHOT
 -------------
 
+ADDED:
+
+- new test dependency throwable in new version 2.3 for decorate checked exception in unit tests
+- new test dependency guava in new version 31.1-jre
+
 Version 6.1
 -------------
 
