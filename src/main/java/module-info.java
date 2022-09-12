@@ -21,12 +21,10 @@
 module jobj.core.main {
 	requires lombok;
 	requires java.logging;
-	requires org.objenesis;
 	requires java.compiler;
 	exports io.github.astrapi69.check;
 	exports io.github.astrapi69.lang;
 	exports io.github.astrapi69.lang.manifest;
 	exports io.github.astrapi69.lang.model;
 	exports io.github.astrapi69.lang.thread;
-	exports io.github.astrapi69.reflection;
 }

@@ -1,6 +1,19 @@
 ## Change log
 ----------------------
 
+Version 7
+-------------
+
+ADDED:
+
+- new test dependency throwable in new version 2.3 for decorate checked exception in unit tests
+- new test dependency guava in new version 31.1-jre
+
+CHANGED:
+
+- remove of reflection package
+- remove of objenesis dependency
+
 Version 6.1
 -------------
 
