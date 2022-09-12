@@ -2,7 +2,6 @@
 dependencies {
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    implementation("org.objenesis:objenesis:$objenesisVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
     testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsverifierVersion")
     testImplementation("io.github.astrapi69:test-object:$testObjectVersion")
