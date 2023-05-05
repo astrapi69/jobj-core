@@ -18,15 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-module jobj.core.main
-{
-	requires lombok;
-	requires java.logging;
-	requires java.compiler;
-
-	exports io.github.astrapi69.check;
-	exports io.github.astrapi69.lang;
-	exports io.github.astrapi69.lang.manifest;
-	exports io.github.astrapi69.lang.model;
-	exports io.github.astrapi69.lang.thread;
-}
+/**
+ * This package contains utility classes for reflection
+ */
+package io.github.astrapi69.lang.reflect;
