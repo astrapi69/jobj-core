@@ -40,13 +40,13 @@ your project `build.gradle` if you want to import the core functionality of jobj
 define version in file gradle.properties
 
 ```
-jobjCoreVersion=7
+jobjCoreVersion=7.1
 ```
 
 or in build.gradle ext area
 
 ```
-    jobjCoreVersion = "7"
+    jobjCoreVersion = "7.1"
 ```
 
 and than add the dependency to the dependencies area
@@ -67,7 +67,7 @@ Than you can add the dependency to your dependencies:
     <properties>
             ...
         <!-- JOBJ-CORE version -->
-        <jobj-core.version>7</jobj-core.version>
+        <jobj-core.version>7.1</jobj-core.version>
             ...
     </properties>
             ...
