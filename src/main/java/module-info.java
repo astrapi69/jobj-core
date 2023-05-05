@@ -26,6 +26,7 @@ module jobj.core.main
 
 	exports io.github.astrapi69.check;
 	exports io.github.astrapi69.lang;
+	exports io.github.astrapi69.lang.reflect;
 	exports io.github.astrapi69.lang.manifest;
 	exports io.github.astrapi69.lang.model;
 	exports io.github.astrapi69.lang.thread;

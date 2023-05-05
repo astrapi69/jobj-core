@@ -8,6 +8,7 @@ ADDED:
 
 - new package reflect
 - new class ReflectionExtensions
+- new package-info java classes and removed obsolete package.html files
 
 CHANGED:
 
