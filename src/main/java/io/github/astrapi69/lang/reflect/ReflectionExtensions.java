@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
 import io.github.astrapi69.lang.ObjectExtensions;

@@ -22,9 +22,6 @@ package io.github.astrapi69.lang.manifest;
 
 import static org.testng.AssertJUnit.assertNotNull;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
