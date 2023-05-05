@@ -9,8 +9,8 @@ dependencies {
     testImplementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
     testImplementation("io.github.astrapi69:runtime-compiler:$runtimeCompilerVersion")
     testImplementation("cglib:cglib:$cglibVersion")
-    testImplementation("org.meanbean:meanbean:$meanbeanVersion")
-    testImplementation("org.testng:testng:$testngVersion")
     testImplementation("com.google.guava:guava:$guavaVersion")
     testImplementation("io.github.astrapi69:throwable:$throwableVersion")
+    testImplementation("com.github.meanbeanlib:meanbean:$meanbeanVersion")
+    testImplementation("org.testng:testng:$testngVersion")
 }

@@ -83,7 +83,6 @@ public class PropertiesKeyAndParametersTest
 				}
 			}).build();
 		final BeanTester beanTester = new BeanTester();
-		beanTester.addCustomConfiguration(PropertiesKeyAndParameters.class, configuration);
-		beanTester.testBean(PropertiesKeyAndParameters.class);
+		beanTester.testBean(PropertiesKeyAndParameters.class, configuration);
 	}
 }
