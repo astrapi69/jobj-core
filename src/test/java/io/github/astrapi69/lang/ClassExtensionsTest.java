@@ -39,9 +39,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import com.google.common.reflect.ClassPath;
-import io.github.astrapi69.collection.set.SetFactory;
-import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -53,8 +50,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.common.reflect.ClassPath;
+
 import io.github.astrapi69.classes.inner.OuterClass;
 import io.github.astrapi69.collection.array.ArrayFactory;
+import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
 import io.github.astrapi69.test.object.Member;
 import io.github.astrapi69.test.object.Person;
@@ -63,6 +63,7 @@ import io.github.astrapi69.test.object.annotation.TestAnnotation;
 import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
 import io.github.astrapi69.test.object.enumtype.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
+import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
 
 /**
  * The unit test class for the class {@link ClassExtensions}.
