@@ -18,38 +18,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.astrapi69.lang.manifest;
+package io.github.astrapi69.lang.reflect;
 
-import static org.testng.AssertJUnit.assertNotNull;
-
-import java.lang.reflect.InvocationTargetException;
-
-import org.meanbean.test.BeanTestException;
-import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
-
-/**
- * The unit test class for the class {@link ManifestVersion}
- */
-public class ManifestVersionTest
+class StaticBox
 {
-	/**
-	 * Test method for {@link ManifestVersion} constructors
-	 */
-	@Test
-	public final void testConstructors()
-	{
-		ManifestVersion manifestVersion = ManifestVersion.builder().build();
-		assertNotNull(manifestVersion);
-	}
+	private static String value;
 
-	/**
-	 * Test method for {@link ManifestVersion} with {@link BeanTester}
-	 */
-	@Test
-	public void testWithBeanTester()
+	public static String getValue()
 	{
-		final BeanTester beanTester = new BeanTester();
-		beanTester.testBean(ManifestVersion.class);
+		return value;
 	}
 }

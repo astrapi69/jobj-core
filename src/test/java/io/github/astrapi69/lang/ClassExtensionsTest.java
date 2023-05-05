@@ -126,7 +126,7 @@ public class ClassExtensionsTest
 		Set<Class> notInstantiableClasses = SetFactory.newHashSet();
 		Set<Class> instantiableClasses = SetFactory.newHashSet();
 		Set<String> notLoadableClasses = SetFactory.newHashSet();
-		assertEquals(classes.size(), 8046);
+		assertEquals(classes.size(), 8338);
 
 		classes.stream()
 			.filter(classInfo -> classInfo.getPackageName().startsWith("io.github.astrapi69"))
@@ -151,8 +151,8 @@ public class ClassExtensionsTest
 					notLoadableClasses.add(classInfo.getName());
 				}
 			});
-		assertEquals(notInstantiableClasses.size(), 44);
-		assertEquals(instantiableClasses.size(), 200);
+		assertEquals(notInstantiableClasses.size(), 45);
+		assertEquals(instantiableClasses.size(), 202);
 		assertEquals(notLoadableClasses.size(), 0);
 	}
 

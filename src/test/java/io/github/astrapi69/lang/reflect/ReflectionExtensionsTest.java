@@ -20,6 +20,14 @@
  */
 package io.github.astrapi69.lang.reflect;
 
+
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -32,10 +40,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
-
+import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
@@ -45,13 +52,6 @@ import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.PrimitiveArrays;
 import io.github.astrapi69.test.object.enumtype.Gender;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}
@@ -249,7 +249,7 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#copyFieldValue(Object, Object, Field)}
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
@@ -710,7 +710,7 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
 	 * @throws InstantiationException
@@ -738,7 +738,7 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
 	 * @throws InstantiationException
@@ -767,7 +767,7 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
 	 * @throws InstantiationException
@@ -795,7 +795,7 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Class)}
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
 	 * @throws InstantiationException
@@ -895,6 +895,35 @@ public class ReflectionExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ReflectionExtensions#setFieldValue(Class, String, Object)}.
+	 *
+	 * @throws NoSuchFieldException
+	 *             is thrown if no such field exists.
+	 * @throws SecurityException
+	 *             is thrown if a security manager says no.
+	 * @throws IllegalAccessException
+	 *             is thrown if an illegal on create an instance or access a method.
+	 */
+	@Test
+	public void testSetFieldValueWithClass()
+		throws NoSuchFieldException, SecurityException, IllegalAccessException
+	{
+		String expected;
+		String actual;
+
+		ReflectionExtensions.setFieldValue(StaticBox.class, "value", "Leo");
+		actual = StaticBox.getValue();
+		expected = "Leo";
+		assertEquals(expected, actual);
+
+		ReflectionExtensions.setFieldValue(StaticBox.class, "value", (Object)null);
+		actual = StaticBox.getValue();
+		expected = null;
+		assertEquals(expected, actual);
+	}
+
+
+	/**
 	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Object, Field)}
 	 *
 	 * @throws IllegalAccessException
@@ -941,7 +970,8 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions} with {@link BeanTester}
 	 */
-	@Test
+	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
+			UnsupportedOperationException.class })
 	public void testWithBeanTester()
 	{
 		BeanTester beanTester = new BeanTester();

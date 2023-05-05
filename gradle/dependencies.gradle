@@ -12,6 +12,5 @@ dependencies {
     testImplementation("com.google.guava:guava:$guavaVersion")
     testImplementation("io.github.astrapi69:throwable:$throwableVersion")
     testImplementation("com.github.meanbeanlib:meanbean:$meanbeanVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testImplementation("org.testng:testng:$testngVersion")
 }
