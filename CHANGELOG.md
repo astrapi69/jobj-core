@@ -4,6 +4,22 @@
 Version 7.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new package reflect
+- new class ReflectionExtensions
+
+CHANGED:
+
+- update of gradle to new version 8.1.1
+- update of lombok version to 1.18.26
+- update of com.github.ben-manes.versions.gradle.plugin to new minor version 0.46.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.18.0
+- update of test-dependency test-object to new version 7.2
+- update of test-dependency silly-collection to new version 21
+- update of test-dependency equalsverifier version to 3.14.1
+- update of test-dependency testng version to 7.7.1
 
 Version 7
 -------------
