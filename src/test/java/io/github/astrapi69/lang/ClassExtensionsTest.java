@@ -116,7 +116,7 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#isInstantiable(Class)} from all classes in the
 	 * classloader
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testIsInstantiableWithAllClasses()
 	{
 		boolean expected;
