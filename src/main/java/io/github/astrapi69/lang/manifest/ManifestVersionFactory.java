@@ -30,9 +30,9 @@ import java.time.ZoneId;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import io.github.astrapi69.lang.ClassExtensions;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import io.github.astrapi69.lang.ClassExtensions;
 
 /**
  * Simple bean to hold information about the version of a Manifest. Can be used for JAR, EAR and WAR

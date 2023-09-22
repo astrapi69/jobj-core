@@ -22,10 +22,10 @@ package io.github.astrapi69.lang.model;
 
 import static org.testng.AssertJUnit.assertNotNull;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /**
  * The unit test class for the class {@link AnnotationModel}.
