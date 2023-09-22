@@ -1,8 +1,21 @@
 ## Change log
 ----------------------
 
-Version 7.2-SNAPSHOT
+Version 8-SNAPSHOT
 -------------
+
+CHANGED:
+
+- update of jdk to version 17
+- update of gradle to new version 8.4-rc-1
+- update of lombok version to 1.18.30
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.48.0
+- update of gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.21.0
+- remove of package reflect cause of existing in its own module
+- update of test dependency guava to new version 32.1.2-jre
+- update of test-dependency silly-collection to new version 27
+- update of test-dependency equalsverifier version to 3.15.1
+- update of test-dependency testng version to 7.8.0
 
 Version 7.1
 -------------
