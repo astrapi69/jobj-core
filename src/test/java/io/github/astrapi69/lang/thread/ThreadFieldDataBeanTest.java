@@ -24,12 +24,11 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 import java.util.Map;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.map.MapFactory;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /**
  * The unit test class for the class {@link ThreadFieldDataBean}.

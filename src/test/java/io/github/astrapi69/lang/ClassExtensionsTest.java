@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-
 import org.meanbean.factories.ObjectCreationException;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
@@ -64,6 +60,9 @@ import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterfa
 import io.github.astrapi69.test.object.enumtype.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
 import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 /**
  * The unit test class for the class {@link ClassExtensions}.
