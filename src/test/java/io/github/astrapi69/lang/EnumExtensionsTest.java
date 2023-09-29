@@ -24,6 +24,7 @@ import static org.testng.AssertJUnit.assertEquals;
 
 import java.util.function.Function;
 
+import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
@@ -128,7 +129,7 @@ public class EnumExtensionsTest
 	/**
 	 * Test method for {@link EnumExtensions}
 	 */
-	@Test
+	@Test(expectedExceptions = { BeanTestException.class })
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
