@@ -22,18 +22,79 @@ package io.github.astrapi69.lang;
 
 import static org.testng.AssertJUnit.assertEquals;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import java.util.function.Function;
+
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.crypt.api.algorithm.key.KeyPairGeneratorAlgorithm;
+import io.github.astrapi69.crypt.api.key.KeyType;
+import io.github.astrapi69.test.object.enumtype.Brand;
 
 /**
  * The unit test class for the class {@link EnumExtensions}
  */
 public class EnumExtensionsTest
 {
+
+	/**
+	 * Test method for {@link EnumExtensions#enumFieldValue(Class, Object, Function, Enum)}
+	 */
+	@Test
+	public void testEnumFieldValue()
+	{
+		TestCar actual;
+		TestCar expected;
+		Class<TestCar> testCarClass;
+
+		testCarClass = TestCar.class;
+
+		actual = EnumExtensions.enumFieldValue(testCarClass, Brand.FERRARI, TestCar::getBrand,
+			TestCar.UNKNOWN);
+		expected = TestCar.GARAGE_PARIS;
+
+		assertEquals(expected, actual);
+		actual = EnumExtensions.enumFieldValue(testCarClass, Brand.PORSCHE, TestCar::getBrand,
+			TestCar.UNKNOWN);
+		expected = TestCar.GARAGE_BERLIN;
+		assertEquals(expected, actual);
+
+		assertEquals(expected, actual);
+		actual = EnumExtensions.enumFieldValue(testCarClass, Brand.MASERATI, TestCar::getBrand,
+			TestCar.UNKNOWN);
+		expected = TestCar.UNKNOWN;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for
+	 * {@link EnumExtensions#enumFieldValueFromString(Class, String, Function, Enum)}
+	 */
+	@Test
+	public void testEnumFieldValueFromString()
+	{
+
+		KeyType actual;
+		KeyType expected;
+		String enumFieldName;
+		Class<KeyType> keyTypeClass;
+
+		keyTypeClass = KeyType.class;
+
+		enumFieldName = "foo bar";
+
+		actual = EnumExtensions.enumFieldValueFromString(keyTypeClass, enumFieldName,
+			KeyType::getDisplayValue, KeyType.UNKNOWN);
+		expected = KeyType.UNKNOWN;
+		assertEquals(expected, actual);
+
+		enumFieldName = "Public key";
+
+		actual = EnumExtensions.enumFieldValueFromString(keyTypeClass, enumFieldName,
+			KeyType::getDisplayValue, KeyType.UNKNOWN);
+		expected = KeyType.PUBLIC_KEY;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link EnumExtensions#enumValueFromString(Class, String, Enum)}
@@ -47,14 +108,14 @@ public class EnumExtensionsTest
 
 		enumName = "DSA";
 		actual = EnumExtensions.enumValueFromString(KeyPairGeneratorAlgorithm.class, enumName,
-			KeyPairGeneratorAlgorithm.UNKNOWN_TYPE);
+			KeyPairGeneratorAlgorithm.UNKNOWN);
 		expected = KeyPairGeneratorAlgorithm.DSA;
 		assertEquals(expected, actual);
 
 		enumName = "foo";
 		actual = EnumExtensions.enumValueFromString(KeyPairGeneratorAlgorithm.class, enumName,
-			KeyPairGeneratorAlgorithm.UNKNOWN_TYPE);
-		expected = KeyPairGeneratorAlgorithm.UNKNOWN_TYPE;
+			KeyPairGeneratorAlgorithm.UNKNOWN);
+		expected = KeyPairGeneratorAlgorithm.UNKNOWN;
 		assertEquals(expected, actual);
 
 		enumName = "foo";
@@ -67,7 +128,7 @@ public class EnumExtensionsTest
 	/**
 	 * Test method for {@link EnumExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

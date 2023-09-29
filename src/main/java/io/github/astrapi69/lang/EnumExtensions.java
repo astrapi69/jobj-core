@@ -21,8 +21,15 @@
 package io.github.astrapi69.lang;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
-public class EnumExtensions
+import lombok.experimental.UtilityClass;
+
+/**
+ * The class {@link EnumExtensions} provides generic utility methods for java enums
+ */
+@UtilityClass
+public final class EnumExtensions
 {
 
 	/**
@@ -35,6 +42,8 @@ public class EnumExtensions
 	 *            the class of the enumeration
 	 * @param name
 	 *            the name of the enum value as {@link String} object
+	 * @param defaultReturnEnumValue
+	 *            the default enum value to return if no enum value has been found
 	 * @return the corresponding enum value, or the given default enum value
 	 */
 	public static <E extends Enum<E>> E enumValueFromString(final Class<E> enumerationClass,
@@ -44,6 +53,66 @@ public class EnumExtensions
 		{
 			return Arrays.stream(enumerationClass.getEnumConstants())
 				.filter(enumValue -> enumValue.name().equalsIgnoreCase(name)).findFirst()
+				.orElse(defaultReturnEnumValue);
+		}
+		return defaultReturnEnumValue;
+	}
+
+	/**
+	 * This method gets the enum value from the given enum {@link Class} object and the given
+	 * {@link String} object that represents an enum field as string
+	 *
+	 * @param <E>
+	 *            the generic type of the enum
+	 * @param enumerationClass
+	 *            the class of the enumeration
+	 * @param enumField
+	 *            the enum field of the enum value as {@link String} object.<br/>
+	 *            Here is not necessarily be the name, it can be an instance field of the enum
+	 * @param function
+	 *            the function that returns the value of the enum field
+	 * @param defaultReturnEnumValue
+	 *            the default enum value to return if no enum value has been found
+	 * @return the corresponding enum value, or the given default enum value
+	 */
+	public static <E extends Enum<E>> E enumFieldValueFromString(final Class<E> enumerationClass,
+		final String enumField, final Function<E, String> function, final E defaultReturnEnumValue)
+	{
+		if (enumerationClass != null && enumField != null)
+		{
+			return Arrays.stream(enumerationClass.getEnumConstants())
+				.filter(enumValue -> function.apply(enumValue).equalsIgnoreCase(enumField))
+				.findFirst().orElse(defaultReturnEnumValue);
+		}
+		return defaultReturnEnumValue;
+	}
+
+	/**
+	 * This method gets the enum value from the given enum {@link Class} object and the given
+	 * generic type object that represents an enum field
+	 *
+	 * @param <E>
+	 *            the generic type of the enum
+	 * @param <R>
+	 *            the generic type of the enum from the enum field
+	 * @param enumerationClass
+	 *            the class of the enumeration
+	 * @param enumField
+	 *            the enum field of the enum value.<br/>
+	 *            This field is not the name of the enum
+	 * @param function
+	 *            the function that returns the value of the enum field
+	 * @param defaultReturnEnumValue
+	 *            the default enum value to return if no enum value has been found
+	 * @return the corresponding enum value, or the given default enum value
+	 */
+	public static <E extends Enum<E>, R> E enumFieldValue(final Class<E> enumerationClass,
+		final R enumField, final Function<E, R> function, final E defaultReturnEnumValue)
+	{
+		if (enumerationClass != null && enumField != null)
+		{
+			return Arrays.stream(enumerationClass.getEnumConstants())
+				.filter(enumValue -> function.apply(enumValue).equals(enumField)).findFirst()
 				.orElse(defaultReturnEnumValue);
 		}
 		return defaultReturnEnumValue;

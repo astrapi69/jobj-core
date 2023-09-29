@@ -7,11 +7,13 @@ Version 8.1-SNAPSHOT
 ADDED:
 
 - new extension class EnumExtensions that provides methods for get enum values from string
-- new test-dependency crypt-api for unit testing
+- new method in class EnumExtensions that can get enum values from a given enum field as string or as a generic value
+- new test-dependency crypt-api for unit testing in version 8.7
 
 CHANGED:
 
-- update of gradle to new version 8.4-rc-2
+- update of gradle to new version 8.4-rc-3
+- update of gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.22.0
 - update of the test-dependency equalsverifier version to 3.15.2
 
 Version 8
