@@ -4,7 +4,15 @@
 Version 8.1-SNAPSHOT
 -------------
 
+ADDED:
 
+- new extension class EnumExtensions that provides methods for get enum values from string
+- new test-dependency crypt-api for unit testing
+
+CHANGED:
+
+- update of gradle to new version 8.4-rc-2
+- update of the test-dependency equalsverifier version to 3.15.2
 
 Version 8
 -------------
