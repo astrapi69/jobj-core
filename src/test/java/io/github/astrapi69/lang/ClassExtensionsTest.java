@@ -65,7 +65,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 /**
- * The unit test class for the class {@link ClassExtensions}.
+ * The unit test class for the class {@link ClassExtensions}
  */
 public class ClassExtensionsTest
 {
