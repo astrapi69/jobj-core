@@ -4,7 +4,12 @@
 Version 8.2-SNAPSHOT
 -------------
 
+CHANGED:
 
+- update of gradle to new version 8.4
+- update of gradle-plugin dependency io.freefair.gradle:lombok-plugin to new patch version 8.4
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.49.0
+- update of test dependency guava to new version 32.1.3-jre
 
 Version 8.1
 -------------

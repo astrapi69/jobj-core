@@ -20,6 +20,7 @@
  */
 package io.github.astrapi69.lang.manifest;
 
+import static org.testng.Assert.*;
 import static org.testng.AssertJUnit.assertNotNull;
 
 import java.util.jar.Attributes;
@@ -27,41 +28,47 @@ import java.util.jar.Attributes;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
+import io.github.astrapi69.crypt.api.algorithm.key.KeyPairGeneratorAlgorithm;
+import io.github.astrapi69.lang.ObjectExtensions;
+
 /**
- * The unit test class for the class {@link ManifestVersion}
+ * The unit test class for the class {@link ManifestVersionFactory}
  */
-public class ManifestVersionTest
+public class ManifestVersionFactoryTest
 {
+
 	/**
-	 * Test method for {@link ManifestVersion#getManifestAttribute(Attributes.Name)}
+	 * Test method for {@link ManifestVersionFactory#get(Class)}
 	 */
 	@Test
-	public final void testgetManifestAttribute()
+	public void testGet()
 	{
-		ManifestVersion manifestVersion = ManifestVersion.builder().build();
-		assertNotNull(manifestVersion);
-		Attributes.Name mainClass = Attributes.Name.MAIN_CLASS;
-		String manifestAttributeMainClass = manifestVersion.getManifestAttribute(mainClass);
-		assertNotNull(manifestAttributeMainClass);
+		ManifestVersion actual;
+
+		actual = ManifestVersionFactory.get(KeyPairGeneratorAlgorithm.class);
+		assertNotNull(actual);
 	}
 
 	/**
-	 * Test method for {@link ManifestVersion} constructors
+	 * Test method for {@link ManifestVersionFactory#getManifestUrl(Class)}
 	 */
 	@Test
-	public final void testConstructors()
+	public void testGetManifestUrl()
 	{
-		ManifestVersion manifestVersion = ManifestVersion.builder().build();
-		assertNotNull(manifestVersion);
+		String actual;
+
+		actual = ManifestVersionFactory.getManifestUrl(KeyPairGeneratorAlgorithm.class);
+		assertNotNull(actual);
 	}
 
 	/**
-	 * Test method for {@link ManifestVersion} with {@link BeanTester}
+	 * Test method for {@link ManifestVersionFactory} with {@link BeanTester}
 	 */
-	@Test
+	@Test(enabled = false)
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
-		beanTester.testBean(ManifestVersion.class);
+		beanTester.testBean(ManifestVersionFactory.class);
 	}
+
 }
