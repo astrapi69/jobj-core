@@ -59,6 +59,9 @@ public class ManifestVersionFactoryTest
 
 		actual = ManifestVersionFactory.getManifestUrl(KeyPairGeneratorAlgorithm.class);
 		assertNotNull(actual);
+
+		actual = ManifestVersionFactory.getManifestUrl(ObjectExtensions.class);
+		assertNotNull(actual);
 	}
 
 	/**

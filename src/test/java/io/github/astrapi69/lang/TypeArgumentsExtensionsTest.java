@@ -27,6 +27,7 @@ import static org.testng.AssertJUnit.assertNotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -186,8 +187,9 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	@Test(enabled = true)
 	public void testGetTypeArguments()
 	{
-		final List<Class<?>> typeArguments = TypeArgumentsExtensions
-			.getTypeArguments(GenericDao.class, PersonDao.class);
+		List<Class<?>> typeArguments;
+
+		typeArguments = TypeArgumentsExtensions.getTypeArguments(GenericDao.class, PersonDao.class);
 		assertNotNull(typeArguments);
 		assertEquals(2, typeArguments.size());
 		assertEquals(Person.class, typeArguments.get(0));
@@ -207,15 +209,19 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	public void testGetTypeArgumentsAndParameters() throws SecurityException
 	{
 		Optional<ParameterizedType> parameterizedTypeOptional;
+		Map<Type, Type> typeArgumentsAndParameters;
+		ParameterizedType parameterizedType;
+
 		parameterizedTypeOptional = TypeArgumentsExtensions.getParameterizedType(PersonDao.class);
 		if (parameterizedTypeOptional.isPresent())
 		{
-			ParameterizedType parameterizedType = parameterizedTypeOptional.get();
-			Map<Type, Type> typeArgumentsAndParameters = TypeArgumentsExtensions
+			parameterizedType = parameterizedTypeOptional.get();
+			typeArgumentsAndParameters = TypeArgumentsExtensions
 				.getTypeArgumentsAndParameters(parameterizedType);
 			assertEquals(2, typeArgumentsAndParameters.size());
 			assertTrue(typeArgumentsAndParameters.containsValue(Integer.class));
 			assertTrue(typeArgumentsAndParameters.containsValue(Person.class));
+
 		}
 		else
 		{
