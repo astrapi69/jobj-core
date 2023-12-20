@@ -36,9 +36,9 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.BaseTestCase;
-import io.github.astrapi69.test.message.TestMessagesExtensions;
+import io.github.astrapi69.test.base.BaseTestCase;
 import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.factory.TestMessagesFactory;
 import io.github.astrapi69.test.object.generic.GenericDao;
 import io.github.astrapi69.test.object.generic.PersonDao;
 
@@ -93,7 +93,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		expected = Array.newInstance(objectClass, 0).getClass();
 		assertEquals(expected, actual);
 		Class<String> stringClass = String.class;
-		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesExtensions.class,
+		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesFactory.class,
 			"newFailMessage", stringClass, stringClass, stringClass);
 		expected = stringClass;
 		assertEquals(expected, actual);
@@ -186,8 +186,9 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	@Test(enabled = true)
 	public void testGetTypeArguments()
 	{
-		final List<Class<?>> typeArguments = TypeArgumentsExtensions
-			.getTypeArguments(GenericDao.class, PersonDao.class);
+		List<Class<?>> typeArguments;
+
+		typeArguments = TypeArgumentsExtensions.getTypeArguments(GenericDao.class, PersonDao.class);
 		assertNotNull(typeArguments);
 		assertEquals(2, typeArguments.size());
 		assertEquals(Person.class, typeArguments.get(0));
@@ -207,15 +208,19 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	public void testGetTypeArgumentsAndParameters() throws SecurityException
 	{
 		Optional<ParameterizedType> parameterizedTypeOptional;
+		Map<Type, Type> typeArgumentsAndParameters;
+		ParameterizedType parameterizedType;
+
 		parameterizedTypeOptional = TypeArgumentsExtensions.getParameterizedType(PersonDao.class);
 		if (parameterizedTypeOptional.isPresent())
 		{
-			ParameterizedType parameterizedType = parameterizedTypeOptional.get();
-			Map<Type, Type> typeArgumentsAndParameters = TypeArgumentsExtensions
+			parameterizedType = parameterizedTypeOptional.get();
+			typeArgumentsAndParameters = TypeArgumentsExtensions
 				.getTypeArgumentsAndParameters(parameterizedType);
 			assertEquals(2, typeArgumentsAndParameters.size());
 			assertTrue(typeArgumentsAndParameters.containsValue(Integer.class));
 			assertTrue(typeArgumentsAndParameters.containsValue(Person.class));
+
 		}
 		else
 		{

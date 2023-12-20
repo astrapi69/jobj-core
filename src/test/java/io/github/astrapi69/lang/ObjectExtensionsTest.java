@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
 import io.github.astrapi69.test.object.Company;
 import io.github.astrapi69.test.object.annotation.Mandatory;
 import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
-import io.github.astrapi69.test.object.enumtype.Gender;
+import io.github.astrapi69.test.object.enumeration.Gender;
 
 /**
  * The unit test class for the class {@link ObjectExtensions}.

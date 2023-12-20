@@ -148,6 +148,8 @@ public final class ClassExtensions
 	 *            the class
 	 * @return the real class if the given class is decorated with cglib proxy classes and if not
 	 *         the given class will be returned.
+	 * @deprecated does not with the java module system and will be removed in the next minor
+	 *             version
 	 */
 	public static Class<?> getCglibProxy(final @NonNull Class<?> clazz)
 	{
@@ -777,6 +779,18 @@ public final class ClassExtensions
 	public static URL getURL(final @NonNull Class<?> clazz)
 	{
 		return ClassExtensions.getResource(ClassExtensions.getPath(clazz));
+	}
+
+	/**
+	 * Gets the protocol name from the given {@code class}
+	 *
+	 * @param clazz
+	 *            The class
+	 * @return the protocol name from the given {@code class}
+	 */
+	public static String getProtocol(final @NonNull Class<?> clazz)
+	{
+		return getURL(clazz).getProtocol();
 	}
 
 	/**

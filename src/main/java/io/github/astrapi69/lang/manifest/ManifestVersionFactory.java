@@ -75,7 +75,7 @@ public class ManifestVersionFactory
 		final ManifestVersion version = new ManifestVersion();
 		if (url != null)
 		{
-			URLConnection urlConnection = null;
+			URLConnection urlConnection;
 			try
 			{
 				urlConnection = url.openConnection();
@@ -104,28 +104,21 @@ public class ManifestVersionFactory
 	 */
 	public static String getManifestUrl(@NonNull Class<?> clazz)
 	{
-		if (clazz == null)
+		String manifestUrl = null;
+		String path = ClassExtensions.getPath(clazz);
+		URL classUrl = ClassExtensions.getResource(path);
+		if (classUrl != null)
 		{
-			throw new NullPointerException("clazz is marked non-null but is null");
-		}
-		else
-		{
-			String manifestUrl = null;
-			String path = ClassExtensions.getPath(clazz);
-			URL classUrl = ClassExtensions.getResource(path);
-			if (classUrl != null)
+			String classUrlString = classUrl.toString();
+			if (classUrlString.startsWith("jar:") && classUrlString.indexOf(path) > 0
+				|| classUrlString.startsWith("war:") && classUrlString.indexOf(path) > 0
+				|| classUrlString.startsWith("ear:") && classUrlString.indexOf(path) > 0
+				|| classUrlString.startsWith("file:") && classUrlString.indexOf(path) > 0)
 			{
-				String classUrlString = classUrl.toString();
-				if (classUrlString.startsWith("jar:") && classUrlString.indexOf(path) > 0
-					|| classUrlString.startsWith("war:") && classUrlString.indexOf(path) > 0
-					|| classUrlString.startsWith("ear:") && classUrlString.indexOf(path) > 0
-					|| classUrlString.startsWith("file:") && classUrlString.indexOf(path) > 0)
-				{
-					manifestUrl = classUrlString.replace(path, "/META-INF/MANIFEST.MF");
-				}
+				manifestUrl = classUrlString.replace(path, "/META-INF/MANIFEST.MF");
 			}
-			return manifestUrl;
 		}
+		return manifestUrl;
 	}
 
 }

@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -48,7 +49,6 @@ import org.testng.annotations.Test;
 
 import com.google.common.reflect.ClassPath;
 
-import io.github.astrapi69.classes.inner.OuterClass;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
@@ -57,7 +57,8 @@ import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.annotation.TestAnnotation;
 import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
-import io.github.astrapi69.test.object.enumtype.Brand;
+import io.github.astrapi69.test.object.classes.inner.OuterClass;
+import io.github.astrapi69.test.object.enumeration.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
 import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
 import net.sf.cglib.proxy.Enhancer;
@@ -87,6 +88,21 @@ public class ClassExtensionsTest
 	@AfterMethod
 	public void tearDown()
 	{
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getDirectoriesFromResources(String, boolean)}
+	 */
+	@Test(enabled = true)
+	public void testGetDirectoriesFromResources() throws IOException
+	{
+		List<File> actual;
+		String resourcesDirPath;
+
+		resourcesDirPath = "io/github/astrapi69/lang";
+
+		actual = ClassExtensions.getDirectoriesFromResources(resourcesDirPath, true);
+		assertNotNull(actual);
 	}
 
 	/**
@@ -269,21 +285,6 @@ public class ClassExtensionsTest
 		String actual;
 		actual = ClassExtensions.getCallingMethodName(Thread.currentThread().getStackTrace());
 		expected = "invoke0";
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test method for {@link ClassExtensions#getCglibProxy(Class)}.
-	 */
-	@Test(enabled = false)
-	public void testGetCglibProxy()
-	{
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
-
-		Class<?> actual = ClassExtensions.getCglibProxy(proxy.getClass());
-		Class<?> expected = PersonDao.class;
 		assertEquals(expected, actual);
 	}
 
@@ -767,17 +768,26 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getUnwrappedProxy(Class)}.
 	 */
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void testGetUnwrappedProxy()
 	{
 		Class<?> actual;
 		Class<?> expected;
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
+		Map proxyInstance = (Map)Proxy.newProxyInstance(ClassExtensions.getClassLoader(),
+			new Class[] { Map.class }, (proxy, method, methodArgs) -> {
+				if (method.getName().equals("get"))
+				{
+					return 42;
+				}
+				else
+				{
+					throw new UnsupportedOperationException(
+						"Unsupported method: " + method.getName());
+				}
+			});
 
-		actual = ClassExtensions.getUnwrappedProxy(proxy.getClass());
-		expected = PersonDao.class;
+		actual = ClassExtensions.getUnwrappedProxy(proxyInstance.getClass());
+		expected = Map.class;
 		assertEquals(expected, actual);
 
 		actual = ClassExtensions.getUnwrappedProxy(null);
@@ -796,6 +806,24 @@ public class ClassExtensionsTest
 		String urlAsString = actualUrl.toString();
 		assertTrue(urlAsString.startsWith("jrt:"));
 		assertTrue(urlAsString.endsWith("/java/lang/Object.class"));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getProtocol(Class)}
+	 */
+	@Test
+	public void testGetProtocol()
+	{
+		String actual;
+		String expected;
+
+		actual = ClassExtensions.getProtocol(Object.class);
+		expected = "jrt";
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getProtocol(ClassExtensionsTest.class);
+		expected = "file";
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -910,25 +938,26 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#isProxy(Class)}.
 	 */
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void testIsProxy()
 	{
 		boolean actual;
-		boolean expected;
 
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor methodInterceptor = new MethodInterceptorHandler<>(personDao);
-		PersonDao cglibProxy = (PersonDao)Enhancer.create(PersonDao.class, methodInterceptor);
-		expected = true;
-		actual = ClassExtensions.isProxy(cglibProxy.getClass());
-		assertEquals(expected, actual);
+		Map proxyInstance = (Map)Proxy.newProxyInstance(ClassExtensions.getClassLoader(),
+			new Class[] { Map.class }, (proxy, method, methodArgs) -> {
+				if (method.getName().equals("get"))
+				{
+					return 42;
+				}
+				else
+				{
+					throw new UnsupportedOperationException(
+						"Unsupported method: " + method.getName());
+				}
+			});
+		actual = ClassExtensions.isProxy(proxyInstance.getClass());
+		assertTrue(actual);
 
-		Bla bla = new Bla();
-		InvocationHandler invocationHandler = new InvocationHandlerHandler<>(bla);
-		Foo proxy = (Foo)Proxy.newProxyInstance(ClassExtensions.getClassLoader(),
-			new Class[] { Foo.class }, invocationHandler);
-		actual = ClassExtensions.isProxy(proxy.getClass());
-		assertEquals(expected, actual);
 	}
 
 	/**
