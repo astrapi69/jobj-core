@@ -20,7 +20,7 @@
  */
 package io.github.astrapi69.lang;
 
-import io.github.astrapi69.test.object.enumtype.Brand;
+import io.github.astrapi69.test.object.enumeration.Brand;
 import lombok.Getter;
 
 public enum TestCar

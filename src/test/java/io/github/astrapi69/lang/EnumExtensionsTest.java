@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 
 import io.github.astrapi69.crypt.api.algorithm.key.KeyPairGeneratorAlgorithm;
 import io.github.astrapi69.crypt.api.key.KeyType;
-import io.github.astrapi69.test.object.enumtype.Brand;
+import io.github.astrapi69.test.object.enumeration.Brand;
 
 /**
  * The unit test class for the class {@link EnumExtensions}

@@ -4,12 +4,20 @@
 Version 8.2-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ClassExtensions that resolves the protocol
+
 CHANGED:
 
-- update of gradle to new version 8.4
+- update of gradle to new version 8.5
 - update of gradle-plugin dependency io.freefair.gradle:lombok-plugin to new patch version 8.4
-- update of com.github.ben-manes.versions.gradle.plugin to new version 0.49.0
-- update of test dependency guava to new version 32.1.3-jre
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.50.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.1
+- update of gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 6.23.3
+- update of test dependency guava to new version 33.0.0-jre
+- update of the test-dependency equalsverifier version to 3.15.4
+- update of test-dependency test-object to new version 8.2
 
 Version 8.1
 -------------

@@ -782,6 +782,18 @@ public final class ClassExtensions
 	}
 
 	/**
+	 * Gets the protocol name from the given {@code class}
+	 *
+	 * @param clazz
+	 *            The class
+	 * @return the protocol name from the given {@code class}
+	 */
+	public static String getProtocol(final @NonNull Class<?> clazz)
+	{
+		return getURL(clazz).getProtocol();
+	}
+
+	/**
 	 * Checks if the given {@link Class} is cglib proxy class.
 	 *
 	 * @param <T>

@@ -28,7 +28,7 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.test.message.TestMessagesExtensions;
+import io.github.astrapi69.test.object.factory.TestMessagesFactory;
 
 /**
  * The unit test class for the class {@link PackageExtensions}.
@@ -92,7 +92,7 @@ public class PackageExtensionsTest
 		String actual;
 		expected = "io/github/astrapi69/lang/";
 		actual = PackageExtensions.getPackagePath(this);
-		assertTrue(TestMessagesExtensions.newFailMessage("PackagePath", expected, actual),
+		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
 			expected.equals(actual));
 	}
 
@@ -108,7 +108,7 @@ public class PackageExtensionsTest
 		expected = "io/github/astrapi69/lang";
 		input = "io.github.astrapi69.lang";
 		actual = PackageExtensions.getPackagePath(input);
-		assertTrue(TestMessagesExtensions.newFailMessage("PackagePath", expected, actual),
+		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
 			expected.equals(actual));
 	}
 
@@ -124,7 +124,7 @@ public class PackageExtensionsTest
 		expected = "io/github/astrapi69/lang/";
 		input = "io.github.astrapi69.lang";
 		actual = PackageExtensions.getPackagePath(input, true);
-		assertTrue(TestMessagesExtensions.newFailMessage("PackagePath", expected, actual),
+		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
 			expected.equals(actual));
 	}
 
@@ -140,7 +140,7 @@ public class PackageExtensionsTest
 		expected = "/io/github/astrapi69/lang/";
 		input = this;
 		actual = PackageExtensions.getPackagePathWithSlash(input);
-		assertTrue(TestMessagesExtensions.newFailMessage("PackagePath", expected, actual),
+		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
 			expected.equals(actual));
 	}
 

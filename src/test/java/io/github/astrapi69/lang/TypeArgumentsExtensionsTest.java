@@ -27,7 +27,6 @@ import static org.testng.AssertJUnit.assertNotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,9 +36,9 @@ import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
 import org.testng.annotations.Test;
 
-import io.github.astrapi69.BaseTestCase;
-import io.github.astrapi69.test.message.TestMessagesExtensions;
+import io.github.astrapi69.test.base.BaseTestCase;
 import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.factory.TestMessagesFactory;
 import io.github.astrapi69.test.object.generic.GenericDao;
 import io.github.astrapi69.test.object.generic.PersonDao;
 
@@ -94,7 +93,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		expected = Array.newInstance(objectClass, 0).getClass();
 		assertEquals(expected, actual);
 		Class<String> stringClass = String.class;
-		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesExtensions.class,
+		actual = TypeArgumentsExtensions.getGenericReturnClassType(TestMessagesFactory.class,
 			"newFailMessage", stringClass, stringClass, stringClass);
 		expected = stringClass;
 		assertEquals(expected, actual);

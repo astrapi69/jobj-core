@@ -49,7 +49,6 @@ import org.testng.annotations.Test;
 
 import com.google.common.reflect.ClassPath;
 
-import io.github.astrapi69.classes.inner.OuterClass;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.runtime.compiler.JavaSourceCompiler;
@@ -58,8 +57,8 @@ import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.annotation.TestAnnotation;
 import io.github.astrapi69.test.object.annotation.interfacetype.AnnotatedInterface;
-import io.github.astrapi69.test.object.enumtype.Brand;
-import io.github.astrapi69.test.object.generic.GenericDao;
+import io.github.astrapi69.test.object.classes.inner.OuterClass;
+import io.github.astrapi69.test.object.enumeration.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
 import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
 import net.sf.cglib.proxy.Enhancer;
@@ -807,6 +806,24 @@ public class ClassExtensionsTest
 		String urlAsString = actualUrl.toString();
 		assertTrue(urlAsString.startsWith("jrt:"));
 		assertTrue(urlAsString.endsWith("/java/lang/Object.class"));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getProtocol(Class)}
+	 */
+	@Test
+	public void testGetProtocol()
+	{
+		String actual;
+		String expected;
+
+		actual = ClassExtensions.getProtocol(Object.class);
+		expected = "jrt";
+		assertEquals(expected, actual);
+
+		actual = ClassExtensions.getProtocol(ClassExtensionsTest.class);
+		expected = "file";
+		assertEquals(expected, actual);
 	}
 
 	/**
