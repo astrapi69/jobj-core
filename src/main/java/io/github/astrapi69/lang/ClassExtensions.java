@@ -936,6 +936,20 @@ public final class ClassExtensions
 	}
 
 	/**
+	 * Checks if the given {@link Class} is loaded from a jar file
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the class to check
+	 * @return true, if the given {@link Class} is loaded from a jar file otherwise false
+	 */
+	public static <T> boolean isFromJar(final @NonNull Class<T> clazz)
+	{
+		return getProtocol(clazz).equals("jar");
+	}
+
+	/**
 	 * Unwrap the given {@link Class} if it is wrapped from cglib or jdk proxies.
 	 *
 	 * @param clazz

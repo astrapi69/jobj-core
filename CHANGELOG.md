@@ -4,6 +4,9 @@
 Version 8.3-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ClassExtensions that checks if the given class is loaded from a jar file
 
 Version 8.2
 -------------
