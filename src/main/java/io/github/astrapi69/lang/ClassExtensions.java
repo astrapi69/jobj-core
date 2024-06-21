@@ -151,6 +151,7 @@ public final class ClassExtensions
 	 * @deprecated does not with the java module system and will be removed in the next minor
 	 *             version
 	 */
+	@Deprecated
 	public static Class<?> getCglibProxy(final @NonNull Class<?> clazz)
 	{
 		Class<?> found = clazz;
