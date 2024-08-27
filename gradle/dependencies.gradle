@@ -1,17 +1,19 @@
-
 dependencies {
-    compileOnly("org.projectlombok:lombok:$lombokVersion")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:$equalsverifierVersion")
-    testImplementation("io.github.astrapi69:crypt-api:$cryptApiVersion")
-    testImplementation("io.github.astrapi69:test-object:$testObjectVersion")
-    testImplementation("io.github.astrapi69:silly-collection:$sillyCollectionVersion")
-    testImplementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
-    testImplementation("io.github.astrapi69:runtime-compiler:$runtimeCompilerVersion")
-    testImplementation("cglib:cglib-nodep:$cglibVersion")
-    testImplementation("com.google.guava:guava:$guavaVersion")
-    testImplementation("io.github.astrapi69:throwable:$throwableVersion")
-    testImplementation("com.github.meanbeanlib:meanbean:$meanbeanVersion")
-    testImplementation("org.testng:testng:$testngVersion")
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+
+    testImplementation libs.equalsverifier
+    testImplementation libs.crypt.api
+    testImplementation libs.test.object
+    testImplementation libs.silly.collection
+    testImplementation libs.silly.bean
+    testImplementation libs.runtime.compiler
+    testImplementation libs.cglib.nodep
+    testImplementation libs.guava
+    testImplementation libs.throwable
+    // Note: use of bundles...
+    testImplementation libs.bundles.unit.testing
 }

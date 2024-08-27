@@ -1,6 +1,28 @@
 ## Change log
 ----------------------
 
+Version 8.3
+-------------
+
+ADDED:
+
+- new libs.versions.toml file for new automatic catalog versions update
+- new method in class ClassExtensions that checks if the given class is loaded from a jar file
+- new method in class ThreadExtensions that can run a Runnable task with a timeout
+
+CHANGED:
+
+- update of gradle to new version 8.10
+- update of lombok version to 1.18.34
+- update of gradle-plugin dependency io.freefair.gradle:lombok-plugin to new patch version 8.10
+- update of com.github.ben-manes.versions.gradle.plugin to new version 0.51.0
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.2.2
+- update of gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 7.0.0.BETA2
+- update of test dependency guava to new version 33.3.0-jre
+- update of test-dependency equalsverifier version to 3.16.2
+- update of test-dependency testng version to 7.10.2
+- update of test dependency throwable to new version 3
+
 Version 8.2
 -------------
 

@@ -151,6 +151,7 @@ public final class ClassExtensions
 	 * @deprecated does not with the java module system and will be removed in the next minor
 	 *             version
 	 */
+	@Deprecated
 	public static Class<?> getCglibProxy(final @NonNull Class<?> clazz)
 	{
 		Class<?> found = clazz;
@@ -933,6 +934,20 @@ public final class ClassExtensions
 	public static <T> boolean isProxy(final Class<T> clazz)
 	{
 		return isJdkProxy(clazz) || isCglib(clazz);
+	}
+
+	/**
+	 * Checks if the given {@link Class} is loaded from a jar file
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the class to check
+	 * @return true, if the given {@link Class} is loaded from a jar file otherwise false
+	 */
+	public static <T> boolean isFromJar(final @NonNull Class<T> clazz)
+	{
+		return getProtocol(clazz).equals("jar");
 	}
 
 	/**
