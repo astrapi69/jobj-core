@@ -27,12 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.meanbean.factories.ObjectCreationException;
 import org.meanbean.test.BeanTestException;
 import org.meanbean.test.BeanTester;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.github.astrapi69.test.base.BaseTestCase;
@@ -42,6 +45,69 @@ import io.github.astrapi69.test.base.BaseTestCase;
  */
 public class ThreadExtensionsTest extends BaseTestCase
 {
+
+	/**
+	 * Test to verify that the runWithTimeout method successfully completes a task within the given
+	 * timeout.
+	 */
+	@Test
+	public void testRunWithTimeout_Success()
+	{
+		Runnable task = () -> {
+			try
+			{
+				// Simulate a task that completes within the timeout
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e)
+			{
+				// Task was interrupted
+				Assert.fail("Task was interrupted unexpectedly.");
+			}
+		};
+
+		try
+		{
+			ThreadExtensions.runWithTimeout(task, 3, TimeUnit.SECONDS);
+			// If no exception is thrown, the test passes
+		}
+		catch (TimeoutException e)
+		{
+			Assert.fail("Task exceeded the timeout, but it should have completed in time.");
+		}
+	}
+
+	/**
+	 * Test to verify that the runWithTimeout method throws a TimeoutException when the task exceeds
+	 * the given timeout.
+	 */
+	@Test
+	public void testRunWithTimeout_TimeoutExceeded()
+	{
+		Runnable task = () -> {
+			try
+			{
+				// Simulate a long-running task
+				Thread.sleep(5000);
+			}
+			catch (InterruptedException e)
+			{
+				// Task was interrupted as expected
+				System.out.println("Task was interrupted as expected.");
+			}
+		};
+
+		try
+		{
+			ThreadExtensions.runWithTimeout(task, 2, TimeUnit.SECONDS);
+			Assert.fail("Expected a TimeoutException to be thrown.");
+		}
+		catch (TimeoutException e)
+		{
+			// Test passes if TimeoutException is thrown
+			Assert.assertTrue(e.getMessage().contains("Task exceeded the timeout"));
+		}
+	}
 
 	/**
 	 * Test method for {@link ThreadExtensions#newThreadData()}

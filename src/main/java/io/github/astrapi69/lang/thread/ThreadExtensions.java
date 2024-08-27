@@ -26,9 +26,15 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -37,6 +43,49 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ThreadExtensions
 {
+
+	/**
+	 * Executes the given Runnable task and attempts to stop it if it exceeds the specified timeout.
+	 *
+	 * @param task
+	 *            The Runnable task to be executed.
+	 * @param timeout
+	 *            The maximum time to wait for the task to complete.
+	 * @param timeUnit
+	 *            The time unit of the timeout parameter.
+	 * @throws TimeoutException
+	 *             if the task execution exceeds the specified timeout.
+	 * @throws InterruptedException
+	 *             if the execution is interrupted.
+	 * @throws ExecutionException
+	 *             if the task execution throws an exception.
+	 */
+	public static void runWithTimeout(Runnable task, long timeout, TimeUnit timeUnit)
+		throws TimeoutException
+	{
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<?> future = executor.submit(task);
+		try
+		{
+			// Wait for the task to complete or timeout
+			future.get(timeout, timeUnit);
+		}
+		catch (TimeoutException e)
+		{
+			// Cancel the task if it exceeds the timeout
+			future.cancel(true);
+			throw new TimeoutException("Task exceeded the timeout of " + timeout + " "
+				+ timeUnit.toString().toLowerCase());
+		}
+		catch (InterruptedException | ExecutionException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			executor.shutdownNow();
+		}
+	}
 
 	/**
 	 * Creates a custom thread pool that are executed in parallel processes with the given number of

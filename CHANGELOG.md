@@ -8,6 +8,7 @@ ADDED:
 
 - new libs.versions.toml file for new automatic catalog versions update
 - new method in class ClassExtensions that checks if the given class is loaded from a jar file
+- new method in class ThreadExtensions that can run a Runnable task with a timeout
 
 CHANGED:
 

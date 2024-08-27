@@ -37,6 +37,7 @@ public class ThreadDataBean
 	private boolean alive;
 	private boolean daemon;
 	private boolean interrupted;
+	private long id;
 	private String name;
 	private Integer priority;
 	private String threadGroup;
@@ -44,7 +45,7 @@ public class ThreadDataBean
 	public static ThreadDataBean of(final Thread thread)
 	{
 		return ThreadDataBean.builder().priority(thread.getPriority()).alive(thread.isAlive())
-			.daemon(thread.isDaemon()).interrupted(thread.isInterrupted())
+			.daemon(thread.isDaemon()).interrupted(thread.isInterrupted()).id(thread.getId())
 			.threadGroup(thread.getThreadGroup().getName()).name(thread.getName()).build();
 	}
 }
