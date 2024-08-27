@@ -33,32 +33,33 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
- * The class {@link ThreadExtensions}.
+ * The class {@link ThreadExtensions} provides utility methods for working with threads, such as
+ * executing tasks with a timeout, running tasks with a specified number of CPU cores, and
+ * retrieving information about running threads
  */
 @UtilityClass
+@Log
 public final class ThreadExtensions
 {
 
 	/**
-	 * Executes the given Runnable task and attempts to stop it if it exceeds the specified timeout.
+	 * Executes the given {@link Runnable} task and attempts to stop it if it exceeds the specified
+	 * timeout
 	 *
 	 * @param task
-	 *            The Runnable task to be executed.
+	 *            the {@link Runnable} task to be executed
 	 * @param timeout
-	 *            The maximum time to wait for the task to complete.
+	 *            the maximum time to wait for the task to complete
 	 * @param timeUnit
-	 *            The time unit of the timeout parameter.
+	 *            the time unit of the timeout parameter
 	 * @throws TimeoutException
-	 *             if the task execution exceeds the specified timeout.
-	 * @throws InterruptedException
-	 *             if the execution is interrupted.
-	 * @throws ExecutionException
-	 *             if the task execution throws an exception.
+	 *             if the task execution exceeds the specified timeout
 	 */
 	public static void runWithTimeout(Runnable task, long timeout, TimeUnit timeUnit)
 		throws TimeoutException
@@ -79,7 +80,7 @@ public final class ThreadExtensions
 		}
 		catch (InterruptedException | ExecutionException e)
 		{
-			e.printStackTrace();
+			log.log(Level.WARNING, "Runnable Interrupted ", e);
 		}
 		finally
 		{
@@ -88,21 +89,21 @@ public final class ThreadExtensions
 	}
 
 	/**
-	 * Creates a custom thread pool that are executed in parallel processes with the given number of
-	 * the cpu cores
-	 * 
+	 * Creates a custom thread pool that executes tasks in parallel processes with the given number
+	 * of CPU cores
+	 *
 	 * @param task
 	 *            the {@link Callable} task to execute
 	 * @param cpuCores
-	 *            the number of the cpu cores to run with
+	 *            the number of CPU cores to run with
 	 * @param <T>
 	 *            the generic type of the result
 	 * @return the result of the given task
 	 * @throws ExecutionException
 	 *             if the computation threw an exception
 	 * @throws InterruptedException
-	 *             if the current thread is not a member of a ForkJoinPool and was interrupted while
-	 *             waiting
+	 *             if the current thread is not a member of a {@link ForkJoinPool} and was
+	 *             interrupted while waiting
 	 */
 	public static <T> T runCallableWithCpuCores(Callable<T> task, int cpuCores)
 		throws ExecutionException, InterruptedException
@@ -112,21 +113,21 @@ public final class ThreadExtensions
 	}
 
 	/**
-	 * Creates a custom thread pool that are executed in parallel processes with the will run with
-	 * the given number of the cpu cores
-	 * 
+	 * Creates a custom thread pool that executes tasks in parallel processes with the given number
+	 * of CPU cores
+	 *
 	 * @param supplier
 	 *            the {@link Supplier} task to execute
 	 * @param cpuCores
-	 *            the number of the cpu cores to run with
+	 *            the number of CPU cores to run with
 	 * @param <T>
 	 *            the generic type of the result
 	 * @return the result of the given task
 	 * @throws ExecutionException
 	 *             if the computation threw an exception
 	 * @throws InterruptedException
-	 *             if the current thread is not a member of a ForkJoinPool and was interrupted while
-	 *             waiting
+	 *             if the current thread is not a member of a {@link ForkJoinPool} and was
+	 *             interrupted while waiting
 	 */
 	public static <T> T runAsyncSupplierWithCpuCores(Supplier<T> supplier, int cpuCores)
 		throws ExecutionException, InterruptedException
@@ -137,41 +138,39 @@ public final class ThreadExtensions
 	}
 
 	/**
-	 * Finds all threads the are currently running.
+	 * Finds all threads that are currently running
 	 *
-	 * @return An array with all threads the are currently running.
+	 * @return an array with all threads that are currently running
 	 */
 	public static Thread[] resolveRunningThreads()
 	{
 		final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-		final Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-		return threadArray;
+		return threadSet.toArray(new Thread[threadSet.size()]);
 	}
 
 	/**
-	 * Finds all threads the are currently running and converts them to {@link ThreadDataBean} and
-	 * puts them to a {@link List} that is returned.
+	 * Finds all threads that are currently running, converts them to {@link ThreadDataBean}, and
+	 * puts them into a {@link List}
 	 *
-	 * @return the new {@link List}
+	 * @return the new {@link List} containing {@link ThreadDataBean} instances
 	 */
 	public static List<ThreadDataBean> newThreadData()
 	{
-		final Thread[] thread = resolveRunningThreads();
-		final List<ThreadDataBean> snapshotOfThreadDataBeans = new ArrayList<>(thread.length);
-		for (int i = 0; i < thread.length; i++)
+		final Thread[] threads = resolveRunningThreads();
+		final List<ThreadDataBean> snapshotOfThreadDataBeans = new ArrayList<>(threads.length);
+		for (Thread t : threads)
 		{
-			final Thread t = thread[i];
 			snapshotOfThreadDataBeans.add(ThreadDataBean.of(t));
 		}
 		return snapshotOfThreadDataBeans;
 	}
 
 	/**
-	 * Set the given priority of the current thread<br>
-	 * <br>
-	 * Note: the thread priority is between 1 till 10, if smaller or greater the minimum priority 1
-	 * will be taken
-	 * 
+	 * Sets the given priority of the current thread
+	 * <p>
+	 * Note: the thread priority is between 1 and 10; if the provided priority is smaller or
+	 * greater, the minimum priority (1) will be used
+	 *
 	 * @param threadPriority
 	 *            the priority for the current thread to set
 	 */
@@ -186,5 +185,4 @@ public final class ThreadExtensions
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		}
 	}
-
 }

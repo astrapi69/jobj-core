@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * The class {@link ThreadDataBean} holds data from a Thread.
@@ -42,7 +43,15 @@ public class ThreadDataBean
 	private Integer priority;
 	private String threadGroup;
 
-	public static ThreadDataBean of(final Thread thread)
+	/**
+	 * Factory method for create a new {@link ThreadDataBean} object from the given {@link Thread}
+	 * object
+	 *
+	 * @param thread
+	 *            the thread
+	 * @return the new {@link ThreadDataBean} object
+	 */
+	public static ThreadDataBean of(final @NonNull Thread thread)
 	{
 		return ThreadDataBean.builder().priority(thread.getPriority()).alive(thread.isAlive())
 			.daemon(thread.isDaemon()).interrupted(thread.isInterrupted()).id(thread.getId())
