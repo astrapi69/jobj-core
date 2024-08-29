@@ -185,4 +185,22 @@ public final class ThreadExtensions
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		}
 	}
+
+	/**
+	 * Returns the number of available processors (cores) on the current machine.
+	 *
+	 * <p>
+	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides the total
+	 * number of processors that the Java Virtual Machine (JVM) can utilize. This can be used to
+	 * optimize concurrent tasks by determining how many threads can be effectively run in parallel.
+	 * </p>
+	 *
+	 * @return the number of available processors (cores)
+	 * @see Runtime#availableProcessors()
+	 */
+	public static int getAvailableProcessors()
+	{
+		return Runtime.getRuntime().availableProcessors();
+	}
+
 }
