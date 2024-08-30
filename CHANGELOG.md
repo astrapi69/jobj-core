@@ -7,6 +7,7 @@ Version 8.4-SNAPSHOT
 ADDED:
 
 - new decorator method in class ThreadExtensions for get the available processors (cores) on the current machine
+- new decorator method in class ThreadExtensions for get the half of the available processors (cores) on the current machine
 
 Version 8.3
 -------------

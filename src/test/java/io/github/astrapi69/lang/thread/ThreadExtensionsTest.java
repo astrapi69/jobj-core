@@ -45,6 +45,38 @@ import io.github.astrapi69.test.base.BaseTestCase;
  */
 public class ThreadExtensionsTest extends BaseTestCase
 {
+	/**
+	 * Test method for {@link ThreadExtensions#getAvailableProcessors()}
+	 */
+	@Test
+	public void testGetAvailableProcessors()
+	{
+		// Arrange
+		int expectedProcessors = Runtime.getRuntime().availableProcessors();
+
+		// Act
+		int actualProcessors = ThreadExtensions.getAvailableProcessors();
+
+		// Assert
+		assertEquals(expectedProcessors, actualProcessors);
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#getHalfOfAvailableProcessors()}
+	 */
+	@Test
+	public void testGetHalfOfAvailableProcessors()
+	{
+		// Arrange
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		int expectedHalf = Math.max(1, availableProcessors / 2);
+
+		// Act
+		int actualHalf = ThreadExtensions.getHalfOfAvailableProcessors();
+
+		// Assert
+		assertEquals(expectedHalf, actualHalf);
+	}
 
 	/**
 	 * Test to verify that the runWithTimeout method successfully completes a task within the given
@@ -176,7 +208,7 @@ public class ThreadExtensionsTest extends BaseTestCase
 		actual = ThreadExtensions.runCallableWithCpuCores(() ->
 		// parallel task here, for example
 		map.entrySet().stream().parallel().filter(x -> x.getValue().endsWith("com"))
-			.map(x -> x.getValue()).collect(Collectors.joining()), cores);
+			.map(Map.Entry::getValue).collect(Collectors.joining()), cores);
 
 		expected = "linode.comheroku.com";
 		assertEquals(actual, expected);

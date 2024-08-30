@@ -203,4 +203,23 @@ public final class ThreadExtensions
 		return Runtime.getRuntime().availableProcessors();
 	}
 
+	/**
+	 * Returns half of the available processors (cores) on the current machine.
+	 *
+	 * <p>
+	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides half of
+	 * the total number of processors that the Java Virtual Machine (JVM) can utilize. This can be
+	 * useful in scenarios where you want to limit the number of threads or tasks to a subset of the
+	 * total available processors.
+	 * </p>
+	 *
+	 * @return half of the available processors (cores)
+	 * @see Runtime#availableProcessors()
+	 */
+	public static int getHalfOfAvailableProcessors()
+	{
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		return Math.max(1, availableProcessors / 2);
+	}
+
 }
