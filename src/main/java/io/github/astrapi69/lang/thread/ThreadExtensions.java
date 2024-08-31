@@ -187,12 +187,12 @@ public final class ThreadExtensions
 	}
 
 	/**
-	 * Returns the number of available processors (cores) on the current machine.
+	 * Returns the number of available processors (cores) on the current machine
 	 *
 	 * <p>
 	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides the total
-	 * number of processors that the Java Virtual Machine (JVM) can utilize. This can be used to
-	 * optimize concurrent tasks by determining how many threads can be effectively run in parallel.
+	 * number of processors that the Java Virtual Machine (JVM) can utilize This can be used to
+	 * optimize concurrent tasks by determining how many threads can be effectively run in parallel
 	 * </p>
 	 *
 	 * @return the number of available processors (cores)
@@ -204,13 +204,13 @@ public final class ThreadExtensions
 	}
 
 	/**
-	 * Returns half of the available processors (cores) on the current machine.
+	 * Returns half of the available processors (cores) on the current machine
 	 *
 	 * <p>
 	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides half of
-	 * the total number of processors that the Java Virtual Machine (JVM) can utilize. This can be
+	 * the total number of processors that the Java Virtual Machine (JVM) can utilize This can be
 	 * useful in scenarios where you want to limit the number of threads or tasks to a subset of the
-	 * total available processors.
+	 * total available processors
 	 * </p>
 	 *
 	 * @return half of the available processors (cores)
@@ -222,4 +222,28 @@ public final class ThreadExtensions
 		return Math.max(1, availableProcessors / 2);
 	}
 
+	/**
+	 * Shuts down the given {@link ExecutorService} gracefully and forcefully if necessary
+	 *
+	 * @param executorService
+	 *            the {@link ExecutorService} to be shut down
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for termination
+	 */
+	public static void shutdownExecutorService(ExecutorService executorService, long timeoutSeconds)
+	{
+		executorService.shutdown();
+		try
+		{
+			if (!executorService.awaitTermination(timeoutSeconds * 2, TimeUnit.SECONDS))
+			{
+				executorService.shutdownNow();
+			}
+		}
+		catch (InterruptedException e)
+		{
+			executorService.shutdownNow();
+			Thread.currentThread().interrupt();
+		}
+	}
 }
