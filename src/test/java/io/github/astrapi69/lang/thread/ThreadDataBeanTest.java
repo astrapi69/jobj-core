@@ -20,8 +20,8 @@
  */
 package io.github.astrapi69.lang.thread;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 

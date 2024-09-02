@@ -40,14 +40,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link ClassExtensions} provides extension methods for the class {@link Class}.
  */
-@UtilityClass
 public final class ClassExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private ClassExtensions()
+	{
+	}
 
 	/** The Constant CGLIB_TAG contains the tag of a cglib class name. */
 	private static final String CGLIB_TAG = "$$";

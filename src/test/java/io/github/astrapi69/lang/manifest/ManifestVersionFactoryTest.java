@@ -20,10 +20,11 @@
  */
 package io.github.astrapi69.lang.manifest;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.crypt.api.algorithm.key.KeyPairGeneratorAlgorithm;
 import io.github.astrapi69.lang.ObjectExtensions;
@@ -64,7 +65,8 @@ public class ManifestVersionFactoryTest
 	/**
 	 * Test method for {@link ManifestVersionFactory} with {@link BeanTester}
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

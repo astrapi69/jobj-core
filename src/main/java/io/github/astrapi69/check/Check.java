@@ -37,7 +37,7 @@ public final class Check implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new check.
+	 * Private constructor for prevent instantiation
 	 */
 	private Check()
 	{

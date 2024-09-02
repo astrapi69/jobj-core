@@ -33,7 +33,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link TypeArgumentsExtensions} is a utility class for getting the type arguments from
@@ -46,9 +45,12 @@ import lombok.experimental.UtilityClass;
  * In the comments someone asked if we are allowed to use the source code from the article. The
  * answer of Ian Robertson is: Absolutely, you may use this code. "Consider it open sourced".
  */
-@UtilityClass
 public final class TypeArgumentsExtensions
 {
+
+	private TypeArgumentsExtensions()
+	{
+	}
 
 	/**
 	 * Get the generic return type

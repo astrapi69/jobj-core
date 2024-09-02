@@ -20,17 +20,22 @@
  */
 package io.github.astrapi69.lang;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * Utility class for getting the Memory status.
  *
  * @version 1.0
  * @author Asterios Raptis
  */
-@UtilityClass
 public final class MemoryExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private MemoryExtensions()
+	{
+	}
+
 	/**
 	 * Freeing memory that is available for the application by running the garbage collector.
 	 */

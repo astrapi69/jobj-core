@@ -16,4 +16,5 @@ dependencies {
     testImplementation libs.throwable
     // Note: use of bundles...
     testImplementation libs.bundles.unit.testing
+    testRuntimeOnly libs.junit.platform.launcher
 }

@@ -21,15 +21,16 @@
 package io.github.astrapi69.check;
 
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.test.object.Person;
@@ -55,7 +56,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#isInRange(Double, Double, Double, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testIsInRangeDouble()
 	{
 		Double min;
@@ -66,7 +67,9 @@ public class CheckTest
 		max = 5.0d;
 		value = 6.0d;
 		name = "parameter";
-		Check.get().isInRange(min, max, value, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().isInRange(min, max, value, name);
+		});
 	}
 
 	/**
@@ -91,7 +94,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#isInRange(Float, Float, Float, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testIsInRangeFloat()
 	{
 		Float min;
@@ -102,7 +105,9 @@ public class CheckTest
 		max = 5.0f;
 		value = 6.0f;
 		name = "parameter";
-		Check.get().isInRange(min, max, value, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().isInRange(min, max, value, name);
+		});
 	}
 
 	/**
@@ -127,7 +132,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#isInRange(Integer, Integer, Integer, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testIsInRangeInteger()
 	{
 		Integer min;
@@ -138,7 +143,9 @@ public class CheckTest
 		max = 5;
 		value = 6;
 		name = "parameter";
-		Check.get().isInRange(min, max, value, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().isInRange(min, max, value, name);
+		});
 	}
 
 	/**
@@ -163,7 +170,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#isInRange(Long, Long, Long, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testIsInRangeLong()
 	{
 		Long min;
@@ -175,7 +182,9 @@ public class CheckTest
 		value = 6l;
 		name = "parameter";
 
-		Check.get().isInRange(min, max, value, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().isInRange(min, max, value, name);
+		});
 	}
 
 	/**
@@ -200,7 +209,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#notEmpty(java.util.Collection, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyCollection()
 	{
 		List<String> list;
@@ -208,7 +217,9 @@ public class CheckTest
 		name = "list";
 		list = new ArrayList<>();
 
-		Check.get().notEmpty(list, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(list, name);
+		});
 	}
 
 	/**
@@ -230,7 +241,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#notEmpty(java.util.Collection, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyMap()
 	{
 		Map<String, String> emptyMap;
@@ -238,7 +249,9 @@ public class CheckTest
 		name = "map";
 		emptyMap = new HashMap<>();
 
-		Check.get().notEmpty(emptyMap, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(emptyMap, name);
+		});
 	}
 
 	/**
@@ -259,7 +272,7 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#notEmpty(CharSequence, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyString()
 	{
 		String argument;
@@ -267,7 +280,9 @@ public class CheckTest
 		name = "parameter";
 		argument = "";
 
-		Check.get().notEmpty(argument, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(argument, name);
+		});
 	}
 
 	/**
@@ -288,12 +303,14 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#notNull(Object, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotNull()
 	{
 		name = "parameter";
 
-		Check.get().notNull(null, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notNull(null, name);
+		});
 	}
 
 	/**
@@ -311,105 +328,123 @@ public class CheckTest
 	/**
 	 * Test method for {@link Check#notEmpty(boolean[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyBooleanArrayEmptyCase()
 	{
 		boolean[] actual;
 
 		actual = new boolean[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(byte[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyByteArrayEmptyCase()
 	{
 		byte[] actual;
 
 		actual = new byte[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(char[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyCharArrayEmptyCase()
 	{
 		char[] actual;
 
 		actual = new char[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(short[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyShortArrayEmptyCase()
 	{
 		short[] actual;
 
 		actual = new short[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(int[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyIntArrayEmptyCase()
 	{
 		int[] actual;
 
 		actual = new int[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(long[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyLongArrayEmptyCase()
 	{
 		long[] actual;
 
 		actual = new long[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(float[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyFloatArrayEmptyCase()
 	{
 		float[] actual;
 
 		actual = new float[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+
+		});
 	}
 
 	/**
 	 * Test method for {@link Check#notEmpty(double[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyDoubleArrayEmptyCase()
 	{
 		double[] actual;
 
 		actual = new double[0];
 
-		Check.get().notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Check.get().notEmpty(actual, name);
+
+		});
 	}
 
 	/**

@@ -23,14 +23,19 @@ package io.github.astrapi69.lang;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link EnumExtensions} provides generic utility methods for java enums
  */
-@UtilityClass
 public final class EnumExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private EnumExtensions()
+	{
+	}
 
 	/**
 	 * This method gets the enum value from the given enum {@link Class} object and the given

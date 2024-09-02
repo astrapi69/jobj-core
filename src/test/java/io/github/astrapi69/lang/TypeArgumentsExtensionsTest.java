@@ -20,9 +20,10 @@
  */
 package io.github.astrapi69.lang;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -31,10 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.test.base.BaseTestCase;
 import io.github.astrapi69.test.object.Person;
@@ -183,7 +182,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	/**
 	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetTypeArguments()
 	{
 		List<Class<?>> typeArguments;
@@ -224,7 +223,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 		}
 		else
 		{
-			org.testng.Assert.fail("parameterizedTypeOptional should not be empty");
+			fail("parameterizedTypeOptional should not be empty");
 		}
 	}
 
@@ -244,7 +243,7 @@ public class TypeArgumentsExtensionsTest extends BaseTestCase
 	/**
 	 * Test method for {@link TypeArgumentsExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

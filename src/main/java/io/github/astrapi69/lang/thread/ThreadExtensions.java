@@ -35,7 +35,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
 /**
@@ -43,10 +42,16 @@ import lombok.extern.java.Log;
  * executing tasks with a timeout, running tasks with a specified number of CPU cores, and
  * retrieving information about running threads
  */
-@UtilityClass
 @Log
 public final class ThreadExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private ThreadExtensions()
+	{
+	}
 
 	/**
 	 * Executes the given {@link Runnable} task and attempts to stop it if it exceeds the specified
@@ -183,6 +188,67 @@ public final class ThreadExtensions
 		else
 		{
 			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+		}
+	}
+
+	/**
+	 * Returns the number of available processors (cores) on the current machine
+	 *
+	 * <p>
+	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides the total
+	 * number of processors that the Java Virtual Machine (JVM) can utilize This can be used to
+	 * optimize concurrent tasks by determining how many threads can be effectively run in parallel
+	 * </p>
+	 *
+	 * @return the number of available processors (cores)
+	 * @see Runtime#availableProcessors()
+	 */
+	public static int getAvailableProcessors()
+	{
+		return Runtime.getRuntime().availableProcessors();
+	}
+
+	/**
+	 * Returns half of the available processors (cores) on the current machine
+	 *
+	 * <p>
+	 * This method is a wrapper around {@link Runtime#availableProcessors()} and provides half of
+	 * the total number of processors that the Java Virtual Machine (JVM) can utilize This can be
+	 * useful in scenarios where you want to limit the number of threads or tasks to a subset of the
+	 * total available processors
+	 * </p>
+	 *
+	 * @return half of the available processors (cores)
+	 * @see Runtime#availableProcessors()
+	 */
+	public static int getHalfOfAvailableProcessors()
+	{
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		return Math.max(1, availableProcessors / 2);
+	}
+
+	/**
+	 * Shuts down the given {@link ExecutorService} gracefully and forcefully if necessary
+	 *
+	 * @param executorService
+	 *            the {@link ExecutorService} to be shut down
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for termination
+	 */
+	public static void shutdownExecutorService(ExecutorService executorService, long timeoutSeconds)
+	{
+		executorService.shutdown();
+		try
+		{
+			if (!executorService.awaitTermination(timeoutSeconds * 2, TimeUnit.SECONDS))
+			{
+				executorService.shutdownNow();
+			}
+		}
+		catch (InterruptedException e)
+		{
+			executorService.shutdownNow();
+			Thread.currentThread().interrupt();
 		}
 	}
 }

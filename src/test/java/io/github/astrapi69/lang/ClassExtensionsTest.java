@@ -20,9 +20,9 @@
  */
 package io.github.astrapi69.lang;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +40,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.google.common.reflect.ClassPath;
 
@@ -77,7 +77,7 @@ public class ClassExtensionsTest
 	/**
 	 * Sets up method will be invoked before every unit test method
 	 */
-	@BeforeMethod
+	@BeforeEach
 	public void setUp()
 	{
 	}
@@ -85,7 +85,7 @@ public class ClassExtensionsTest
 	/**
 	 * Tear down method will be invoked after every unit test method
 	 */
-	@AfterMethod
+	@AfterEach
 	public void tearDown()
 	{
 	}
@@ -93,7 +93,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getDirectoriesFromResources(String, boolean)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetDirectoriesFromResources() throws IOException
 	{
 		List<File> actual;
@@ -131,7 +131,8 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#isInstantiable(Class)} from all classes in the
 	 * classloader
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testIsInstantiableWithAllClasses()
 	{
 		boolean expected;
@@ -219,10 +220,12 @@ public class ClassExtensionsTest
 	 * @throws ClassNotFoundException
 	 *             is thrown if the class was not found or could not be located
 	 */
-	@Test(expectedExceptions = ClassNotFoundException.class)
+	@Test
 	public void testForNameClassNotFoundException() throws ClassNotFoundException
 	{
-		ClassExtensions.forName("ClassExtensionsTe");
+		Assertions.assertThrows(ClassNotFoundException.class, () -> {
+			ClassExtensions.forName("ClassExtensionsTe");
+		});
 	}
 
 	/**
@@ -341,7 +344,7 @@ public class ClassExtensionsTest
 		final String expected = "ClassExtensionsTest.class";
 		final String classname = ClassExtensions.getClassnameWithSuffix(this);
 		this.result = expected.equals(classname);
-		assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -353,7 +356,7 @@ public class ClassExtensionsTest
 		final String expected = "ClassExtensionsTest.class";
 		final String classname = ClassExtensions.getClassnameWithSuffix(ClassExtensionsTest.class);
 		this.result = expected.equals(classname);
-		assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -365,7 +368,7 @@ public class ClassExtensionsTest
 		final String expected = "io.github.astrapi69.lang.ClassExtensionsTest";
 		final String classname = ClassExtensions.getClassCanonicalName(ClassExtensionsTest.class);
 		this.result = expected.equals(classname);
-		assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -471,7 +474,8 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getJdkProxyInterfaces(Class)}.
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testGetJdkProxyInterfaces()
 	{
 		Class<?> expected;
@@ -568,20 +572,20 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getResource(String)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResource()
 	{
 		final String propertiesFilename = "io/github/astrapi69/lang/resources.properties";
 		final URL url = ClassExtensions.getResource(propertiesFilename);
 		this.result = url != null;
-		assertTrue("", this.result);
+		assertTrue(this.result);
 
 	}
 
 	/**
 	 * Test method for {@link ClassExtensions#getResources(String, String...)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResources() throws IOException
 	{
 		int actual;
@@ -609,15 +613,15 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getResourceAsFile(String)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResourceAsFileString() throws URISyntaxException
 	{
 		final String propertiesFilename = "io/github/astrapi69/lang/resources.properties";
 
 		final File file = ClassExtensions.getResourceAsFile(propertiesFilename);
 		this.result = file != null;
-		assertTrue("File should not be null", this.result);
-		assertTrue("File should exist.", file.exists());
+		assertTrue(this.result, "File should not be null");
+		assertTrue(file.exists(), "File should exist.");
 	}
 
 	/**
@@ -628,15 +632,15 @@ public class ClassExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResourceAsFileStringObject() throws URISyntaxException, IOException
 	{
 		final String filename = "/io/github/astrapi69/test/object/Person.class";
 
 		final File file = ClassExtensions.getResourceAsFile(filename, Person.builder().build());
 		this.result = file != null;
-		assertTrue("File should not be null", this.result);
-		assertTrue("File should exist.", file.exists());
+		assertTrue(this.result, "File should not be null");
+		assertTrue(file.exists(), "File should exist.");
 	}
 
 	/**
@@ -646,10 +650,13 @@ public class ClassExtensionsTest
 	 * @throws URISyntaxException
 	 *             occurs by creation of the file with an uri.
 	 */
-	@Test(expectedExceptions = URISyntaxException.class)
+	@Test
 	public void testGetResourceAsFileStringThrowsURISyntaxException() throws URISyntaxException
 	{
-		ClassExtensions.getResourceAsFile("io/github/astrapi69/test/object/Person.class");
+
+		Assertions.assertThrows(URISyntaxException.class, () -> {
+			ClassExtensions.getResourceAsFile("io/github/astrapi69/test/object/Person.class");
+		});
 	}
 
 	/**
@@ -669,14 +676,14 @@ public class ClassExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResourceAsStreamString() throws IOException
 	{
 		final String propertiesFilename = "io/github/astrapi69/lang/resources.properties";
 
 		final InputStream is = ClassExtensions.getResourceAsStream(propertiesFilename);
 		this.result = is != null;
-		assertTrue("", this.result);
+		assertTrue(this.result);
 		final Properties prop = new Properties();
 		prop.load(is);
 		this.result = prop.size() == 3;
@@ -716,7 +723,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#getResource(String, Object)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetResourceStringObject()
 	{
 		final String propertiesFilename = "resources.properties";
@@ -725,13 +732,13 @@ public class ClassExtensionsTest
 		final URL url = ClassExtensions.getResource(propertiesFilename, obj);
 
 		this.result = url != null;
-		assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
 	 * Test method for {@link ClassExtensions#getResource(Class, String)}
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetRessource()
 	{
 		final String propertiesFilename = "resources.properties";
@@ -739,7 +746,7 @@ public class ClassExtensionsTest
 		final URL url = ClassExtensions.getResource(ClassExtensionsTest.class, propertiesFilename);
 
 		this.result = url != null;
-		assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -748,7 +755,8 @@ public class ClassExtensionsTest
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testGetRessourceAsStream() throws IOException
 	{
 		final String propertiesFilename = "resources.properties";
@@ -758,17 +766,17 @@ public class ClassExtensionsTest
 		final ClassExtensionsTest obj = new ClassExtensionsTest();
 		final InputStream is = ClassExtensions.getResourceAsStream(obj.getClass(), path);
 		this.result = is != null;
-		assertTrue("InputStream should not be null", this.result);
+		assertTrue(this.result, "InputStream should not be null");
 		final Properties prop = new Properties();
 		prop.load(is);
 		this.result = prop.size() == 3;
-		assertTrue("Size of prop should be 3.", this.result);
+		assertTrue(this.result, "Size of prop should be 3.");
 	}
 
 	/**
 	 * Test method for {@link ClassExtensions#getUnwrappedProxy(Class)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetUnwrappedProxy()
 	{
 		Class<?> actual;
@@ -829,7 +837,8 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#isCglib(Class)}.
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testIsCglib()
 	{
 		PersonDao personDao = new PersonDao();
@@ -868,7 +877,8 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#isJdkProxy(Class)}.
 	 */
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void testIsJdkProxy()
 	{
 		boolean actual;
@@ -938,7 +948,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions#isProxy(Class)}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testIsProxy()
 	{
 		boolean actual;
@@ -963,7 +973,7 @@ public class ClassExtensionsTest
 	/**
 	 * Test method for {@link ClassExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
