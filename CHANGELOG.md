@@ -4,6 +4,10 @@
 Version 8.5-SNAPSHOT
 -------------
 
+ADDED:
+
+- new method in class ThreadExtensions for shut down the given executor service with a given time out with a task size
+
 Version 8.4
 -------------
 
