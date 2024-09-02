@@ -20,13 +20,11 @@
  */
 package io.github.astrapi69.lang;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.test.object.factory.TestMessagesFactory;
 
@@ -92,8 +90,8 @@ public class PackageExtensionsTest
 		String actual;
 		expected = "io/github/astrapi69/lang/";
 		actual = PackageExtensions.getPackagePath(this);
-		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
-			expected.equals(actual));
+		assertTrue(expected.equals(actual),
+			TestMessagesFactory.newFailMessage("PackagePath", expected, actual));
 	}
 
 	/**
@@ -108,8 +106,8 @@ public class PackageExtensionsTest
 		expected = "io/github/astrapi69/lang";
 		input = "io.github.astrapi69.lang";
 		actual = PackageExtensions.getPackagePath(input);
-		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
-			expected.equals(actual));
+		assertTrue(expected.equals(actual),
+			TestMessagesFactory.newFailMessage("PackagePath", expected, actual));
 	}
 
 	/**
@@ -124,8 +122,8 @@ public class PackageExtensionsTest
 		expected = "io/github/astrapi69/lang/";
 		input = "io.github.astrapi69.lang";
 		actual = PackageExtensions.getPackagePath(input, true);
-		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
-			expected.equals(actual));
+		assertTrue(expected.equals(actual),
+			TestMessagesFactory.newFailMessage("PackagePath", expected, actual));
 	}
 
 	/**
@@ -140,14 +138,14 @@ public class PackageExtensionsTest
 		expected = "/io/github/astrapi69/lang/";
 		input = this;
 		actual = PackageExtensions.getPackagePathWithSlash(input);
-		assertTrue(TestMessagesFactory.newFailMessage("PackagePath", expected, actual),
-			expected.equals(actual));
+		assertTrue(expected.equals(actual),
+			TestMessagesFactory.newFailMessage("PackagePath", expected, actual));
 	}
 
 	/**
 	 * Test method for {@link PackageExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

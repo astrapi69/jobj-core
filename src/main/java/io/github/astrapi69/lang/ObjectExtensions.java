@@ -20,15 +20,20 @@
  */
 package io.github.astrapi69.lang;
 
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link ObjectExtensions} provides extension methods to check if the object is the
  * default value.
  */
-@UtilityClass
 public final class ObjectExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private ObjectExtensions()
+	{
+	}
 
 	/**
 	 * Checks if the given object has the default value.

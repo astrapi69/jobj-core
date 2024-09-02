@@ -23,16 +23,18 @@ package io.github.astrapi69.check;
 import java.util.Collection;
 import java.util.Map;
 
-import lombok.experimental.UtilityClass;
-
-
 /**
  * The class {@link Argument} that can assert conditions on arguments.
  */
-@UtilityClass
-public class Argument
+public final class Argument
 {
 
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private Argument()
+	{
+	}
 
 	/**
 	 * Checks if the given {@code value} argument is in the given a range.

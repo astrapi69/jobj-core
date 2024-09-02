@@ -20,18 +20,17 @@
  */
 package io.github.astrapi69.check;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 
@@ -47,7 +46,7 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument#isInRange(Comparable, Comparable, Comparable, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testIsInRange()
 	{
 		Double min;
@@ -58,7 +57,9 @@ public class ArgumentTest
 		max = 5.0d;
 		value = 6.0d;
 		name = "parameter";
-		Argument.isInRange(min, max, value, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.isInRange(min, max, value, name);
+		});
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument#notEmpty(java.util.Collection, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyCollection()
 	{
 		List<String> list;
@@ -94,111 +95,129 @@ public class ArgumentTest
 		name = "list";
 		list = new ArrayList<>();
 
-		Argument.notEmpty(list, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(list, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(boolean[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyBooleanArrayEmptyCase()
 	{
 		boolean[] actual;
 
 		actual = new boolean[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(byte[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyByteArrayEmptyCase()
 	{
 		byte[] actual;
 
 		actual = new byte[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(char[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyCharArrayEmptyCase()
 	{
 		char[] actual;
 
 		actual = new char[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(short[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyShortArrayEmptyCase()
 	{
 		short[] actual;
 
 		actual = new short[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(int[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyIntArrayEmptyCase()
 	{
 		int[] actual;
 
 		actual = new int[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(long[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyLongArrayEmptyCase()
 	{
 		long[] actual;
 
 		actual = new long[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(float[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyFloatArrayEmptyCase()
 	{
 		float[] actual;
 
 		actual = new float[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument#notEmpty(double[], String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyDoubleArrayEmptyCase()
 	{
 		double[] actual;
 
 		actual = new double[0];
 
-		Argument.notEmpty(actual, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(actual, name);
+		});
 	}
 
 	/**
@@ -342,14 +361,16 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument#notEmpty(Map, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyMap()
 	{
 		Map<String, String> emptyMap;
 
 		name = "map";
 		emptyMap = new HashMap<>();
-		Argument.notEmpty(emptyMap, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(emptyMap, name);
+		});
 	}
 
 	/**
@@ -373,14 +394,16 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument#notEmpty(CharSequence, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotEmptyString()
 	{
 		String argument;
 
 		name = "parameter";
 		argument = "";
-		Argument.notEmpty(argument, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notEmpty(argument, name);
+		});
 	}
 
 	/**
@@ -402,19 +425,20 @@ public class ArgumentTest
 	/**
 	 * Test method for {@link Argument#notNull(Object, String)}
 	 */
-	@Test(expectedExceptions = { IllegalArgumentException.class })
+	@Test
 	public void testNotNull()
 	{
 		name = "parameter";
 
-		Argument.notNull(null, name);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			Argument.notNull(null, name);
+		});
 	}
 
 	/**
 	 * Test method for {@link Argument} with {@link BeanTester}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, InvocationTargetException.class,
-			UnsupportedOperationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		BeanTester beanTester = new BeanTester();

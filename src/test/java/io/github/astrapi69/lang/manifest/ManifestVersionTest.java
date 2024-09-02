@@ -20,12 +20,12 @@
  */
 package io.github.astrapi69.lang.manifest;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.jar.Attributes;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link ManifestVersion}

@@ -20,12 +20,12 @@
  */
 package io.github.astrapi69.lang.thread;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.map.MapFactory;
 import nl.jqno.equalsverifier.EqualsVerifier;

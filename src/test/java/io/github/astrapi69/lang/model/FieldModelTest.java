@@ -20,14 +20,14 @@
  */
 package io.github.astrapi69.lang.model;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.list.ListFactory;
 import nl.jqno.equalsverifier.EqualsVerifier;

@@ -21,15 +21,20 @@
 package io.github.astrapi69.lang;
 
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The class {@link PackageExtensions} provides extension methods for the package of a {@link Class}
  * object
  */
-@UtilityClass
 public final class PackageExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private PackageExtensions()
+	{
+	}
 
 	/**
 	 * Determines the package name from the given class object.

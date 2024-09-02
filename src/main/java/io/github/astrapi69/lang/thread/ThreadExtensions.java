@@ -35,7 +35,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
 /**
@@ -43,10 +42,16 @@ import lombok.extern.java.Log;
  * executing tasks with a timeout, running tasks with a specified number of CPU cores, and
  * retrieving information about running threads
  */
-@UtilityClass
 @Log
 public final class ThreadExtensions
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private ThreadExtensions()
+	{
+	}
 
 	/**
 	 * Executes the given {@link Runnable} task and attempts to stop it if it exceeds the specified

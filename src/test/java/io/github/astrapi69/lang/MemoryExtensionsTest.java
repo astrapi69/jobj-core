@@ -20,13 +20,12 @@
  */
 package io.github.astrapi69.lang;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.AssertJUnit;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * The unit test class for the class {@link MemoryExtensions}
@@ -43,7 +42,7 @@ public class MemoryExtensionsTest
 	/**
 	 * Sets up method will be invoked before every unit test method in this class.
 	 */
-	@BeforeMethod
+	@BeforeEach
 	protected void setUp()
 	{
 		this.result = false;
@@ -52,7 +51,7 @@ public class MemoryExtensionsTest
 	/**
 	 * Tear down method will be invoked after every unit test method in this class.
 	 */
-	@AfterMethod
+	@AfterEach
 	protected void tearDown()
 	{
 	}
@@ -67,20 +66,20 @@ public class MemoryExtensionsTest
 		MemoryExtensions.disposeUnusedMemory();
 		long after = MemoryExtensions.getFreeMemoryForAppInKB();
 		this.result = after <= before;
-		AssertJUnit.assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
 	 * Test method for {@link MemoryExtensions#getFreeMemoryForAppInKB()}.
 	 */
-	@Test(enabled = true)
+	@Test
 	public void testGetFreeMemoryForAppInKB()
 	{
 		final long expected = (Runtime.getRuntime().totalMemory()
 			- Runtime.getRuntime().freeMemory()) / 1024;
 		final long compare = MemoryExtensions.getFreeMemoryForAppInKB();
 		this.result = expected == compare;
-		AssertJUnit.assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class MemoryExtensionsTest
 		final long expected = Runtime.getRuntime().freeMemory() / 1024;
 		final long compare = MemoryExtensions.getFreeMemoryInKB();
 		this.result = expected == compare;
-		AssertJUnit.assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
@@ -104,13 +103,13 @@ public class MemoryExtensionsTest
 		final long expected = Runtime.getRuntime().totalMemory() / 1024;
 		final long compare = MemoryExtensions.getTotalMemoryInKB();
 		this.result = expected == compare;
-		AssertJUnit.assertTrue("", this.result);
+		assertTrue(this.result);
 	}
 
 	/**
 	 * Test method for {@link MemoryExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

@@ -20,13 +20,13 @@
  */
 package io.github.astrapi69.lang.model;
 
-import static org.testng.AssertJUnit.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.junit.jupiter.api.Test;
 import org.meanbean.lang.Factory;
 import org.meanbean.test.BeanTester;
 import org.meanbean.test.Configuration;
 import org.meanbean.test.ConfigurationBuilder;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import nl.jqno.equalsverifier.EqualsVerifier;

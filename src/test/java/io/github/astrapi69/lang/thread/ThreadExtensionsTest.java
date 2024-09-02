@@ -20,7 +20,8 @@
  */
 package io.github.astrapi69.lang.thread;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +33,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.meanbean.factories.ObjectCreationException;
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.test.base.BaseTestCase;
 
@@ -94,7 +92,7 @@ public class ThreadExtensionsTest extends BaseTestCase
 			catch (InterruptedException e)
 			{
 				// Task was interrupted
-				Assert.fail("Task was interrupted unexpectedly.");
+				fail("Task was interrupted unexpectedly.");
 			}
 		};
 
@@ -105,7 +103,7 @@ public class ThreadExtensionsTest extends BaseTestCase
 		}
 		catch (TimeoutException e)
 		{
-			Assert.fail("Task exceeded the timeout, but it should have completed in time.");
+			fail("Task exceeded the timeout, but it should have completed in time.");
 		}
 	}
 
@@ -132,12 +130,12 @@ public class ThreadExtensionsTest extends BaseTestCase
 		try
 		{
 			ThreadExtensions.runWithTimeout(task, 2, TimeUnit.SECONDS);
-			Assert.fail("Expected a TimeoutException to be thrown.");
+			fail("Expected a TimeoutException to be thrown.");
 		}
 		catch (TimeoutException e)
 		{
 			// Test passes if TimeoutException is thrown
-			Assert.assertTrue(e.getMessage().contains("Task exceeded the timeout"));
+			assertTrue(e.getMessage().contains("Task exceeded the timeout"));
 		}
 	}
 
@@ -217,7 +215,7 @@ public class ThreadExtensionsTest extends BaseTestCase
 	/**
 	 * Test method for {@link ThreadExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class, ObjectCreationException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

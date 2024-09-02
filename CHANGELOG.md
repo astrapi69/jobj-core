@@ -6,9 +6,14 @@ Version 8.4-SNAPSHOT
 
 ADDED:
 
+- new test dependencies junit-jupiter-* in version 5.11.0
 - new decorator method in class ThreadExtensions for get the available processors (cores) on the current machine
 - new decorator method in class ThreadExtensions for get the half of the available processors (cores) on the current machine
 - new method in class ThreadExtensions for shut down the given executor service with a given time out
+
+CHANGED:
+
+- remove of test dependency testng
 
 Version 8.3
 -------------

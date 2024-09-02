@@ -20,13 +20,12 @@
  */
 package io.github.astrapi69.lang;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Function;
 
-import org.meanbean.test.BeanTestException;
+import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
-import org.testng.annotations.Test;
 
 import io.github.astrapi69.crypt.api.algorithm.key.KeyPairGeneratorAlgorithm;
 import io.github.astrapi69.crypt.api.key.KeyType;
@@ -129,7 +128,7 @@ public class EnumExtensionsTest
 	/**
 	 * Test method for {@link EnumExtensions}
 	 */
-	@Test(expectedExceptions = { BeanTestException.class })
+	@Test
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();

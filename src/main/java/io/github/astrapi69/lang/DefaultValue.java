@@ -25,14 +25,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
 /**
  * The class DefaultValue provide the default values of the primitive types, as defined by the JLS.
  */
-@UtilityClass
 public final class DefaultValue
 {
+
+	/**
+	 * Private constructor for prevent instantiation
+	 */
+	private DefaultValue()
+	{
+	}
 
 	/** The constant map with the default values. */
 	private static final Map<Class<?>, Object> DEFAULT_VALUE = Collections
