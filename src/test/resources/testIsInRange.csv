@@ -1,0 +1,11 @@
+min,max,value,name,shouldPass
+0.0,5.0,4.0,"parameter1",true
+1.0,10.0,5.0,"parameter2",true
+-5.0,5.0,0.0,"parameter3",true
+100.0,200.0,150.0,"parameter4",true
+-100.0,-50.0,-75.0,"parameter5",true
+0.0,5.0,6.0,"parameter6",false
+1.0,10.0,0.0,"parameter7",false
+-5.0,5.0,-10.0,"parameter8",false
+100.0,200.0,250.0,"parameter9",false
+-100.0,-50.0,-101.0,"parameter10",false

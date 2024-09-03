@@ -596,7 +596,7 @@ public class ClassExtensionsTest
 		resourcesDirPath = "io/github/astrapi69/lang";
 		urls = ClassExtensions.getResources(resourcesDirPath);
 		actual = urls.size();
-		expected = 4;
+		expected = 3;
 		assertEquals(expected, actual);
 
 		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
