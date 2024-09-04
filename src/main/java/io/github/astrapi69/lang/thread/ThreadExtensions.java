@@ -237,10 +237,26 @@ public final class ThreadExtensions
 	 */
 	public static void shutdownExecutorService(ExecutorService executorService, long timeoutSeconds)
 	{
+		shutdownExecutorService(executorService, timeoutSeconds, 2);
+	}
+
+	/**
+	 * Shuts down the given {@link ExecutorService} gracefully and forcefully if necessary
+	 *
+	 * @param executorService
+	 *            the {@link ExecutorService} to be shut down
+	 * @param timeoutSeconds
+	 *            the timeout in seconds to wait for termination
+	 * @param taskSize
+	 *            the task size which will be multiplied with the timeout
+	 */
+	public static void shutdownExecutorService(ExecutorService executorService, long timeoutSeconds,
+		long taskSize)
+	{
 		executorService.shutdown();
 		try
 		{
-			if (!executorService.awaitTermination(timeoutSeconds * 2, TimeUnit.SECONDS))
+			if (!executorService.awaitTermination(timeoutSeconds * taskSize, TimeUnit.SECONDS))
 			{
 				executorService.shutdownNow();
 			}
@@ -251,4 +267,5 @@ public final class ThreadExtensions
 			Thread.currentThread().interrupt();
 		}
 	}
+
 }

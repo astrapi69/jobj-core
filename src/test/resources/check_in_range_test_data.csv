@@ -1,0 +1,5 @@
+min,max,value,name,shouldThrow
+0,5,6,parameter,true
+0,5,4,parameter,false
+1,10,15,parameter,true
+1,10,5,parameter,false

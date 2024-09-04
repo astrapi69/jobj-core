@@ -18,15 +18,40 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-module io.github.astrapisixtynine.jobj.core
-{
-	requires static lombok;
-	requires java.logging;
-	requires java.compiler;
+package io.github.astrapi69.check;
 
-	exports io.github.astrapi69.check;
-	exports io.github.astrapi69.lang;
-	exports io.github.astrapi69.lang.manifest;
-	exports io.github.astrapi69.lang.model;
-	exports io.github.astrapi69.lang.thread;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+
+/**
+ * The unit test class for the class {@link Check}
+ */
+public class CheckParameterizedTest
+{
+
+	/**
+	 * Parameterized test for {@link Check#isInRange(Integer, Integer, Integer, String)} using a CSV
+	 * file
+	 */
+	@ParameterizedTest
+	@CsvFileSource(resources = "/check_in_range_test_data.csv", numLinesToSkip = 1)
+	public void testIsInRangeWithCsv(Integer min, Integer max, Integer value, String name,
+		boolean shouldThrow)
+	{
+		if (shouldThrow)
+		{
+			Assertions.assertThrows(IllegalArgumentException.class, () -> {
+				Check.get().isInRange(min, max, value, name);
+			});
+		}
+		else
+		{
+			Check check = Check.get().isInRange(min, max, value, name);
+			assertNotNull(check);
+		}
+	}
+
 }

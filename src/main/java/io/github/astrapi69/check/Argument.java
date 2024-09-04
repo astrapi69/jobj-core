@@ -24,35 +24,34 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * The class {@link Argument} that can assert conditions on arguments.
+ * The class {@link Argument} that can assert conditions on arguments
  */
 public final class Argument
 {
 
 	/**
-	 * Private constructor for prevent instantiation
+	 * Private constructor to prevent instantiation
 	 */
 	private Argument()
 	{
 	}
 
 	/**
-	 * Checks if the given {@code value} argument is in the given a range.
+	 * Checks if the given {@code value} argument is in the specified range
 	 *
 	 * @param <T>
 	 *            the generic type of the arguments
 	 * @param min
-	 *            The minimum from the range to check.
+	 *            the minimum from the range to check
 	 * @param max
-	 *            The maximum from the range to check.
+	 *            the maximum from the range to check
 	 * @param value
-	 *            The value to check if it is in the given range.
+	 *            the value to check if it is in the specified range
 	 * @param name
 	 *            the name of the given argument
-	 * @return if the check is successful the {@code value} object. This case is if the given
-	 *         {@code value} is in the given range.
+	 * @return the {@code value} if it is in the specified range
 	 * @throws IllegalArgumentException
-	 *             when the given {@code value} is not in the given range.
+	 *             if the given {@code value} is not in the specified range
 	 */
 	public static <T extends Comparable<? super T>> T isInRange(final T min, final T max,
 		final T value, final String name)
@@ -69,7 +68,7 @@ public final class Argument
 	}
 
 	/**
-	 * Checks if the given {@code collection} is not null or empty.
+	 * Checks if the given {@code collection} is not null or empty
 	 *
 	 * @param <T>
 	 *            the generic type of the elements in the given collection
@@ -79,10 +78,9 @@ public final class Argument
 	 *            the collection to check
 	 * @param name
 	 *            the name of the given collection
-	 * @return if the check is successful the {@code collection} object. This case is if the given
-	 *         collection is not null or empty.
+	 * @return the {@code collection} if it is not null or empty
 	 * @throws IllegalArgumentException
-	 *             when the given {@code collection} is null or empty.
+	 *             if the given {@code collection} is null or empty
 	 */
 	public static <T, C extends Collection<T>> C notEmpty(final C collection, final String name)
 	{
@@ -95,7 +93,7 @@ public final class Argument
 	}
 
 	/**
-	 * Checks if the given map is not null or empty.
+	 * Checks if the given map is not null or empty
 	 *
 	 * @param <K>
 	 *            the generic type of the key from the given Map
@@ -107,10 +105,9 @@ public final class Argument
 	 *            the map to check
 	 * @param name
 	 *            the name of the given collection
-	 * @return if the check is successful the {@code map} object. This case is if the given
-	 *         {@code map} is not null or empty.
+	 * @return the {@code map} if it is not null or empty
 	 * @throws IllegalArgumentException
-	 *             when the given {@code map} is null or empty.
+	 *             if the given {@code map} is null or empty
 	 */
 	public static <K, V, M extends Map<K, V>> M notEmpty(final M map, final String name)
 	{
@@ -123,18 +120,17 @@ public final class Argument
 	}
 
 	/**
-	 * Checks if the given {@code argument} is not empty.
+	 * Checks if the given {@code argument} is not empty
 	 *
 	 * @param <T>
 	 *            the generic type of the given argument
 	 * @param argument
-	 *            the argument
+	 *            the argument to check
 	 * @param name
 	 *            the name of the given argument
-	 * @return if the check is successful the {@code argument} object. This case is if the given
-	 *         {@code argument} is not null or empty.
+	 * @return the {@code argument} if it is not null or empty
 	 * @throws IllegalArgumentException
-	 *             when the given {@code argument} is null or empty.
+	 *             if the given {@code argument} is null or empty
 	 */
 	public static <T extends CharSequence> T notEmpty(final T argument, final String name)
 	{
@@ -323,18 +319,17 @@ public final class Argument
 	}
 
 	/**
-	 * Checks if the given {@code argument} is not null.
+	 * Checks if the given {@code argument} is not null
 	 *
 	 * @param <T>
 	 *            the generic type of the given argument
 	 * @param argument
-	 *            the argument
+	 *            the argument to check
 	 * @param name
 	 *            the name of the given argument
-	 * @return if the check is successful the {@code argument} object. This case is if the given
-	 *         {@code argument} is not null.
+	 * @return the {@code argument} if it is not null
 	 * @throws IllegalArgumentException
-	 *             when the given {@code argument} is null.
+	 *             if the given {@code argument} is null
 	 */
 	public static <T> T notNull(final T argument, final String name)
 	{
