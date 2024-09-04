@@ -1,12 +1,17 @@
 ## Change log
 ----------------------
 
-Version 8.5-SNAPSHOT
+Version 9-SNAPSHOT
 -------------
 
 ADDED:
 
 - new method in class ThreadExtensions for shut down the given executor service with a given time out with a task size
+
+CHANGED:
+
+- rename of module to new name 'io.github.astrapisixtynine.jobj.core'
+- major version to 9.*
 
 Version 8.4
 -------------
