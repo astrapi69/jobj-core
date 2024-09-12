@@ -18,51 +18,44 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.astrapi69.check;
+package io.github.astrapi69.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Assertions;
+import java.util.Optional;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
+
 /**
- * The parameterized test class for the class {@link Argument} using CSV data.
+ * The class {@code OptionalExtensionsTest} contains test methods for the {@link OptionalExtensions}
+ * class
  */
-public class ArgumentParameterizedTest
+public class OptionalExtensionsParameterizedTest
 {
 
 	/**
-	 * Parameterized test method for
-	 * {@link Argument#isInRange(Comparable, Comparable, Comparable, String)} using a CSV file as
-	 * input
+	 * Parameterized test method for {@link OptionalExtensions#getOptionalValue(Optional, Object)}
+	 * using CSV file source
 	 *
-	 * @param min
-	 *            the minimum value of the range
-	 * @param max
-	 *            the maximum value of the range
-	 * @param value
-	 *            the value to check
-	 * @param name
-	 *            the name of the argument
-	 * @param shouldPass
-	 *            boolean flag indicating if the test should pass
+	 * @param optionalValue
+	 *            the optional value as string
+	 * @param defaultValue
+	 *            the default value
+	 * @param expected
+	 *            the expected result
 	 */
 	@ParameterizedTest
-	@CsvFileSource(resources = "/testIsInRange.csv", numLinesToSkip = 1)
-	public void testIsInRangeWithCsv(double min, double max, double value, String name,
-		boolean shouldPass)
+	@CsvFileSource(resources = "/optional_values.csv", numLinesToSkip = 1)
+	public void testGetOptionalValueParameterized(String optionalValue, String defaultValue,
+		String expected)
 	{
-		if (shouldPass)
-		{
-			Double actual = Argument.isInRange(min, max, value, name);
-			assertEquals(value, actual);
-		}
-		else
-		{
-			Assertions.assertThrows(IllegalArgumentException.class, () -> {
-				Argument.isInRange(min, max, value, name);
-			});
-		}
+		Optional<String> value = optionalValue.equals("null")
+			? Optional.empty()
+			: Optional.of(optionalValue);
+		String result = OptionalExtensions.getOptionalValue(value, defaultValue);
+		assertEquals(expected, result);
 	}
+
 }

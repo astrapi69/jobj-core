@@ -16,7 +16,7 @@ lombok-version = "1.18.34"
 meanbean-version = "3.0.0-M9"
 runtime-compiler-version = "1.3"
 silly-bean-version = "2"
-silly-collection-version = "27.1"
+silly-collection-version = "28"
 test-object-version = "8.2"
 throwable-version = "3"
 

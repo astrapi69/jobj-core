@@ -4,6 +4,14 @@
 Version 9.1-SNAPSHOT
 -------------
 
+ADDED:
+
+- new extension class OptionalExtensions for Optional objects
+
+CHANGED:
+
+- update of gradle to new version 8.10.1
+- update of test-dependency silly-collection to new major version 28
 
 Version 9
 -------------
