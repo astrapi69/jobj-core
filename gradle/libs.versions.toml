@@ -36,11 +36,40 @@ test-object = { module = "io.github.astrapi69:test-object", version.ref = "test-
 throwable = { module = "io.github.astrapi69:throwable", version.ref = "throwable-version" }
 
 [bundles]
+# Dependencies for the annotation processor used during the compilation process
+annotation-processor = [
+    "lombok",
+]
+# Dependencies required only at compile-time and not included in the final artifact
+compile-only = [
+    "lombok",
+]
+# Annotation processor dependencies used specifically for test classes
+test-annotation-processor = [
+    "lombok",
+]
+# Dependencies required only at test compile-time and not included in test runtime
+test-compile-only = [
+    "lombok",
+]
+# Dependencies required only at test runtime, such as test execution platforms
+test-runtime-only = [
+    "junit-platform-launcher",
+]
+# Dependencies required for unit testing, including assertions, mocking, and parameterized tests
 unit-testing = [
+    "cglib-nodep",
+    "crypt-api",
+    "equalsverifier",
+    "guava",
     "junit-jupiter",
     "junit-jupiter-params",
     "meanbean",
+    "runtime-compiler",
+    "silly-bean",
+    "silly-collection",
     "test-object",
+    "throwable",
 ]
 
 [plugins]

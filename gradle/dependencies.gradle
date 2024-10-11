@@ -1,20 +1,11 @@
 dependencies {
-
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-    testCompileOnly libs.lombok
-    testAnnotationProcessor libs.lombok
-
-    testImplementation libs.equalsverifier
-    testImplementation libs.crypt.api
-    testImplementation libs.test.object
-    testImplementation libs.silly.collection
-    testImplementation libs.silly.bean
-    testImplementation libs.runtime.compiler
-    testImplementation libs.cglib.nodep
-    testImplementation libs.guava
-    testImplementation libs.throwable
     // Note: use of bundles...
+    annotationProcessor libs.bundles.annotation.processor
+    compileOnly libs.bundles.compile.only
+
+    testAnnotationProcessor libs.bundles.test.annotation.processor
+    testCompileOnly libs.bundles.test.compile.only
+
     testImplementation libs.bundles.unit.testing
-    testRuntimeOnly libs.junit.platform.launcher
+    testRuntimeOnly libs.bundles.test.runtime.only
 }

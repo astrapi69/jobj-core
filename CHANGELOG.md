@@ -4,6 +4,9 @@
 Version 9.2-SNAPSHOT
 -------------
 
+CHANGED:
+
+- dependencies are managed now over bundles
 
 Version 9.1
 -------------
