@@ -1,6 +1,22 @@
 ## Change log
 ----------------------
 
+Version 9.1
+-------------
+
+ADDED:
+
+- new extension class OptionalExtensions for Optional objects
+- new abstract class InterruptableThread that provides a template for threads that can be interrupted gracefully during
+  execution
+
+CHANGED:
+
+- update of gradle to new version 8.10.2
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.3.0
+- update of test-dependency silly-collection to new major version 28.1
+- update of test-dependency equalsverifier version to 3.17.1
+
 Version 9
 -------------
 
@@ -20,7 +36,8 @@ ADDED:
 
 - new test dependencies junit-jupiter-* in version 5.11.0
 - new decorator method in class ThreadExtensions for get the available processors (cores) on the current machine
-- new decorator method in class ThreadExtensions for get the half of the available processors (cores) on the current machine
+- new decorator method in class ThreadExtensions for get the half of the available processors (cores) on the current
+  machine
 - new method in class ThreadExtensions for shut down the given executor service with a given time out
 
 CHANGED:
@@ -156,7 +173,8 @@ Version 6
 ADDED:
 
 - new method in ReflectionExtensions for copy a field from a source object to a target object
-- new gradle plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' for formatting source code with gradle build task
+- new gradle plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' for formatting source code with gradle
+  build task
 - new module-info.java file with definition of required modules and packages to export
 
 CHANGED:
@@ -216,15 +234,18 @@ Version 5
 
 ADDED:
 
-- new extension class for resolve the free memory and the memory status and freeing memory that is available for the application by running the garbage collector
+- new extension class for resolve the free memory and the memory status and freeing memory that is available for the
+  application by running the garbage collector
 - new method created that set the current thread priority
-- improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file watch
+- improve gradle build performance by adding new gradle parameters for caching, parallel, configure on demand and file
+  watch
 
 CHANGED:
 
 - update gradle to new version 7.3
 - update of lombok version to 1.18.22
-- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin to new version 0.16.1
+- update gradle-plugin dependency of gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin to new version
+  0.16.1
 - update of test-dependency silly-collections version to 18
 - update of test-dependency test-objects version to 5.5
 - update of test-dependency equalsverifier version to 3.7.2
@@ -238,6 +259,7 @@ ADDED:
 - new model classes for hold thread related fields
 
   Version 3.8
+
 -------------
 
 ADDED:
@@ -250,7 +272,8 @@ Version 3.7
 
 ADDED:
 
-- new method in the class ClassExtensions that gets all resources with a optional array of excluding url protocols from it
+- new method in the class ClassExtensions that gets all resources with a optional array of excluding url protocols from
+  it
 
 CHANGED:
 
