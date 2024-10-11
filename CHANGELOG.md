@@ -10,8 +10,10 @@ ADDED:
 
 CHANGED:
 
-- update of gradle to new version 8.10.1
-- update of test-dependency silly-collection to new major version 28
+- update of gradle to new version 8.10.2
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' in version 5.3.0
+- update of test-dependency silly-collection to new major version 28.1
+- update of test-dependency equalsverifier version to 3.17.1
 
 Version 9
 -------------
