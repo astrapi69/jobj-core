@@ -30,9 +30,6 @@ public abstract class InterruptableThread extends Thread
 	private boolean interrupted = false;
 
 	/**
-	 * Runs the thread and repeatedly calls the {@link #process()} method until the thread is
-	 * interrupted
-	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -45,9 +42,6 @@ public abstract class InterruptableThread extends Thread
 	}
 
 	/**
-	 * Interrupts the thread by setting the interrupted flag to true and calling the
-	 * {@link Thread#interrupt()} method
-	 *
 	 * {@inheritDoc}
 	 */
 	@Override
