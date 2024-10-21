@@ -175,7 +175,7 @@ public final class TypeArgumentsExtensions
 	}
 
 	/**
-	 * Gets the type argument from the childClass at the given index or null if it does not exists.
+	 * Gets the type argument from the childClass at the given index or null if it does not exist
 	 * The base class will be resolved.
 	 *
 	 * @param <T>
@@ -184,8 +184,7 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @param index
 	 *            the index of the type argument
-	 * @return the type argument from the childClass at the given index or null if it does not
-	 *         exists.
+	 * @return the type argument from the childClass at the given index or null if it does not exist
 	 */
 	public static <T> Class<?> getTypeArgument(final @NonNull Class<? extends T> childClass,
 		final int index)
@@ -196,7 +195,7 @@ public final class TypeArgumentsExtensions
 	}
 
 	/**
-	 * Gets the type argument from the childClass at the given index or null if it does not exists.
+	 * Gets the type argument from the childClass at the given index or null if it does not exist
 	 *
 	 * @param <T>
 	 *            the generic type of the baseClass
@@ -206,8 +205,7 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @param index
 	 *            the index of the type argument
-	 * @return the type argument from the childClass at the given index or null if it does not
-	 *         exists.
+	 * @return the type argument from the childClass at the given index or null if it does not exist
 	 */
 	public static <T> Class<?> getTypeArgument(final @NonNull Class<T> baseClass,
 		final @NonNull Class<? extends T> childClass, final int index)

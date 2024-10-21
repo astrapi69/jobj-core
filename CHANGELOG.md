@@ -4,8 +4,17 @@
 Version 9.2-SNAPSHOT
 -------------
 
+ADDED:
+
+- new model class MethodTypes that holds all generic types of a given method
+- new extension class MethodTypeArgumentsExtensions
+- new method in class MethodTypeArgumentsExtensions that gets all generic parameter types from the given method
+- new method in class MethodTypeArgumentsExtensions that get the first generic parameter type from the given method
+- new method in class MethodTypeArgumentsExtensions that get the generic return type from the given method
+
 CHANGED:
 
+- update of gradle-plugin dependency of 'com.diffplug.spotless:spotless-plugin-gradle' in version 7.0.0.BETA3
 - dependencies are managed now over bundles
 
 Version 9.1
