@@ -84,6 +84,27 @@ Then you can add the dependency to your dependencies:
             ...
         </dependencies>
 
+
+# with new libs.versions.toml file
+
+If you use the new libs.versions.toml file for new automatic catalog versions update
+
+```
+[versions]
+jobj-core-version = "${latestVersion}"
+
+# libraries section
+[libraries]
+jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
+```
+
+
+then add the dependency to the dependencies area
+
+```
+    implementation libs.jobj.core
+```
+
 ## 📸 Snapshots
 
 [![Snapshot](https://img.shields.io/badge/dynamic/xml?url=https://oss.sonatype.org/service/local/repositories/snapshots/content/io/github/astrapi69/jobj-core/maven-metadata.xml&label=snapshot&color=red&query=.//versioning/latest)](https://oss.sonatype.org/content/repositories/snapshots/io/github/astrapi69/jobj-core/)
