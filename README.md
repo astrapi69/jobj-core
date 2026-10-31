@@ -5,12 +5,11 @@
 [![Java CI with Gradle](https://github.com/astrapi69/jobj-core/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/jobj-core/actions/workflows/gradle.yml)
 [![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/jobj-core)](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core)
 [![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
 [![Hits Of Code](https://hitsofcode.com/github/astrapi69/jobj-core?branch=master)](https://hitsofcode.com/github/astrapi69/jobj-core/view?branch=master)
-[![Lines Of Code](https://tokei.rs/b1/github/astrapi69/jobj-core)](https://github.com/astrapi69/jobj-core)
 
 </div>
 
@@ -34,7 +33,7 @@ The source code comes under the liberal MIT License, making jobj-core great for 
 
 ## gradle dependency
 
-Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
+Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/jobj-core)](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core)
 
 You can first define the version in the ext section and add than the following gradle dependency to
 your project `build.gradle` if you want to import the core functionality of jobj-core:
@@ -59,8 +58,7 @@ and than add the dependency to the dependencies area
 
 ## Maven dependency
 
-Maven dependency is now on sonatype.
-Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~) for latest snapshots and releases.
+The library is on Maven Central. Check out [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core) for the latest release.
 
 Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of jobj-core:
 
@@ -107,8 +105,6 @@ then add the dependency to the dependencies area
 
 ## 📸 Snapshots
 
-[![Snapshot](https://img.shields.io/badge/dynamic/xml?url=https://oss.sonatype.org/service/local/repositories/snapshots/content/io/github/astrapi69/jobj-core/maven-metadata.xml&label=snapshot&color=red&query=.//versioning/latest)](https://oss.sonatype.org/content/repositories/snapshots/io/github/astrapi69/jobj-core/)
-
 This section describes how to import snapshot versions into your project.
 Add the following code snippet to your gradle file in the repositories section:
 ```
@@ -117,8 +113,8 @@ repositories {
 ```
 ```groovy
     maven {
-        name "Sonatype Nexus Snapshots"
-        url "https://oss.sonatype.org/content/repositories/snapshots"
+        name "Central Portal Snapshots"
+        url "https://central.sonatype.com/repository/maven-snapshots/"
         mavenContent {
             snapshotsOnly()
         }
@@ -164,9 +160,9 @@ Do not hesitate to contact the jobj-core developers with your questions, concern
 
 ## Credits
 
-|**Nexus Sonatype repositories**|
+|**Maven Central**|
 |     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/jobj-core.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~)|
+|[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/jobj-core?style=for-the-badge)](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core)|
 |Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
 |     <img width=1000/>     |
 
