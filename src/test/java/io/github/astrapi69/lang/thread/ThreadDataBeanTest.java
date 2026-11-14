@@ -135,7 +135,11 @@ public class ThreadDataBeanTest
 		thread.start();
 		thread.join();
 		assertNull(thread.getThreadGroup());
-		assertThrows(NullPointerException.class, () -> ThreadDataBean.of(thread));
+		final ThreadDataBean data = ThreadDataBean.of(thread);
+		assertFalse(data.isAlive());
+		assertNull(data.getThreadGroup());
+		assertEquals("terminated-thread", data.getName());
+		assertEquals(thread.threadId(), data.getId());
 	}
 
 }
