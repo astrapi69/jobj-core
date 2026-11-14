@@ -8,17 +8,24 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     from javadoc
     archiveClassifier.set("javadoc")
-    javadoc {
-        failOnError = false
-    }
 }
 
+// A javadoc error fails the build, and check depends on javadoc, so that ./gradlew build and CI run it (as
+// astrapi69/silly-collection#96). -Werror, which turns every warning into an error, waits for #16: the warnings
+// left are all in the types that issue may remove from the API.
 javadoc {
-    failOnError = false
+    failOnError = true
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
+    // The standard doclet writes its text in the locale of the javadoc JVM, so a build on a machine in German
+    // wrote another javadoc jar than CI (lang="de" and German doclet text, measured on develop 7445960); -locale
+    // alone sets only the lang attribute (RL-115, as astrapi69/silly-collection#99 and astrapi69/file-worker#153)
+    options.locale = "en"
+    options.jFlags("-Duser.language=en", "-Duser.country=US")
 }
+
+check.dependsOn javadoc
 
 publishing {
     publications {
