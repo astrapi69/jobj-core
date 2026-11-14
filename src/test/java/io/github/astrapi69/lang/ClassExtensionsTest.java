@@ -21,6 +21,7 @@
 package io.github.astrapi69.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +52,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -118,44 +118,60 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#isInstantiable(Class)}
+	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them today
+	 *
+	 * @return the classes and the answers
 	 */
-	@Test
-	public void testIsInstantiable()
+	static Stream<Arguments> instantiableOrNot()
 	{
-		boolean expected;
-		boolean actual;
-
-		actual = ClassExtensions.isInstantiable(Brand.class);
-		expected = false;
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.isInstantiable(Integer.class);
-		assertEquals(expected, actual);
-
-		actual = ClassExtensions.isInstantiable(Person.class);
-		expected = true;
-		assertEquals(expected, actual);
-
+		return Stream.of(Arguments.of(Brand.class, false, "an enum has no no-argument constructor"),
+			Arguments.of(Integer.class, false, "no no-argument constructor"),
+			Arguments.of(Runnable.class, false, "an interface has no constructor"),
+			Arguments.of(Person.class, true, "a public no-argument constructor"),
+			Arguments.of(String[].class, true, "an array type"),
+			Arguments.of(ArrayList.class, true, "a collection type"),
+			Arguments.of(List.class, true, "a collection interface"),
+			Arguments.of(HashMap.class, true, "a map type"),
+			Arguments.of(Map.class, true, "a map interface"),
+			Arguments.of(InputStream.class, true,
+				"abstract, but with a no-argument constructor: pinned as it is, see the issue"),
+			Arguments.of(ClassExtensions.class, true,
+				"a private no-argument constructor: pinned as it is, see the issue"));
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#isInstantiable(Class)} from all classes in the
-	 * classloader
+	 * Test method for {@link ClassExtensions#isInstantiable(Class)}
+	 *
+	 * @param clazz
+	 *            the class
+	 * @param instantiable
+	 *            what the method answers for it
+	 * @param why
+	 *            the reason of the answer
+	 */
+	@ParameterizedTest(name = "{0}: {1}, {2}")
+	@MethodSource("instantiableOrNot")
+	public void testIsInstantiable(final Class<?> clazz, final boolean instantiable,
+		final String why)
+	{
+		assertEquals(instantiable, ClassExtensions.isInstantiable(clazz));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#isInstantiable(Class)} with every class of the family
+	 * on the class path: each loads, and the method answers for each without an exception. The
+	 * numbers of classes it counted before depended on the jars the build resolves (as #13), which
+	 * is why it was disabled; it no longer counts them
 	 */
 	@Test
-	@Disabled
 	public void testIsInstantiableWithAllClasses()
 	{
-		boolean expected;
-		boolean actual;
 		final ClassLoader classLoader = ClassExtensions.getClassLoader(ClassExtensions.class);
 		ClassPath classPath = RuntimeExceptionDecorator.decorate(() -> ClassPath.from(classLoader));
 		Set<ClassPath.ClassInfo> classes = classPath.getAllClasses();
 		Set<Class> notInstantiableClasses = SetFactory.newHashSet();
 		Set<Class> instantiableClasses = SetFactory.newHashSet();
 		Set<String> notLoadableClasses = SetFactory.newHashSet();
-		assertEquals(classes.size(), 8360);
 
 		classes.stream()
 			.filter(classInfo -> classInfo.getPackageName().startsWith("io.github.astrapi69"))
@@ -180,9 +196,9 @@ public class ClassExtensionsTest
 					notLoadableClasses.add(classInfo.getName());
 				}
 			});
-		assertEquals(notInstantiableClasses.size(), 44);
-		assertEquals(instantiableClasses.size(), 199);
-		assertEquals(notLoadableClasses.size(), 0);
+		assertEquals(Set.of(), notLoadableClasses, "every class loads and gets an answer");
+		assertFalse(instantiableClasses.isEmpty(), "the family's classes were found");
+		assertFalse(notInstantiableClasses.isEmpty(), "and some of them are not instantiable");
 	}
 
 	/**
@@ -487,7 +503,6 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#getJdkProxyInterfaces(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testGetJdkProxyInterfaces()
 	{
 		Class<?> expected;
@@ -814,7 +829,6 @@ public class ClassExtensionsTest
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
-	@Disabled
 	public void testGetRessourceAsStream() throws IOException
 	{
 		final String propertiesFilename = "resources.properties";
@@ -896,7 +910,6 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#isCglib(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testIsCglib()
 	{
 		PersonDao personDao = new PersonDao();
@@ -936,7 +949,6 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#isJdkProxy(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testIsJdkProxy()
 	{
 		boolean actual;
