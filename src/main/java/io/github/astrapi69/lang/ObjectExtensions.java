@@ -20,6 +20,8 @@
  */
 package io.github.astrapi69.lang;
 
+import java.util.Map;
+
 
 /**
  * The class {@link ObjectExtensions} provides extension methods to check if the object is the
@@ -27,6 +29,15 @@ package io.github.astrapi69.lang;
  */
 public final class ObjectExtensions
 {
+
+	/**
+	 * The default value of each primitive type, its zero; every other type has null as its default
+	 * value. Before 10.0 this was the public class DefaultValue, which no caller in the family used
+	 * (#16)
+	 */
+	private static final Map<Class<?>, Object> DEFAULT_VALUES = Map.of(boolean.class, false,
+		char.class, '\0', byte.class, (byte)0, short.class, (short)0, int.class, 0, long.class, 0L,
+		float.class, 0f, double.class, 0d);
 
 	/**
 	 * Private constructor for prevent instantiation
@@ -52,12 +63,9 @@ public final class ObjectExtensions
 		{
 			return true;
 		}
-		final Object defaultValue = DefaultValue.get(fieldClass);
-		if (defaultValue != null)
-		{
-			return DefaultValue.get(fieldClass).equals(object);
-		}
-		return false;
+		// Map.get throws a NullPointerException for a null class, as DefaultValue.get did
+		final Object defaultValue = DEFAULT_VALUES.get(fieldClass);
+		return defaultValue != null && defaultValue.equals(object);
 	}
 
 	/**

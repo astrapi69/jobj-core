@@ -22,11 +22,8 @@ module io.github.astrapisixtynine.jobj.core
 {
 	requires static lombok;
 	requires java.logging;
-	requires java.compiler;
 
 	exports io.github.astrapi69.check;
 	exports io.github.astrapi69.lang;
-	exports io.github.astrapi69.lang.manifest;
-	exports io.github.astrapi69.lang.model;
 	exports io.github.astrapi69.lang.thread;
 }
