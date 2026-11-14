@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -286,9 +287,11 @@ public class ThreadExtensionsTest extends BaseTestCase
 	@Test
 	public void runWithTimeoutWhenTheCallerIsInterrupted() throws Exception
 	{
+		final AtomicBoolean started = new AtomicBoolean();
 		final CountDownLatch interrupted = new CountDownLatch(1);
 		Thread.currentThread().interrupt();
 		ThreadExtensions.runWithTimeout(() -> {
+			started.set(true);
 			try
 			{
 				Thread.sleep(60_000);
@@ -299,8 +302,9 @@ public class ThreadExtensionsTest extends BaseTestCase
 			}
 		}, 60, TimeUnit.SECONDS);
 		final boolean callerStillInterrupted = Thread.interrupted();
-		assertTrue(interrupted.await(5, TimeUnit.SECONDS), "the task is stopped");
-		assertFalse(callerStillInterrupted, "today the interrupt status of the caller is lost");
+		assertTrue(callerStillInterrupted, "the interrupt status of the caller is kept");
+		// the task is stopped: cancelled before it started, or interrupted in its sleep
+		assertTrue(!started.get() || interrupted.await(5, TimeUnit.SECONDS), "the task is stopped");
 	}
 
 	/**
@@ -320,8 +324,8 @@ public class ThreadExtensionsTest extends BaseTestCase
 
 	/**
 	 * Test method for {@link ThreadExtensions#runCallableWithCpuCores(Callable, int)} and
-	 * {@link ThreadExtensions#runAsyncSupplierWithCpuCores(Supplier, int)}: what happens to the
-	 * pool thread that ran the task once the result is there
+	 * {@link ThreadExtensions#runAsyncSupplierWithCpuCores(Supplier, int)}: the pool is shut down
+	 * once the result is there, so the thread that ran the task ends
 	 *
 	 * @throws Exception
 	 *             if the task fails or the test fails to wait
@@ -339,12 +343,10 @@ public class ThreadExtensionsTest extends BaseTestCase
 			supplierWorker[0] = Thread.currentThread();
 			return "supplier";
 		}, 1));
-		// today each call leaves its pool open: the worker idles until the pool's keep-alive of 60
-		// seconds ends it
 		callableWorker[0].join(2000);
 		supplierWorker[0].join(2000);
-		assertTrue(callableWorker[0].isAlive(), "the worker of the callable is still alive");
-		assertTrue(supplierWorker[0].isAlive(), "the worker of the supplier is still alive");
+		assertFalse(callableWorker[0].isAlive(), "the worker of the callable has ended");
+		assertFalse(supplierWorker[0].isAlive(), "the worker of the supplier has ended");
 	}
 
 	/**
