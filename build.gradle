@@ -14,6 +14,7 @@ plugins {
     id 'signing'
     alias(libs.plugins.gradle.versions.plugin)
     alias(libs.plugins.lombok.plugin)
+    alias(libs.plugins.pitest.gradle.plugin)
     alias(libs.plugins.spotless.plugin.gradle)
     alias(libs.plugins.version.catalog.update)
 }
@@ -24,6 +25,18 @@ description = "$rootProject.name"
 
 // import gradle files
 apply from: "gradle/apply-gradle-files.gradle"
+
+// Mutation-score floor the workflow "Mutation testing" fails below: it runs `./gradlew pitest` on GitHub
+// (.github/workflows/mutation-testing.yml); PIT rounds the score half up to a whole percent before it compares, and
+// holds it at 99 while a mutant survives. Measured with DEFAULTS and STRONGER on 2026-11-14 by the first run, on
+// commit 3fe99a4 of the pull request that brought PIT (run 43626608343): 351 of 532 mutants detected, 66 %; 50 had no
+// test that reached them. The floor is that score minus two points (the maintainer, 2026-11-14): a few mutants more
+// that survive do not fail the run at once, a drop of more than two points does. It rises with the tests of
+// milestone 10.0. Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in the file a reader
+// looks at.
+pitest {
+    mutationThreshold = 64
+}
 
 java {
     sourceCompatibility = "$projectSourceCompatibility" as Object

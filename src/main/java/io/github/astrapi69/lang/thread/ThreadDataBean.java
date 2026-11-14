@@ -80,7 +80,9 @@ public class ThreadDataBean
 
 	/**
 	 * Factory method for create a new {@link ThreadDataBean} object from the given {@link Thread}
-	 * object
+	 * object. A thread that has terminated has no thread group any more
+	 * ({@link Thread#getThreadGroup()} returns null), so its {@link ThreadDataBean} holds no thread
+	 * group
 	 *
 	 * @param thread
 	 *            the thread
@@ -91,9 +93,12 @@ public class ThreadDataBean
 	public static ThreadDataBean of(final Thread thread)
 	{
 		Objects.requireNonNull(thread, "thread is marked non-null but is null");
+		// read once: the thread may terminate between a check and a second read
+		final ThreadGroup threadGroup = thread.getThreadGroup();
 		return ThreadDataBean.builder().priority(thread.getPriority()).alive(thread.isAlive())
 			.daemon(thread.isDaemon()).interrupted(thread.isInterrupted()).id(thread.threadId())
-			.threadGroup(thread.getThreadGroup().getName()).name(thread.getName()).build();
+			.threadGroup(threadGroup != null ? threadGroup.getName() : null).name(thread.getName())
+			.build();
 	}
 
 	/**
