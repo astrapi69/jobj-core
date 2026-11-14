@@ -21,11 +21,23 @@
 package io.github.astrapi69.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.meanbean.test.BeanTester;
 
+import io.github.astrapi69.lang.thread.ThreadDataBean;
 import io.github.astrapi69.test.object.factory.TestMessagesFactory;
 
 /**
@@ -150,6 +162,158 @@ public class PackageExtensionsTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(PackageExtensions.class);
+	}
+
+	/**
+	 * Classes with a package of their own and the name of that package
+	 *
+	 * @return the classes and the names of their packages
+	 */
+	static Stream<Arguments> classesAndTheirPackages()
+	{
+		return Stream.of(Arguments.of(String.class, "java.lang"),
+			Arguments.of(Map.Entry.class, "java.util"),
+			Arguments.of(PackageExtensions.class, "io.github.astrapi69.lang"),
+			Arguments.of(ThreadDataBean.class, "io.github.astrapi69.lang.thread"));
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageName(Class)},
+	 * {@link PackageExtensions#getPackageNameWithDot(Class)},
+	 * {@link PackageExtensions#getPackagePath(Class)} and
+	 * {@link PackageExtensions#getPackagePathWithSlash(Class)}: all four name the same package
+	 *
+	 * @param clazz
+	 *            the class
+	 * @param packageName
+	 *            the name of its package
+	 */
+	@ParameterizedTest(name = "{0} is in {1}")
+	@MethodSource("classesAndTheirPackages")
+	public void theFourFormsOfThePackageOfAClass(final Class<?> clazz, final String packageName)
+	{
+		final String packagePath = packageName.replace('.', '/') + "/";
+		assertEquals(packageName, PackageExtensions.getPackageName(clazz));
+		assertEquals(packageName + ".", PackageExtensions.getPackageNameWithDot(clazz));
+		assertEquals(packagePath, PackageExtensions.getPackagePath(clazz));
+		assertEquals("/" + packagePath, PackageExtensions.getPackagePathWithSlash(clazz));
+	}
+
+	/**
+	 * Classes for which {@link Class#getPackage()} returns null: the primitive types, void and the
+	 * array types
+	 *
+	 * @return the classes
+	 */
+	static Stream<Class<?>> classesWithoutAPackageObject()
+	{
+		return Stream.of(int.class, void.class, String[].class, int[][].class);
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageName(Class)} and the other forms with a
+	 * class for which {@link Class#getPackage()} returns null
+	 *
+	 * @param clazz
+	 *            the class
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("classesWithoutAPackageObject")
+	public void aClassWithoutAPackageObject(final Class<?> clazz)
+	{
+		assertThrows(NullPointerException.class, () -> PackageExtensions.getPackageName(clazz));
+		assertThrows(NullPointerException.class,
+			() -> PackageExtensions.getPackageNameWithDot(clazz));
+		assertThrows(NullPointerException.class, () -> PackageExtensions.getPackagePath(clazz));
+		assertThrows(NullPointerException.class,
+			() -> PackageExtensions.getPackagePathWithSlash(clazz));
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageName(String)} with a qualified name
+	 *
+	 * @param qualifiedClassName
+	 *            the qualified class name
+	 * @param packageName
+	 *            the name of its package
+	 */
+	@ParameterizedTest(name = "{0} is in {1}")
+	@CsvSource({ "java.lang.String, java.lang", "a.B, a",
+			"io.github.astrapi69.lang.PackageExtensions, io.github.astrapi69.lang",
+			"java.util.Map$Entry, java.util" })
+	public void thePackageOfAQualifiedClassName(final String qualifiedClassName,
+		final String packageName)
+	{
+		assertEquals(packageName, PackageExtensions.getPackageName(qualifiedClassName));
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackageName(String)} with a name that holds no
+	 * dot
+	 *
+	 * @param qualifiedClassName
+	 *            the name without a dot
+	 */
+	@ParameterizedTest(name = "\"{0}\"")
+	@ValueSource(strings = { "Unqualified", "" })
+	public void aClassNameWithoutAPackage(final String qualifiedClassName)
+	{
+		assertThrows(StringIndexOutOfBoundsException.class,
+			() -> PackageExtensions.getPackageName(qualifiedClassName));
+	}
+
+	/**
+	 * Test method for {@link PackageExtensions#getPackagePath(Object)} and
+	 * {@link PackageExtensions#getPackagePathWithSlash(Object)}: they take the class of the object
+	 */
+	@Test
+	public void thePackagePathOfAnObject()
+	{
+		assertEquals("java/lang/", PackageExtensions.getPackagePath((Object)"text"));
+		assertEquals("/java/util/", PackageExtensions.getPackagePathWithSlash(new ArrayList<>()));
+	}
+
+	/**
+	 * Every method refuses null
+	 *
+	 * @return the calls with null
+	 */
+	static Stream<Arguments> callsWithNull()
+	{
+		return Stream.of(
+			Arguments.of("getPackageName(Class)",
+				(Executable)() -> PackageExtensions.getPackageName((Class<?>)null)),
+			Arguments.of("getPackageName(String)",
+				(Executable)() -> PackageExtensions.getPackageName((String)null)),
+			Arguments.of("getPackageNameWithDot(Class)",
+				(Executable)() -> PackageExtensions.getPackageNameWithDot(null)),
+			Arguments.of("getPackagePath(Class)",
+				(Executable)() -> PackageExtensions.getPackagePath((Class<?>)null)),
+			Arguments.of("getPackagePath(Object)",
+				(Executable)() -> PackageExtensions.getPackagePath((Object)null)),
+			Arguments.of("getPackagePath(String)",
+				(Executable)() -> PackageExtensions.getPackagePath((String)null)),
+			Arguments.of("getPackagePath(String, boolean)",
+				(Executable)() -> PackageExtensions.getPackagePath(null, true)),
+			Arguments.of("getPackagePathWithSlash(Class)",
+				(Executable)() -> PackageExtensions.getPackagePathWithSlash((Class<?>)null)),
+			Arguments.of("getPackagePathWithSlash(Object)",
+				(Executable)() -> PackageExtensions.getPackagePathWithSlash((Object)null)));
+	}
+
+	/**
+	 * Test method for the null checks of every method of {@link PackageExtensions}
+	 *
+	 * @param call
+	 *            the name of the call
+	 * @param executable
+	 *            the call with null
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("callsWithNull")
+	public void everyMethodRefusesNull(final String call, final Executable executable)
+	{
+		assertThrows(NullPointerException.class, executable);
 	}
 
 }
