@@ -1,16 +1,11 @@
 repositories {
     mavenLocal()
     mavenCentral()
+    // Snapshots of the family's libraries, which publish.yml uploads to the Central Portal; the OSSRH
+    // repositories this build read before were shut down
     maven {
-        name = "Sonatype Nexus Releases"
-        url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        mavenContent {
-            releasesOnly()
-        }
-    }
-    maven {
-        name = "Sonatype Nexus Snapshots"
-        url = "https://oss.sonatype.org/content/repositories/snapshots"
+        name = "$projectRepositoriesSnapshotsName"
+        url = "$projectRepositoriesSnapshotsRepoUrl"
         mavenContent {
             snapshotsOnly()
         }
