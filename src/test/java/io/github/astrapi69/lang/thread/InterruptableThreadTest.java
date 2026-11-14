@@ -113,4 +113,33 @@ class InterruptableThreadTest
 		assertFalse(thread.isAlive(), "the loop ends after interrupt()");
 		assertTrue(0 < calls.get(), "process() ran before the interrupt");
 	}
+
+	/**
+	 * A process that does no more than count: once the JIT compiler has compiled the loop, it reads
+	 * the flag of {@link InterruptableThread} only if the write of
+	 * {@link InterruptableThread#interrupt()} is guaranteed to become visible to it (JLS 17.4.5)
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
+	 */
+	@Test
+	void aTightProcessEndsAfterInterruptToo() throws InterruptedException
+	{
+		final long[] calls = new long[1];
+		final InterruptableThread thread = new InterruptableThread()
+		{
+			@Override
+			protected void process()
+			{
+				calls[0]++;
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+		// long enough for the JIT compiler to compile the loop
+		Thread.sleep(1000);
+		thread.interrupt();
+		thread.join(5000);
+		assertFalse(thread.isAlive(), "the loop ends after interrupt()");
+	}
 }
