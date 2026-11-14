@@ -99,6 +99,23 @@ class IsInRangeBoundariesTest
 	}
 
 	/**
+	 * NaN is in no range: the {@code Float} and {@code Double} methods of {@link Check} and
+	 * {@link Argument#isInRange(Comparable, Comparable, Comparable, String)}, whose
+	 * {@link Double#compareTo(Double)} puts NaN above every other value, refuse it
+	 */
+	@Test
+	void notANumberIsInNoRange()
+	{
+		final Check check = Check.get();
+		assertThrows(IllegalArgumentException.class,
+			() -> check.isInRange(0f, 5f, Float.NaN, "value"));
+		assertThrows(IllegalArgumentException.class,
+			() -> check.isInRange(0d, 5d, Double.NaN, "value"));
+		assertThrows(IllegalArgumentException.class,
+			() -> Argument.isInRange(0d, 5d, Double.NaN, "value"));
+	}
+
+	/**
 	 * A null bound is refused with an {@link IllegalArgumentException} that names it; a null value
 	 * gives the {@link IllegalArgumentException} of its name in {@link Check}, and a
 	 * {@link NullPointerException} in {@link Argument}, which does not check it
