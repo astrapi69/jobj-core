@@ -287,7 +287,7 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getCallingMethodName(Thread.currentThread().getStackTrace());
-		expected = "invoke0";
+		expected = "invoke";
 		assertEquals(expected, actual);
 	}
 
