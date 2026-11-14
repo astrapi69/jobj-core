@@ -23,6 +23,7 @@ package io.github.astrapi69.lang.thread;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -117,6 +118,24 @@ public class ThreadDataBeanTest
 		assertEquals(Integer.valueOf(Thread.MIN_PRIORITY), data.getPriority());
 		assertEquals("of-group", data.getThreadGroup());
 		assertThrows(NullPointerException.class, () -> ThreadDataBean.of(null));
+	}
+
+	/**
+	 * Test method for {@link ThreadDataBean#of(Thread)} with a thread that has terminated:
+	 * {@link Thread#getThreadGroup()} returns null for it
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
+	 */
+	@Test
+	public void ofATerminatedThread() throws InterruptedException
+	{
+		final Thread thread = new Thread(() -> {
+		}, "terminated-thread");
+		thread.start();
+		thread.join();
+		assertNull(thread.getThreadGroup());
+		assertThrows(NullPointerException.class, () -> ThreadDataBean.of(thread));
 	}
 
 }
