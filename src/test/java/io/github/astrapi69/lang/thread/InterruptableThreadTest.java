@@ -22,6 +22,8 @@ package io.github.astrapi69.lang.thread;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,14 +61,85 @@ class InterruptableThreadTest
 	/**
 	 * Tests the {@link InterruptableThread#interrupt()} method and verifies the thread stops
 	 * processing when interrupted
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
 	 */
 	@Test
-	void testInterrupt()
+	void testInterrupt() throws InterruptedException
 	{
+		interruptableThread.setDaemon(true);
 		interruptableThread.start();
 		assertFalse(interruptableThread.isInterrupted());
 
 		interruptableThread.interrupt();
 		assertTrue(interruptableThread.isInterrupted());
+		interruptableThread.join(5000);
+		assertFalse(interruptableThread.isAlive(), "the loop ends after interrupt()");
+	}
+
+	/**
+	 * A process that catches the {@link InterruptedException} and clears the interrupt status: the
+	 * loop of {@link InterruptableThread} ends all the same, as it keeps a flag of its own
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
+	 */
+	@Test
+	void aProcessThatSwallowsTheInterruptEndsAllTheSame() throws InterruptedException
+	{
+		final AtomicInteger calls = new AtomicInteger();
+		final InterruptableThread thread = new InterruptableThread()
+		{
+			@Override
+			protected void process()
+			{
+				calls.incrementAndGet();
+				try
+				{
+					Thread.sleep(10);
+				}
+				catch (InterruptedException e)
+				{
+					// swallowed on purpose: the interrupt status is cleared
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+		Thread.sleep(50);
+		thread.interrupt();
+		thread.join(5000);
+		assertFalse(thread.isAlive(), "the loop ends after interrupt()");
+		assertTrue(0 < calls.get(), "process() ran before the interrupt");
+	}
+
+	/**
+	 * A process that does no more than count: once the JIT compiler has compiled the loop, it reads
+	 * the flag of {@link InterruptableThread} only if the write of
+	 * {@link InterruptableThread#interrupt()} is guaranteed to become visible to it (JLS 17.4.5)
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
+	 */
+	@Test
+	void aTightProcessEndsAfterInterruptToo() throws InterruptedException
+	{
+		final long[] calls = new long[1];
+		final InterruptableThread thread = new InterruptableThread()
+		{
+			@Override
+			protected void process()
+			{
+				calls[0]++;
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+		// long enough for the JIT compiler to compile the loop
+		Thread.sleep(1000);
+		thread.interrupt();
+		thread.join(5000);
+		assertFalse(thread.isAlive(), "the loop ends after interrupt()");
 	}
 }
