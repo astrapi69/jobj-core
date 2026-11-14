@@ -31,9 +31,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * The bounds of {@link Argument#isInRange(Comparable, Comparable, Comparable, String)} and of the
- * four {@code isInRange} methods of {@link Check}, as they are today: {@link Argument} takes the
- * range with both bounds, {@link Check} without them, though both say "in the given range". Which
- * of the two is meant is asked in the issue named by the pull request that adds this class
+ * four {@code isInRange} methods of {@link Check}: both take the range with both bounds, as Apache
+ * Commons Lang {@code Validate.inclusiveBetween} does (#34; before 10.0 {@link Check} refused the
+ * bounds)
  */
 class IsInRangeBoundariesTest
 {
@@ -74,8 +74,8 @@ class IsInRangeBoundariesTest
 	 *            whether the value passes
 	 */
 	@ParameterizedTest(name = "{0} in 0..5: {1}")
-	@CsvSource({ "-1, false", "0, false", "1, true", "4, true", "5, false", "6, false" })
-	void checkTakesTheRangeWithoutItsBounds(final int value, final boolean inRange)
+	@CsvSource({ "-1, false", "0, true", "1, true", "4, true", "5, true", "6, false" })
+	void checkTakesTheRangeWithBothBounds(final int value, final boolean inRange)
 	{
 		final Check check = Check.get();
 		if (inRange)
@@ -116,9 +116,9 @@ class IsInRangeBoundariesTest
 	}
 
 	/**
-	 * A null bound is refused with an {@link IllegalArgumentException} that names it; a null value
-	 * gives the {@link IllegalArgumentException} of its name in {@link Check}, and a
-	 * {@link NullPointerException} in {@link Argument}, which does not check it
+	 * A null bound or a null value is refused with an {@link IllegalArgumentException} that names
+	 * it, in {@link Check} and in {@link Argument} (before 10.0 {@link Argument} threw a
+	 * {@link NullPointerException} for a null value)
 	 */
 	@Test
 	void nullBoundsAndValues()
@@ -129,7 +129,9 @@ class IsInRangeBoundariesTest
 		assertEquals("Given argument 'max' may not be null.",
 			assertThrows(IllegalArgumentException.class,
 				() -> Argument.isInRange(0, null, 1, "value")).getMessage());
-		assertThrows(NullPointerException.class, () -> Argument.isInRange(0, 5, null, "value"));
+		assertEquals("Given argument 'value' may not be null.",
+			assertThrows(IllegalArgumentException.class,
+				() -> Argument.isInRange(0, 5, null, "value")).getMessage());
 		assertEquals("Given argument 'value' may not be null.",
 			assertThrows(IllegalArgumentException.class,
 				() -> Check.get().isInRange(0, 5, (Integer)null, "value")).getMessage());

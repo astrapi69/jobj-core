@@ -54,7 +54,8 @@ public final class Check implements Serializable
 	}
 
 	/**
-	 * Checks if the given argument is in the given a range.
+	 * Checks if the given argument is in the given range, both bounds included, as Apache Commons
+	 * Lang {@code Validate.inclusiveBetween} does.
 	 *
 	 * @param min
 	 *            The minimum from the range to check.
@@ -75,7 +76,8 @@ public final class Check implements Serializable
 		Argument.notNull(min, "min");
 		Argument.notNull(max, "max");
 		Argument.notNull(value, name);
-		if (!((min < value) && (value < max)))
+		// written so that NaN, for which every comparison is false, is in no range
+		if (!(min <= value && value <= max))
 		{
 			throw new IllegalArgumentException(String.format(
 				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
@@ -85,7 +87,8 @@ public final class Check implements Serializable
 	}
 
 	/**
-	 * Checks if the given argument is in the given a range.
+	 * Checks if the given argument is in the given range, both bounds included, as Apache Commons
+	 * Lang {@code Validate.inclusiveBetween} does.
 	 *
 	 * @param min
 	 *            The minimum from the range to check.
@@ -105,7 +108,8 @@ public final class Check implements Serializable
 		Argument.notNull(min, "min");
 		Argument.notNull(max, "max");
 		Argument.notNull(value, name);
-		if (!((min < value) && (value < max)))
+		// written so that NaN, for which every comparison is false, is in no range
+		if (!(min <= value && value <= max))
 		{
 			throw new IllegalArgumentException(String.format(
 				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
@@ -115,7 +119,8 @@ public final class Check implements Serializable
 	}
 
 	/**
-	 * Checks if the given argument is in the given a range.
+	 * Checks if the given argument is in the given range, both bounds included, as Apache Commons
+	 * Lang {@code Validate.inclusiveBetween} does.
 	 *
 	 * @param min
 	 *            The minimum from the range to check.
@@ -136,7 +141,8 @@ public final class Check implements Serializable
 		Argument.notNull(min, "min");
 		Argument.notNull(max, "max");
 		Argument.notNull(value, name);
-		if (!((min < value) && (value < max)))
+		// written so that NaN, for which every comparison is false, is in no range
+		if (!(min <= value && value <= max))
 		{
 			throw new IllegalArgumentException(String.format(
 				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
@@ -146,7 +152,8 @@ public final class Check implements Serializable
 	}
 
 	/**
-	 * Checks if the given argument is in the given a range.
+	 * Checks if the given argument is in the given range, both bounds included, as Apache Commons
+	 * Lang {@code Validate.inclusiveBetween} does.
 	 *
 	 * @param min
 	 *            The minimum from the range to check.
@@ -166,7 +173,8 @@ public final class Check implements Serializable
 		Argument.notNull(min, "min");
 		Argument.notNull(max, "max");
 		Argument.notNull(value, name);
-		if (!((min < value) && (value < max)))
+		// written so that NaN, for which every comparison is false, is in no range
+		if (!(min <= value && value <= max))
 		{
 			throw new IllegalArgumentException(String.format(
 				"Given argument '%s' should have a value between %s - %s, but given argument is currently:%s",
