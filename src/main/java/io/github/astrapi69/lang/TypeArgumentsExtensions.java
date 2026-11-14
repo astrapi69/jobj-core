@@ -211,8 +211,8 @@ public final class TypeArgumentsExtensions
 		final @NonNull Class<? extends T> childClass, final int index)
 	{
 		final List<Class<?>> typeArguments = getTypeArguments(baseClass, childClass);
-		// an index below 0 does not exist either
-		if (typeArguments != null && 0 <= index && index < typeArguments.size())
+		// getTypeArguments never returns null; an index below 0 does not exist either
+		if (0 <= index && index < typeArguments.size())
 		{
 			return typeArguments.get(index);
 		}
