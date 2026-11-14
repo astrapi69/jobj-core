@@ -33,18 +33,30 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 import com.google.common.reflect.ClassPath;
@@ -583,31 +595,77 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getResources(String, String...)}
+	 * The protocols to exclude and the protocols of the resources that
+	 * {@link ClassExtensions#getResources(String, String...)} finds without them, on a class path
+	 * of one directory and one jar
+	 *
+	 * @return the excluded protocols and the protocols that are left, in their order
 	 */
-	@Test
-	public void testGetResources() throws IOException
+	static Stream<Arguments> resourcesByExcludedProtocols()
 	{
-		int actual;
-		int expected;
-		List<URL> urls;
-		String resourcesDirPath;
+		return Stream.of(Arguments.of(List.of(), List.of("file", "jar")),
+			Arguments.of(List.of("jar"), List.of("file")),
+			Arguments.of(List.of("file"), List.of("jar")),
+			Arguments.of(List.of("file", "jar"), List.of()),
+			Arguments.of(List.of("http"), List.of("file", "jar")));
+	}
 
-		resourcesDirPath = "io/github/astrapi69/lang";
-		urls = ClassExtensions.getResources(resourcesDirPath);
-		actual = urls.size();
-		expected = 4;
-		assertEquals(expected, actual);
-
-		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
-		actual = urls.size();
-		expected = 3;
-		assertEquals(expected, actual);
-
-		urls = ClassExtensions.getResources(resourcesDirPath, "file");
-		actual = urls.size();
-		expected = 1;
-		assertEquals(expected, actual);
+	/**
+	 * Test method for {@link ClassExtensions#getResources(String, String...)}
+	 *
+	 * The class path is built here, one directory and one jar that both hold the package, and given
+	 * to the method through the context class loader, so that what it finds does not depend on the
+	 * jars the build resolves (#13)
+	 *
+	 * @param excludedProtocols
+	 *            the protocols to exclude
+	 * @param expectedProtocols
+	 *            the protocols of the resources that are found, in their order
+	 * @param temporaryDirectory
+	 *            the directory that holds the class path
+	 * @throws IOException
+	 *             if the class path cannot be written
+	 */
+	@ParameterizedTest(name = "excluding {0} finds {1}")
+	@MethodSource("resourcesByExcludedProtocols")
+	public void testGetResources(final List<String> excludedProtocols,
+		final List<String> expectedProtocols, final @TempDir Path temporaryDirectory)
+		throws IOException
+	{
+		final String packagePath = "io/github/astrapi69/lang/resources/fixture";
+		final Path directory = temporaryDirectory.resolve("classes");
+		Files.createDirectories(directory.resolve(packagePath));
+		Files.writeString(directory.resolve(packagePath).resolve("in-directory.txt"), "directory");
+		final Path jar = temporaryDirectory.resolve("fixture.jar");
+		try (JarOutputStream output = new JarOutputStream(Files.newOutputStream(jar)))
+		{
+			output.putNextEntry(new JarEntry(packagePath + "/"));
+			output.closeEntry();
+			output.putNextEntry(new JarEntry(packagePath + "/in-jar.txt"));
+			output.write("jar".getBytes(StandardCharsets.UTF_8));
+			output.closeEntry();
+		}
+		final Thread thread = Thread.currentThread();
+		final ClassLoader previous = thread.getContextClassLoader();
+		// no parent: the class path of the test JVM stays out of the search
+		try (URLClassLoader classLoader = new URLClassLoader(
+			new URL[] { directory.toUri().toURL(), jar.toUri().toURL() }, null))
+		{
+			thread.setContextClassLoader(classLoader);
+			final List<URL> urls = ClassExtensions.getResources(packagePath,
+				excludedProtocols.toArray(new String[0]));
+			assertEquals(expectedProtocols,
+				urls.stream().map(URL::getProtocol).collect(Collectors.toList()));
+			for (final URL url : urls)
+			{
+				assertTrue(url.toString().endsWith(packagePath),
+					url + " is the package of the class path");
+			}
+		}
+		finally
+		{
+			thread.setContextClassLoader(previous);
+		}
 	}
 
 	/**
