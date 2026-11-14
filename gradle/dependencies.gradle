@@ -9,3 +9,12 @@ dependencies {
     testImplementation libs.bundles.unit.testing
     testRuntimeOnly libs.bundles.test.runtime.only
 }
+
+// silly-collection, a test dependency, depends on jobj-core 9.1. Gradle resolves coordinates equal to the
+// project's own to the project itself, which put build/libs/jobj-core-<version>.jar on the test runtime class
+// path, behind build/classes/java/main, which holds the same classes, and without a task dependency on :jar: test
+// needed mustRunAfter(jar) to pass Gradle's validation, and ClassExtensionsTest counted the jar only when it had
+// been built (#13; the same as astrapi69/silly-collection#36 and astrapi69/file-worker#99)
+configurations.named("testRuntimeClasspath") {
+    exclude group: project.group as String, module: project.name
+}
