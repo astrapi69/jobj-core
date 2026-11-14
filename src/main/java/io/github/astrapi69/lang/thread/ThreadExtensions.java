@@ -55,7 +55,9 @@ public final class ThreadExtensions
 
 	/**
 	 * Executes the given {@link Runnable} task and attempts to stop it if it exceeds the specified
-	 * timeout
+	 * timeout. If the calling thread is interrupted while it waits, the task is stopped as well and
+	 * the method returns with the interrupt status of the calling thread set. An exception the task
+	 * throws is logged, not thrown to the caller
 	 *
 	 * @param task
 	 *            the {@link Runnable} task to be executed
@@ -83,9 +85,17 @@ public final class ThreadExtensions
 			throw new TimeoutException("Task exceeded the timeout of " + timeout + " "
 				+ timeUnit.toString().toLowerCase());
 		}
-		catch (InterruptedException | ExecutionException e)
+		catch (InterruptedException e)
 		{
-			log.log(Level.WARNING, "Runnable Interrupted ", e);
+			// get() cleared the interrupt status; it is set again, so that the caller still sees
+			// the interruption (Java Concurrency in Practice, 7.1.3)
+			future.cancel(true);
+			Thread.currentThread().interrupt();
+			log.log(Level.WARNING, "Interrupted while waiting for the task", e);
+		}
+		catch (ExecutionException e)
+		{
+			log.log(Level.WARNING, "The task threw an exception", e.getCause());
 		}
 		finally
 		{
@@ -95,7 +105,7 @@ public final class ThreadExtensions
 
 	/**
 	 * Creates a custom thread pool that executes tasks in parallel processes with the given number
-	 * of CPU cores
+	 * of CPU cores. The pool is shut down when the method returns
 	 *
 	 * @param task
 	 *            the {@link Callable} task to execute
@@ -113,13 +123,21 @@ public final class ThreadExtensions
 	public static <T> T runCallableWithCpuCores(Callable<T> task, int cpuCores)
 		throws ExecutionException, InterruptedException
 	{
-		ForkJoinPool forkJoinPool = new ForkJoinPool(cpuCores);
-		return forkJoinPool.submit(task).get();
+		final ForkJoinPool forkJoinPool = new ForkJoinPool(cpuCores);
+		try
+		{
+			return forkJoinPool.submit(task).get();
+		}
+		finally
+		{
+			// not close(): it waits for the task, also when the caller was interrupted
+			forkJoinPool.shutdownNow();
+		}
 	}
 
 	/**
 	 * Creates a custom thread pool that executes tasks in parallel processes with the given number
-	 * of CPU cores
+	 * of CPU cores. The pool is shut down when the method returns
 	 *
 	 * @param supplier
 	 *            the {@link Supplier} task to execute
@@ -137,9 +155,15 @@ public final class ThreadExtensions
 	public static <T> T runAsyncSupplierWithCpuCores(Supplier<T> supplier, int cpuCores)
 		throws ExecutionException, InterruptedException
 	{
-		ForkJoinPool forkJoinPool = new ForkJoinPool(cpuCores);
-		CompletableFuture<T> future = CompletableFuture.supplyAsync(supplier, forkJoinPool);
-		return future.get();
+		final ForkJoinPool forkJoinPool = new ForkJoinPool(cpuCores);
+		try
+		{
+			return CompletableFuture.supplyAsync(supplier, forkJoinPool).get();
+		}
+		finally
+		{
+			forkJoinPool.shutdownNow();
+		}
 	}
 
 	/**
