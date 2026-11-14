@@ -22,6 +22,7 @@ package io.github.astrapi69.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -239,6 +240,18 @@ public class ObjectExtensionsTest
 		assertFalse(ObjectExtensions.isNotDefaultValue(type, defaultValue));
 		assertFalse(ObjectExtensions.isDefaultValue(type, otherValue));
 		assertTrue(ObjectExtensions.isNotDefaultValue(type, otherValue));
+	}
+
+	/**
+	 * Test method for {@link ObjectExtensions#isDefaultValue(Class, Object)} without a class: null
+	 * is the default value of every type, any other value needs the class, as with DefaultValue
+	 * before 10.0
+	 */
+	@Test
+	public void theDefaultValueWithoutAClass()
+	{
+		assertTrue(ObjectExtensions.isDefaultValue(null, null));
+		assertThrows(NullPointerException.class, () -> ObjectExtensions.isDefaultValue(null, 1));
 	}
 
 	/**
