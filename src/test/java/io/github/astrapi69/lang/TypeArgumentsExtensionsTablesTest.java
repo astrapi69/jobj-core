@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
@@ -237,10 +236,8 @@ class TypeArgumentsExtensionsTablesTest
 		assertNull(TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, 2));
 		assertNull(TypeArgumentsExtensions.getTypeArgument(Leaf.class, Leaf.class, 0));
 		assertEquals(String.class, TypeArgumentsExtensions.getFirstTypeArgument(StringList.class));
-		assertThrows(IndexOutOfBoundsException.class,
-			() -> TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, -1));
-		assertThrows(IndexOutOfBoundsException.class,
-			() -> TypeArgumentsExtensions.getTypeArgument(StringList.class, -1));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, -1));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(StringList.class, -1));
 	}
 
 	/**
