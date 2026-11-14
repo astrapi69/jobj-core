@@ -1,6 +1,5 @@
 gradle/dependencies.gradle
 gradle/formatting.gradle
-gradle/licensing.gradle
 gradle/packaging.gradle
 gradle/publishing.gradle
 gradle/repositories.gradle
