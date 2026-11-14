@@ -22,24 +22,24 @@ jacocoTestReport {
     }
 }
 
-// Coverage floor the build fails below (RL-112). Measured on 2026-11-14 on develop db55754: 574 of 660 lines
-// (86.97 %), 274 of 446 branches (61.43 %). The floor is each measure minus about two points, rounded down, as in
-// astrapi69/silly-collection#38 and astrapi69/file-worker#38: a few lines or branches that a new method's tests do
-// not reach yet do not fail the build at once, a drop of more than about two points does (0.84 and 0.59, the
-// maintainer, 2026-11-14). On develop 7445960, where this floor was added: 579 of 660 lines (87.73 %), 279 of 446
-// branches (62.56 %). It rises with the tests of milestone 10.0.
+// Coverage floor the build fails below (RL-112): each measure minus about two points, rounded down, as in
+// astrapi69/silly-collection#38 and astrapi69/file-worker#38, so that a few lines or branches that a new method's
+// tests do not reach yet do not fail the build at once, and a drop of more than about two points does. Set at 0.84
+// and 0.59 from develop db55754 (574 of 660 lines, 274 of 446 branches); raised after the parameterized tests of
+// milestone 10.0 (the maintainer, 2026-11-14), measured on develop d36dcf5 with ./gradlew clean build
+// --no-build-cache: 695 of 731 lines (95.08 %), 400 of 466 branches (85.84 %).
 jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.84
+                minimum = 0.93
             }
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.59
+                minimum = 0.83
             }
         }
     }
