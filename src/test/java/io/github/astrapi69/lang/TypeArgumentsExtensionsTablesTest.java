@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
@@ -37,6 +38,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -263,5 +265,73 @@ class TypeArgumentsExtensionsTablesTest
 			TypeArgumentsExtensions.getGenericTypeArray(Repository.class));
 		assertArrayEquals(new Type[] { Serializable.class },
 			TypeArgumentsExtensions.getGenericTypeArray(Plain.class));
+	}
+
+	/**
+	 * Every call of a method of {@link TypeArgumentsExtensions} whose parameter is marked non-null
+	 * or checked with {@link java.util.Objects#requireNonNull(Object)}, with null for it
+	 *
+	 * @return the name of each call and the call
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	static Stream<Arguments> callsThatRefuseNull()
+	{
+		final Class nullClass = null;
+		return Stream.of(
+			Arguments.of("getGenericReturnType(null, name)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnType(null, "toString")),
+			Arguments.of("getGenericReturnType(class, null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnType(Object.class, null)),
+			Arguments.of("getGenericReturnClassType(null, name)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnClassType(null,
+					"toString")),
+			Arguments.of("getGenericReturnClassType(class, null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnClassType(Object.class,
+					null)),
+			Arguments.of("getClass(null)",
+				(Executable)() -> TypeArgumentsExtensions.getClass((Type)null)),
+			Arguments.of("getFirstTypeArgument(null)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(nullClass)),
+			Arguments.of("getFirstTypeArgument(null, child)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(nullClass,
+					Leaf.class)),
+			Arguments.of("getFirstTypeArgument(base, null)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(Base.class,
+					nullClass)),
+			Arguments.of("getTypeArgument(null, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(nullClass, 0)),
+			Arguments.of("getTypeArgument(null, child, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(nullClass, Leaf.class,
+					0)),
+			Arguments.of("getTypeArgument(base, null, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(Base.class, nullClass,
+					0)),
+			Arguments.of("getTypeArguments(null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(nullClass)),
+			Arguments.of("getTypeArguments(null, child)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(nullClass, Leaf.class)),
+			Arguments.of("getTypeArguments(base, null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(Base.class, nullClass)),
+			Arguments.of("getTypeArgumentsAndParameters(null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgumentsAndParameters(null)),
+			Arguments.of("getParameterizedType(null)",
+				(Executable)() -> TypeArgumentsExtensions.getParameterizedType(null)),
+			Arguments.of("getGenericTypeArray(null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericTypeArray(null)));
+	}
+
+	/**
+	 * Each method refuses null with a {@link NullPointerException}
+	 *
+	 * @param call
+	 *            the name of the call
+	 * @param executable
+	 *            the call with null
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("callsThatRefuseNull")
+	void nullIsRefused(final String call, final Executable executable)
+	{
+		assertThrows(NullPointerException.class, executable);
 	}
 }
