@@ -37,7 +37,9 @@ public final class PackageExtensions
 	}
 
 	/**
-	 * Determines the package name from the given class object.
+	 * Determines the package name from the given class object, as {@link Class#getPackageName()}
+	 * does: for a primitive type and void it is "java.lang", for an array type the package of its
+	 * element type
 	 *
 	 * @param clazz
 	 *            The class object.
@@ -46,13 +48,14 @@ public final class PackageExtensions
 	 */
 	public static String getPackageName(final @NonNull Class<?> clazz)
 	{
-		final String packageName = clazz.getPackage().getName();
-		return packageName;
+		// Class.getPackage() returns null for a primitive type, void and an array type
+		return clazz.getPackageName();
 	}
 
 	/**
 	 * Determines the package name from the given String(this must be the fully qualified class name
-	 * without the file extension).
+	 * without the file extension). A name without a dot is in the unnamed package, whose name is
+	 * the empty string
 	 *
 	 * @param qualifiedClassName
 	 *            The fully qualified class name without the file extension. For instance:
@@ -62,13 +65,13 @@ public final class PackageExtensions
 	 */
 	public static String getPackageName(final @NonNull String qualifiedClassName)
 	{
-		final String packageName = qualifiedClassName.substring(0,
-			qualifiedClassName.lastIndexOf("."));
-		return packageName;
+		final int lastDot = qualifiedClassName.lastIndexOf('.');
+		return lastDot < 0 ? "" : qualifiedClassName.substring(0, lastDot);
 	}
 
 	/**
-	 * Determines the package name from the given class object and adds a dot at the end.
+	 * Determines the package name from the given class object and adds a dot at the end; the
+	 * package name is the one of {@link #getPackageName(Class)}
 	 *
 	 * @param clazz
 	 *            The class object.
@@ -77,8 +80,7 @@ public final class PackageExtensions
 	 */
 	public static String getPackageNameWithDot(final @NonNull Class<?> clazz)
 	{
-		final String packageName = clazz.getPackage().getName() + ".";
-		return packageName;
+		return getPackageName(clazz) + ".";
 	}
 
 	/**
