@@ -1,5 +1,5 @@
 [versions]
-cglib-nodep-version = "3.3.0"
+byte-buddy-version = "1.18.16"
 commons-beanutils-version = "1.11.0"
 commons-lang3-version = "3.21.0"
 crypt-api-version = "10.3"
@@ -23,7 +23,7 @@ test-object-version = "9.1"
 throwable-version = "3"
 
 [libraries]
-cglib-nodep = { module = "cglib:cglib-nodep", version.ref = "cglib-nodep-version" }
+byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byte-buddy-version" }
 commons-beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "commons-beanutils-version" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3-version" }
 crypt-api = { module = "io.github.astrapi69:crypt-api", version.ref = "crypt-api-version" }
@@ -63,7 +63,7 @@ test-runtime-only = [
 ]
 # Dependencies required for unit testing, including assertions, mocking, and parameterized tests
 unit-testing = [
-    "cglib-nodep",
+    "byte-buddy",
     "crypt-api",
     "equalsverifier",
     "guava",
