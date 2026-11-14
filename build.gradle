@@ -40,8 +40,4 @@ tasks.withType(JavaCompile).configureEach { javaCompiler ->
     // options.compilerArgs << "-Xlint:unchecked"
 }
 
-tasks.named("test") {
-    it.mustRunAfter(tasks.named("jar"))
-}
-
 apply from: "gradle/test-results-complete.gradle"
