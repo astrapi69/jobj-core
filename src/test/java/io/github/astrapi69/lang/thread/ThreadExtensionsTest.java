@@ -27,14 +27,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.test.base.BaseTestCase;
@@ -144,13 +150,203 @@ public class ThreadExtensionsTest extends BaseTestCase
 	 * Test method for {@link ThreadExtensions#newThreadData()}
 	 */
 	@Test
-	@Disabled("throws a java.lang.NullPointerException on github.com build action")
 	public final void testNewThreadData()
 	{
+		// disabled before: it threw a NullPointerException on GitHub's runners, where a thread
+		// could
+		// end between resolveRunningThreads() and ThreadDataBean.of, which threw for a terminated
+		// thread until #25
 		List<ThreadDataBean> threadData = ThreadExtensions.newThreadData();
 		actual = 0 < threadData.size();
 		expected = true;
 		assertEquals(expected, actual);
+		final Thread current = Thread.currentThread();
+		assertTrue(
+			threadData.stream()
+				.anyMatch(data -> data.getId() == current.threadId()
+					&& current.getName().equals(data.getName())),
+			"the data of the current thread is in the snapshot");
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#setCurrentThreadPriority(int)}: a priority from 1 to
+	 * 10 is taken, any other gives the minimum priority 1. Run in a thread of its own, so the
+	 * priority of the test thread stays as it is
+	 *
+	 * @param threadPriority
+	 *            the priority to set
+	 * @param expectedPriority
+	 *            the priority the thread has afterwards
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits for the thread
+	 */
+	@ParameterizedTest(name = "{0} gives {1}")
+	@CsvSource({ "1, 1", "5, 5", "10, 10", "0, 1", "11, 1", "-1, 1", "2147483647, 1" })
+	public void setCurrentThreadPriority(final int threadPriority, final int expectedPriority)
+		throws InterruptedException
+	{
+		final int[] priority = new int[1];
+		final Thread thread = new Thread(() -> {
+			Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+			ThreadExtensions.setCurrentThreadPriority(threadPriority);
+			priority[0] = Thread.currentThread().getPriority();
+		});
+		thread.start();
+		thread.join(5000);
+		assertEquals(expectedPriority, priority[0]);
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#shutdownExecutorService(ExecutorService, long)} with
+	 * tasks that end in time: the executor shuts down and terminates
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits
+	 */
+	@Test
+	public void shutdownExecutorServiceWithTasksThatEndInTime() throws InterruptedException
+	{
+		final ExecutorService executorService = Executors.newSingleThreadExecutor();
+		final Future<?> future = executorService.submit(() -> {
+		});
+		ThreadExtensions.shutdownExecutorService(executorService, 5);
+		assertTrue(executorService.isTerminated());
+		assertTrue(future.isDone());
+		assertFalse(future.isCancelled());
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#shutdownExecutorService(ExecutorService, long, long)}
+	 * with a task that does not end in time: the executor is shut down now, which interrupts the
+	 * task
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits
+	 */
+	@Test
+	public void shutdownExecutorServiceWithATaskThatDoesNotEndInTime() throws InterruptedException
+	{
+		final ExecutorService executorService = Executors.newSingleThreadExecutor();
+		final CountDownLatch started = new CountDownLatch(1);
+		final CountDownLatch interrupted = new CountDownLatch(1);
+		executorService.submit(() -> {
+			started.countDown();
+			try
+			{
+				Thread.sleep(60_000);
+			}
+			catch (InterruptedException e)
+			{
+				interrupted.countDown();
+			}
+		});
+		assertTrue(started.await(5, TimeUnit.SECONDS));
+		ThreadExtensions.shutdownExecutorService(executorService, 0, 1);
+		assertTrue(interrupted.await(5, TimeUnit.SECONDS), "shutdownNow interrupted the task");
+		assertTrue(executorService.awaitTermination(5, TimeUnit.SECONDS));
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#shutdownExecutorService(ExecutorService, long, long)}
+	 * when the calling thread is interrupted while it waits: the executor is shut down now and the
+	 * interrupt status of the caller is kept
+	 *
+	 * @throws InterruptedException
+	 *             if the test is interrupted while it waits
+	 */
+	@Test
+	public void shutdownExecutorServiceWhenTheCallerIsInterrupted() throws InterruptedException
+	{
+		final ExecutorService executorService = Executors.newSingleThreadExecutor();
+		final CountDownLatch started = new CountDownLatch(1);
+		executorService.submit(() -> {
+			started.countDown();
+			try
+			{
+				Thread.sleep(60_000);
+			}
+			catch (InterruptedException e)
+			{
+				// ends the task
+			}
+		});
+		assertTrue(started.await(5, TimeUnit.SECONDS));
+		Thread.currentThread().interrupt();
+		ThreadExtensions.shutdownExecutorService(executorService, 60);
+		assertTrue(Thread.interrupted(), "the interrupt status of the caller is kept");
+		assertTrue(executorService.awaitTermination(5, TimeUnit.SECONDS));
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#runWithTimeout(Runnable, long, TimeUnit)} when the
+	 * calling thread is interrupted while it waits for the task
+	 *
+	 * @throws Exception
+	 *             if the test fails to wait
+	 */
+	@Test
+	public void runWithTimeoutWhenTheCallerIsInterrupted() throws Exception
+	{
+		final AtomicBoolean started = new AtomicBoolean();
+		final CountDownLatch interrupted = new CountDownLatch(1);
+		Thread.currentThread().interrupt();
+		ThreadExtensions.runWithTimeout(() -> {
+			started.set(true);
+			try
+			{
+				Thread.sleep(60_000);
+			}
+			catch (InterruptedException e)
+			{
+				interrupted.countDown();
+			}
+		}, 60, TimeUnit.SECONDS);
+		final boolean callerStillInterrupted = Thread.interrupted();
+		assertTrue(callerStillInterrupted, "the interrupt status of the caller is kept");
+		// the task is stopped: cancelled before it started, or interrupted in its sleep
+		assertTrue(!started.get() || interrupted.await(5, TimeUnit.SECONDS), "the task is stopped");
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#runWithTimeout(Runnable, long, TimeUnit)} with a task
+	 * that throws: the exception is logged, not thrown to the caller
+	 *
+	 * @throws TimeoutException
+	 *             if the task exceeds the timeout
+	 */
+	@Test
+	public void runWithTimeoutWithATaskThatThrows() throws TimeoutException
+	{
+		ThreadExtensions.runWithTimeout(() -> {
+			throw new IllegalStateException("thrown by the task");
+		}, 5, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Test method for {@link ThreadExtensions#runCallableWithCpuCores(Callable, int)} and
+	 * {@link ThreadExtensions#runAsyncSupplierWithCpuCores(Supplier, int)}: the pool is shut down
+	 * once the result is there, so the thread that ran the task ends
+	 *
+	 * @throws Exception
+	 *             if the task fails or the test fails to wait
+	 */
+	@Test
+	public void thePoolThreadOfTheCpuCoresMethodsAfterTheResult() throws Exception
+	{
+		final Thread[] callableWorker = new Thread[1];
+		assertEquals("callable", ThreadExtensions.runCallableWithCpuCores(() -> {
+			callableWorker[0] = Thread.currentThread();
+			return "callable";
+		}, 1));
+		final Thread[] supplierWorker = new Thread[1];
+		assertEquals("supplier", ThreadExtensions.runAsyncSupplierWithCpuCores(() -> {
+			supplierWorker[0] = Thread.currentThread();
+			return "supplier";
+		}, 1));
+		callableWorker[0].join(2000);
+		supplierWorker[0].join(2000);
+		assertFalse(callableWorker[0].isAlive(), "the worker of the callable has ended");
+		assertFalse(supplierWorker[0].isAlive(), "the worker of the supplier has ended");
 	}
 
 	/**
