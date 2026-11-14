@@ -8,6 +8,14 @@ dependencies {
 
     testImplementation libs.bundles.unit.testing
     testRuntimeOnly libs.bundles.test.runtime.only
+    constraints {
+        // runtime-compiler 1.3, its last release (2021), brings commons-beanutils 1.9.3 and commons-lang3 3.12.0 to
+        // the tests, and with them four Dependabot alerts of this repository: three high for beanutils, fixed in
+        // 1.11.0, one medium for lang3, fixed in 3.18.0. The constraints raise both, lang3 to the family's 3.21.0;
+        // the upstream issue is astrapi69/runtime-compiler#2
+        testImplementation(libs.commons.beanutils)
+        testImplementation(libs.commons.lang3)
+    }
 }
 
 // silly-collection, a test dependency, depends on jobj-core 9.1. Gradle resolves coordinates equal to the
