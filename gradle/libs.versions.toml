@@ -1,5 +1,7 @@
 [versions]
 cglib-nodep-version = "3.3.0"
+commons-beanutils-version = "1.11.0"
+commons-lang3-version = "3.21.0"
 crypt-api-version = "10.3"
 equalsverifier-version = "4.5.2"
 gradle-plugin-lombok-version = "9.8.3"
@@ -19,6 +21,8 @@ throwable-version = "3"
 
 [libraries]
 cglib-nodep = { module = "cglib:cglib-nodep", version.ref = "cglib-nodep-version" }
+commons-beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "commons-beanutils-version" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3-version" }
 crypt-api = { module = "io.github.astrapi69:crypt-api", version.ref = "crypt-api-version" }
 equalsverifier = { module = "nl.jqno.equalsverifier:equalsverifier", version.ref = "equalsverifier-version" }
 guava = { module = "com.google.guava:guava", version.ref = "guava-version" }
