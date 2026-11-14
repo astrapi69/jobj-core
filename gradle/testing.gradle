@@ -1,5 +1,12 @@
+// cglib 3.3.0, the test dependency that makes the proxies ClassExtensionsTest detects, defines its classes through
+// ClassLoader.defineClass by reflection, which Java 17 and later refuse unless java.lang is opened to it: without
+// this, Enhancer.create fails with an ExceptionInInitializerError, and the three proxy tests were disabled. The
+// minions of PIT take the same argument (gradle/mutation-testing.gradle). The main code needs nothing of it.
+ext.cglibTestJvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+
 test {
     useJUnitPlatform()
+    jvmArgs cglibTestJvmArgs
 }
 
 // The JaCoCo version Gradle 9.8.2 brings, named so that a Gradle update does not change the measurement

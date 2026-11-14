@@ -73,9 +73,11 @@ class InterruptableThreadTest
 		assertFalse(interruptableThread.isInterrupted());
 
 		interruptableThread.interrupt();
-		assertTrue(interruptableThread.isInterrupted());
 		interruptableThread.join(5000);
 		assertFalse(interruptableThread.isAlive(), "the loop ends after interrupt()");
+		// read after the thread ended: in between, Thread.sleep clears the status when it throws,
+		// and the catch block of process() sets it again
+		assertTrue(interruptableThread.isInterrupted());
 	}
 
 	/**
