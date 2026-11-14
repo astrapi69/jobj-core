@@ -200,33 +200,34 @@ public class PackageExtensionsTest
 	}
 
 	/**
-	 * Classes for which {@link Class#getPackage()} returns null: the primitive types, void and the
-	 * array types
+	 * Classes for which {@link Class#getPackage()} returns null, the primitive types, void and the
+	 * array types, and the package {@link Class#getPackageName()} gives them
 	 *
-	 * @return the classes
+	 * @return the classes and the names of their packages
 	 */
-	static Stream<Class<?>> classesWithoutAPackageObject()
+	static Stream<Arguments> classesWithoutAPackageObject()
 	{
-		return Stream.of(int.class, void.class, String[].class, int[][].class);
+		return Stream.of(Arguments.of(int.class, "java.lang"),
+			Arguments.of(void.class, "java.lang"), Arguments.of(String[].class, "java.lang"),
+			Arguments.of(int[][].class, "java.lang"),
+			Arguments.of(ThreadDataBean[].class, "io.github.astrapi69.lang.thread"));
 	}
 
 	/**
 	 * Test method for {@link PackageExtensions#getPackageName(Class)} and the other forms with a
-	 * class for which {@link Class#getPackage()} returns null
+	 * class for which {@link Class#getPackage()} returns null: they answer as
+	 * {@link Class#getPackageName()} does
 	 *
 	 * @param clazz
 	 *            the class
+	 * @param packageName
+	 *            the name of the package {@link Class#getPackageName()} gives it
 	 */
-	@ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0} is in {1}")
 	@MethodSource("classesWithoutAPackageObject")
-	public void aClassWithoutAPackageObject(final Class<?> clazz)
+	public void aClassWithoutAPackageObject(final Class<?> clazz, final String packageName)
 	{
-		assertThrows(NullPointerException.class, () -> PackageExtensions.getPackageName(clazz));
-		assertThrows(NullPointerException.class,
-			() -> PackageExtensions.getPackageNameWithDot(clazz));
-		assertThrows(NullPointerException.class, () -> PackageExtensions.getPackagePath(clazz));
-		assertThrows(NullPointerException.class,
-			() -> PackageExtensions.getPackagePathWithSlash(clazz));
+		theFourFormsOfThePackageOfAClass(clazz, packageName);
 	}
 
 	/**
@@ -249,7 +250,7 @@ public class PackageExtensionsTest
 
 	/**
 	 * Test method for {@link PackageExtensions#getPackageName(String)} with a name that holds no
-	 * dot
+	 * dot: it is in the unnamed package, whose name is the empty string
 	 *
 	 * @param qualifiedClassName
 	 *            the name without a dot
@@ -258,8 +259,7 @@ public class PackageExtensionsTest
 	@ValueSource(strings = { "Unqualified", "" })
 	public void aClassNameWithoutAPackage(final String qualifiedClassName)
 	{
-		assertThrows(StringIndexOutOfBoundsException.class,
-			() -> PackageExtensions.getPackageName(qualifiedClassName));
+		assertEquals("", PackageExtensions.getPackageName(qualifiedClassName));
 	}
 
 	/**
