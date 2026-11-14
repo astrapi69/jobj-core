@@ -30,6 +30,13 @@ public abstract class InterruptableThread extends Thread
 	private boolean interrupted = false;
 
 	/**
+	 * Creates a new {@link InterruptableThread}, as {@link Thread#Thread()} does
+	 */
+	public InterruptableThread()
+	{
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
