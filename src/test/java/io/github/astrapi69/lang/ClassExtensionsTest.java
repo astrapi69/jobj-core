@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -840,6 +841,22 @@ public class ClassExtensionsTest
 		InputStream inputStream = ClassExtensions.getResourceAsStream(filename,
 			Person.builder().build());
 		assertNotNull(inputStream);
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getResource(Class, String)} and
+	 * {@link ClassExtensions#getResource(String, Object)} with an absolute name and a class of a
+	 * named module of the JDK, whose {@link Class#getResource(String)} finds no resource of the
+	 * class path
+	 */
+	@Test
+	public void anAbsoluteResourceNameAndAClassOfTheJdk()
+	{
+		final String name = "/io/github/astrapi69/lang/resources.properties";
+		assertNull(String.class.getResource(name));
+		assertNull(ClassExtensions.getResource(String.class, name));
+		assertNull(ClassExtensions.getResource(name, "text"));
+		assertNotNull(ClassExtensions.getResource(ClassExtensionsTest.class, name));
 	}
 
 	/**
