@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -640,6 +641,28 @@ public class ClassExtensionsTest
 		expected = "/java/lang/Class.class";
 		actual = ClassExtensions.getPath(Class.class);
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getPath(Class)} and
+	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class
+	 */
+	@Test
+	public void thePathOfANestedClass()
+	{
+		final Object anonymous = new Object()
+		{
+		};
+		class Local
+		{
+		}
+		assertEquals("/java/util/Entry.class", ClassExtensions.getPath(Map.Entry.class));
+		assertEquals("/io/github/astrapi69/lang/Object.class",
+			ClassExtensions.getPath(anonymous.getClass()));
+		assertEquals("/io/github/astrapi69/lang/Local.class", ClassExtensions.getPath(Local.class));
+		assertNull(ClassExtensions.getResource(Map.Entry.class));
+		assertNull(ClassExtensions.getResource(Local.class));
+		assertNotNull(ClassExtensions.getResource(String.class));
 	}
 
 	/**
