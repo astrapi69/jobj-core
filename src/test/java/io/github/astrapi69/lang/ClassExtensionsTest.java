@@ -349,6 +349,20 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])} with an array whose
+	 * elements are of a subclass of its component type, or null: the answer is the component type
+	 * the array was created with
+	 */
+	@Test
+	public void theComponentTypeOfAnArrayOfSubclasses()
+	{
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 1, 2.5 }));
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 2.5, 1 }));
+		assertEquals(Object.class, ClassExtensions.getComponentClassType(new Object[] { "a" }));
+		assertEquals(String.class, ClassExtensions.getComponentClassType(new String[] { null }));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getBaseClass(Class)}
 	 */
 	@Test
