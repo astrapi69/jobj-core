@@ -106,15 +106,19 @@ snapshot repository, `https://central.sonatype.com/repository/maven-snapshots/`.
 10.0 needs Java 25 and removes or changes API; the CHANGELOG entry of 10.0 lists each change. In
 short:
 
-- 14 types that no caller in the family used are gone: `DefaultValue`, `EnumExtensions`,
-  `MemoryExtensions`, `MethodTypeArgumentsExtensions`, `OptionalExtensions`, the packages
-  `lang.manifest` and `lang.model`, and `ThreadFieldDataBean`. Each has a JDK counterpart, for
-  instance `Optional.orElse`, `Runtime.freeMemory()` or `Package.getImplementationVersion()`
-  (#16)
-- `ClassExtensions.isInstantiable` answers false for an abstract class, an interface and a class
-  without a no-argument constructor that is not private (#29)
+- 12 types of 9.1 that no caller in the family used are gone: `DefaultValue`, `EnumExtensions`,
+  `MemoryExtensions`, `OptionalExtensions`, the packages `lang.manifest` and `lang.model`, and
+  `ThreadFieldDataBean`. Most are data holders; for the others the JDK or Commons Lang has a
+  counterpart, for instance `Optional.orElse`, `Runtime.freeMemory()` or Commons Lang
+  `EnumUtils.getEnumIgnoreCase` (#16)
+- `ClassExtensions.isInstantiable` answers false for an abstract class, for a class whose
+  constructors are all private and for a no-argument constructor that `Constructor.newInstance`
+  cannot call even when made accessible, where it answered true (#29)
 - the `isInRange` methods of `Check` take both bounds, as `Argument.isInRange` does, and
   `Argument.isInRange` refuses a null value with an `IllegalArgumentException` (#34)
+- `ClassExtensions.getComponentClassType` answers the component type of the array, not the class
+  of its first element, and `TypeArgumentsExtensions.getTypeArguments` resolves a generic
+  interface as the base
 - several methods answer where they threw: `PackageExtensions` for primitive and array types,
   `ThreadDataBean.of` for a terminated thread, `TypeArgumentsExtensions.getTypeArgument` for an
   index below 0
@@ -190,14 +194,14 @@ The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/jobj-core) has the 
 
 ## Quality
 
-Measured on `develop` at 9745de7 (Temurin 25.0.5+8, the JDK `.sdkmanrc` names); each release takes
-the numbers of its own release gate:
+Measured by the release gate of 10.0 (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-10.0`); each release takes the numbers of its own release gate:
 
 | | |
 |---|---|
-| tests | 331 in 16 test classes, none skipped, most of them rows of parameterized tables |
-| line and branch coverage (JaCoCo) | 596 of 620 lines (96.13 %), 370 of 404 branches (91.58 %); the build fails below 93 % of the lines or 83 % of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
-| mutation score (PIT) | with PIT's STRONGER mutators next to its defaults; the run fails below the floor of `mutationThreshold` in `build.gradle`, which also says what the survivors are |
+| tests | 377 in 18 test classes, none skipped, most of them rows of parameterized tables |
+| line and branch coverage (JaCoCo) | 594 of 597 lines (99.50 %), 377 of 378 branches (99.74 %); the build fails below 97 % of the lines or 97 % of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 451 of 454 mutants detected, 99 %, with PIT's STRONGER mutators next to its defaults; the run fails below the floor of 97 % (`mutationThreshold` in `build.gradle`, which also says why the three survivors are equivalent mutants) |
 | javadoc | a warning fails the build (`-Werror`), in every locale the same jar |
 | reproducible | two builds of the same commit give the same bytes for all five artifacts (`scripts/check-reproducible.sh`) |
 
