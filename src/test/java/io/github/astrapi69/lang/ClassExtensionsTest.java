@@ -645,7 +645,8 @@ public class ClassExtensionsTest
 
 	/**
 	 * Test method for {@link ClassExtensions#getPath(Class)} and
-	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class
+	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class: the
+	 * path is the one of the class file, from the binary name
 	 */
 	@Test
 	public void thePathOfANestedClass()
@@ -656,12 +657,17 @@ public class ClassExtensionsTest
 		class Local
 		{
 		}
-		assertEquals("/java/util/Entry.class", ClassExtensions.getPath(Map.Entry.class));
-		assertEquals("/io/github/astrapi69/lang/Object.class",
+		assertEquals("/java/util/Map$Entry.class", ClassExtensions.getPath(Map.Entry.class));
+		assertEquals("/" + anonymous.getClass().getName().replace('.', '/') + ".class",
 			ClassExtensions.getPath(anonymous.getClass()));
-		assertEquals("/io/github/astrapi69/lang/Local.class", ClassExtensions.getPath(Local.class));
-		assertNull(ClassExtensions.getResource(Map.Entry.class));
-		assertNull(ClassExtensions.getResource(Local.class));
+		assertEquals("/io/github/astrapi69/lang/ClassExtensionsTest$1Local.class",
+			ClassExtensions.getPath(Local.class));
+		assertNotNull(ClassExtensions.getResource(Map.Entry.class));
+		assertNotNull(ClassExtensions.getResource(Local.class));
+		assertNotNull(ClassExtensions.getResource(anonymous.getClass()));
+		assertNull(
+			ClassExtensions.getResource(ClassExtensionsTest.subclassProxyOf(PersonDao.class)),
+			"a class made at runtime has no class file");
 		assertNotNull(ClassExtensions.getResource(String.class));
 	}
 
