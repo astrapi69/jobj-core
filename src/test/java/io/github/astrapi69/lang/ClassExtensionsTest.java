@@ -644,6 +644,25 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#isFromJar(Class)} and
+	 * {@link ClassExtensions#getProtocol(Class)}, which look the class file up by
+	 * {@link ClassExtensions#getPath(Class)}: a class of a jar, of the build's class directory, of
+	 * the JDK's runtime image, and a nested class, for which the path was wrong before 10.0
+	 */
+	@Test
+	public void theProtocolOfTheClassFile()
+	{
+		assertTrue(ClassExtensions.isFromJar(Test.class));
+		assertEquals("jar", ClassExtensions.getProtocol(Test.class));
+		assertFalse(ClassExtensions.isFromJar(ClassExtensions.class));
+		assertEquals("file", ClassExtensions.getProtocol(ClassExtensions.class));
+		assertFalse(ClassExtensions.isFromJar(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(Map.Entry.class));
+		assertEquals("file", ClassExtensions.getProtocol(StaticNestedClass.class));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getPath(Class)} and
 	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class: the
 	 * path is the one of the class file, from the binary name
