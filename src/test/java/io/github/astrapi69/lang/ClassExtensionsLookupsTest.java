@@ -293,6 +293,37 @@ class ClassExtensionsLookupsTest
 
 	/**
 	 * Test method for {@link ClassExtensions#getResourceAsFile(String, Object)} with a resource
+	 * that is a file of the class path, found relative to the package of the object: the file
+	 * itself, and no copy in the temporary directory
+	 *
+	 * @param temporaryDirectory
+	 *            the temporary directory, which has to stay empty
+	 * @throws Exception
+	 *             if the resource cannot be found or the directory not read
+	 */
+	@Test
+	void aFileResourceAsFile(final @TempDir Path temporaryDirectory) throws Exception
+	{
+		final String previous = System.getProperty("java.io.tmpdir");
+		try
+		{
+			System.setProperty("java.io.tmpdir", temporaryDirectory.toString());
+			final File file = ClassExtensions.getResourceAsFile("resources.properties", this);
+			assertEquals(new File(getClass().getResource("resources.properties").toURI()), file);
+			assertTrue(file.isFile());
+			try (Stream<Path> copies = Files.list(temporaryDirectory))
+			{
+				assertEquals(0, copies.count(), "nothing is copied for a file");
+			}
+		}
+		finally
+		{
+			System.setProperty("java.io.tmpdir", previous);
+		}
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getResourceAsFile(String, Object)} with a resource
 	 * that only the class loader of the object has: the lookups through the class and the context
 	 * class loader find nothing, the fallback to the object's class loader finds it. And a resource
 	 * that does not exist gives null
