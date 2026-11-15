@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -862,7 +863,16 @@ public final class ClassExtensions
 
 
 	/**
-	 * Checks if the given {@link Class} is instantiable
+	 * Checks if the given {@link Class} is instantiable: a value of it can be created with a
+	 * no-argument constructor that is not private. An abstract class, an interface, an enum, a
+	 * primitive type, an inner class and a class whose no-argument constructor is private or
+	 * missing are not instantiable.
+	 *
+	 * <p>
+	 * The exception are the array types and the {@link java.util.Collection} and {@link Map} types,
+	 * their interfaces such as {@link java.util.List} included: they count as instantiable whatever
+	 * their constructors, because a value of them can always be created, an empty array, or a
+	 * default implementation such as {@link java.util.ArrayList} or {@link java.util.HashMap}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -872,16 +882,23 @@ public final class ClassExtensions
 	 */
 	public static <T> boolean isInstantiable(final Class<T> clazz)
 	{
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
+			|| classType.equals(ClassType.COLLECTION))
+		{
+			return true;
+		}
+		// Constructor.newInstance throws InstantiationException for an abstract class (its
+		// Javadoc);
+		// the primitive types carry the abstract modifier as well
+		if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()))
+		{
+			return false;
+		}
 		try
 		{
-			ClassType classType = ClassExtensions.getClassType(clazz);
-			if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
-				|| classType.equals(ClassType.COLLECTION))
-			{
-				return true;
-			}
 			final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
-			return declaredConstructor != null;
+			return !Modifier.isPrivate(declaredConstructor.getModifiers());
 		}
 		catch (NoSuchMethodException throwable)
 		{

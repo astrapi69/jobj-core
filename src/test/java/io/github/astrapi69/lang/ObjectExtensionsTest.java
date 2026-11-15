@@ -21,13 +21,20 @@
 package io.github.astrapi69.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.test.object.Company;
@@ -194,6 +201,57 @@ public class ObjectExtensionsTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ObjectExtensions.class);
+	}
+
+	/**
+	 * Each type, its default value and a value that is not its default; the cases of
+	 * DefaultValueTest, which ObjectExtensions reads its default values from
+	 *
+	 * @return the type, its default value and another value
+	 */
+	static Stream<Arguments> defaultValues()
+	{
+		return Stream.of(Arguments.of(boolean.class, false, true),
+			Arguments.of(char.class, '\0', 'a'), Arguments.of(byte.class, (byte)0, (byte)1),
+			Arguments.of(short.class, (short)0, (short)1), Arguments.of(int.class, 0, 1),
+			Arguments.of(long.class, 0L, 1L), Arguments.of(float.class, 0f, 0.5f),
+			Arguments.of(double.class, 0d, 0.5d), Arguments.of(Object.class, null, "text"),
+			Arguments.of(Integer.class, null, 0), Arguments.of(void.class, null, "text"));
+	}
+
+	/**
+	 * Test method for {@link ObjectExtensions#isDefaultValue(Class, Object)} and
+	 * {@link ObjectExtensions#isNotDefaultValue(Class, Object)}: the default value of a primitive
+	 * type is its zero, of every other type null
+	 *
+	 * @param type
+	 *            the type
+	 * @param defaultValue
+	 *            its default value
+	 * @param otherValue
+	 *            a value that is not its default
+	 */
+	@ParameterizedTest(name = "{0}: {1} is the default, {2} is not")
+	@MethodSource("defaultValues")
+	public void theDefaultValueOfAType(final Class<?> type, final Object defaultValue,
+		final Object otherValue)
+	{
+		assertTrue(ObjectExtensions.isDefaultValue(type, defaultValue));
+		assertFalse(ObjectExtensions.isNotDefaultValue(type, defaultValue));
+		assertFalse(ObjectExtensions.isDefaultValue(type, otherValue));
+		assertTrue(ObjectExtensions.isNotDefaultValue(type, otherValue));
+	}
+
+	/**
+	 * Test method for {@link ObjectExtensions#isDefaultValue(Class, Object)} without a class: null
+	 * is the default value of every type, any other value needs the class, as with DefaultValue
+	 * before 10.0
+	 */
+	@Test
+	public void theDefaultValueWithoutAClass()
+	{
+		assertTrue(ObjectExtensions.isDefaultValue(null, null));
+		assertThrows(NullPointerException.class, () -> ObjectExtensions.isDefaultValue(null, 1));
 	}
 
 	/**
