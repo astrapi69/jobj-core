@@ -20,31 +20,46 @@
  */
 package io.github.astrapi69.lang;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.meanbean.test.BeanTester;
 
 import com.google.common.reflect.ClassPath;
@@ -61,9 +76,10 @@ import io.github.astrapi69.test.object.classes.inner.OuterClass;
 import io.github.astrapi69.test.object.enumeration.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
 import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.SuperMethodCall;
+import net.bytebuddy.matcher.ElementMatchers;
 
 /**
  * The unit test class for the class {@link ClassExtensions}
@@ -106,44 +122,149 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#isInstantiable(Class)}
+	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them
+	 *
+	 * @return the classes and the answers
 	 */
-	@Test
-	public void testIsInstantiable()
+	static Stream<Arguments> instantiableOrNot()
 	{
-		boolean expected;
-		boolean actual;
+		return Stream.of(Arguments.of(Brand.class, false, "an enum has no no-argument constructor"),
+			Arguments.of(Integer.class, false, "no no-argument constructor"),
+			Arguments.of(Runnable.class, false, "an interface has no constructor"),
+			Arguments.of(Person.class, true, "a public no-argument constructor"),
+			Arguments.of(String[].class, true, "an array type"),
+			Arguments.of(ArrayList.class, true, "a collection type"),
+			Arguments.of(List.class, true, "a collection interface"),
+			Arguments.of(HashMap.class, true, "a map type"),
+			Arguments.of(Map.class, true, "a map interface"),
+			Arguments.of(InputStream.class, false, "abstract (#29)"),
+			Arguments.of(AbstractWithConstructor.class, false,
+				"abstract, though with a public no-argument constructor (#29)"),
+			Arguments.of(ClassExtensions.class, false,
+				"only a private no-argument constructor (#29)"),
+			Arguments.of(OnlyPrivateConstructor.class, false, "only a private constructor (#29)"),
+			Arguments.of(OnlyPrivateConstructors.class, false,
+				"only private constructors, a no-argument one among them (#29)"),
+			Arguments.of(PrivateNoArgumentConstructor.class, true,
+				"a private no-argument constructor that can be made accessible, next to a public one (#29)"),
+			Arguments.of(ProtectedNoArgumentConstructor.class, true,
+				"a protected no-argument constructor"),
+			Arguments.of(ObjectInputStream.class, false,
+				"a protected no-argument constructor that cannot be made accessible, in a package java.base does not open (#29)"),
+			Arguments.of(PackagePrivateNoArgumentConstructor.class, true,
+				"a package-private no-argument constructor"),
+			Arguments.of(Inner.class, false,
+				"an inner class: its constructor takes the outer instance"));
+	}
 
-		actual = ClassExtensions.isInstantiable(Brand.class);
-		expected = false;
-		assertEquals(expected, actual);
+	/** Abstract, with a public no-argument constructor */
+	abstract static class AbstractWithConstructor
+	{
+		/** The public no-argument constructor */
+		public AbstractWithConstructor()
+		{
+		}
+	}
 
-		actual = ClassExtensions.isInstantiable(Integer.class);
-		assertEquals(expected, actual);
+	/** Has only a private constructor */
+	static final class OnlyPrivateConstructor
+	{
+		private OnlyPrivateConstructor()
+		{
+		}
+	}
 
-		actual = ClassExtensions.isInstantiable(Person.class);
-		expected = true;
-		assertEquals(expected, actual);
+	/** Has only private constructors, a no-argument one and one with an argument */
+	static final class OnlyPrivateConstructors
+	{
+		private OnlyPrivateConstructors()
+		{
+		}
 
+		/**
+		 * The private constructor with an argument
+		 *
+		 * @param name
+		 *            a name
+		 */
+		private OnlyPrivateConstructors(final String name)
+		{
+		}
+	}
+
+	/** A private no-argument constructor and a public one with an argument */
+	static final class PrivateNoArgumentConstructor
+	{
+		private PrivateNoArgumentConstructor()
+		{
+		}
+
+		/**
+		 * The public constructor with an argument
+		 *
+		 * @param name
+		 *            a name
+		 */
+		public PrivateNoArgumentConstructor(final String name)
+		{
+		}
+	}
+
+	/** A protected no-argument constructor */
+	static class ProtectedNoArgumentConstructor
+	{
+		/** The protected no-argument constructor */
+		protected ProtectedNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** A package-private no-argument constructor */
+	static class PackagePrivateNoArgumentConstructor
+	{
+		PackagePrivateNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** An inner class, whose constructor takes the instance of the outer class */
+	class Inner
+	{
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#isInstantiable(Class)} from all classes in the
-	 * classloader
+	 * Test method for {@link ClassExtensions#isInstantiable(Class)}
+	 *
+	 * @param clazz
+	 *            the class
+	 * @param instantiable
+	 *            what the method answers for it
+	 * @param why
+	 *            the reason of the answer
+	 */
+	@ParameterizedTest(name = "{0}: {1}, {2}")
+	@MethodSource("instantiableOrNot")
+	public void testIsInstantiable(final Class<?> clazz, final boolean instantiable,
+		final String why)
+	{
+		assertEquals(instantiable, ClassExtensions.isInstantiable(clazz));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#isInstantiable(Class)} with every class of the family
+	 * on the class path: each loads, and the method answers for each without an exception. The
+	 * numbers of classes it counted before depended on the jars the build resolves (as #13), which
+	 * is why it was disabled; it no longer counts them
 	 */
 	@Test
-	@Disabled
 	public void testIsInstantiableWithAllClasses()
 	{
-		boolean expected;
-		boolean actual;
 		final ClassLoader classLoader = ClassExtensions.getClassLoader(ClassExtensions.class);
 		ClassPath classPath = RuntimeExceptionDecorator.decorate(() -> ClassPath.from(classLoader));
 		Set<ClassPath.ClassInfo> classes = classPath.getAllClasses();
 		Set<Class> notInstantiableClasses = SetFactory.newHashSet();
 		Set<Class> instantiableClasses = SetFactory.newHashSet();
 		Set<String> notLoadableClasses = SetFactory.newHashSet();
-		assertEquals(classes.size(), 8360);
 
 		classes.stream()
 			.filter(classInfo -> classInfo.getPackageName().startsWith("io.github.astrapi69"))
@@ -168,9 +289,9 @@ public class ClassExtensionsTest
 					notLoadableClasses.add(classInfo.getName());
 				}
 			});
-		assertEquals(notInstantiableClasses.size(), 44);
-		assertEquals(instantiableClasses.size(), 199);
-		assertEquals(notLoadableClasses.size(), 0);
+		assertEquals(Set.of(), notLoadableClasses, "every class loads and gets an answer");
+		assertFalse(instantiableClasses.isEmpty(), "the family's classes were found");
+		assertFalse(notInstantiableClasses.isEmpty(), "and some of them are not instantiable");
 	}
 
 	/**
@@ -251,6 +372,20 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])} with an array whose
+	 * elements are of a subclass of its component type, or null: the answer is the component type
+	 * the array was created with
+	 */
+	@Test
+	public void theComponentTypeOfAnArrayOfSubclasses()
+	{
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 1, 2.5 }));
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 2.5, 1 }));
+		assertEquals(Object.class, ClassExtensions.getComponentClassType(new Object[] { "a" }));
+		assertEquals(String.class, ClassExtensions.getComponentClassType(new String[] { null }));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getBaseClass(Class)}
 	 */
 	@Test
@@ -287,7 +422,7 @@ public class ClassExtensionsTest
 		String expected;
 		String actual;
 		actual = ClassExtensions.getCallingMethodName(Thread.currentThread().getStackTrace());
-		expected = "invoke0";
+		expected = "invoke";
 		assertEquals(expected, actual);
 	}
 
@@ -475,17 +610,14 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#getJdkProxyInterfaces(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testGetJdkProxyInterfaces()
 	{
 		Class<?> expected;
 		Class<?> actual;
 		Class<?>[] jdkProxyInterfaces;
 
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
-		jdkProxyInterfaces = ClassExtensions.getJdkProxyInterfaces(proxy.getClass());
+		jdkProxyInterfaces = ClassExtensions
+			.getJdkProxyInterfaces(subclassProxyOf(PersonDao.class));
 
 		assertNotNull(jdkProxyInterfaces);
 		assertTrue(jdkProxyInterfaces.length == 1);
@@ -549,6 +681,53 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#isFromJar(Class)} and
+	 * {@link ClassExtensions#getProtocol(Class)}, which look the class file up by
+	 * {@link ClassExtensions#getPath(Class)}: a class of a jar, of the build's class directory, of
+	 * the JDK's runtime image, and a nested class, for which the path was wrong before 10.0
+	 */
+	@Test
+	public void theProtocolOfTheClassFile()
+	{
+		assertTrue(ClassExtensions.isFromJar(Test.class));
+		assertEquals("jar", ClassExtensions.getProtocol(Test.class));
+		assertFalse(ClassExtensions.isFromJar(ClassExtensions.class));
+		assertEquals("file", ClassExtensions.getProtocol(ClassExtensions.class));
+		assertFalse(ClassExtensions.isFromJar(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(Map.Entry.class));
+		assertEquals("file", ClassExtensions.getProtocol(StaticNestedClass.class));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getPath(Class)} and
+	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class: the
+	 * path is the one of the class file, from the binary name
+	 */
+	@Test
+	public void thePathOfANestedClass()
+	{
+		final Object anonymous = new Object()
+		{
+		};
+		class Local
+		{
+		}
+		assertEquals("/java/util/Map$Entry.class", ClassExtensions.getPath(Map.Entry.class));
+		assertEquals("/" + anonymous.getClass().getName().replace('.', '/') + ".class",
+			ClassExtensions.getPath(anonymous.getClass()));
+		assertEquals("/io/github/astrapi69/lang/ClassExtensionsTest$1Local.class",
+			ClassExtensions.getPath(Local.class));
+		assertNotNull(ClassExtensions.getResource(Map.Entry.class));
+		assertNotNull(ClassExtensions.getResource(Local.class));
+		assertNotNull(ClassExtensions.getResource(anonymous.getClass()));
+		assertNull(
+			ClassExtensions.getResource(ClassExtensionsTest.subclassProxyOf(PersonDao.class)),
+			"a class made at runtime has no class file");
+		assertNotNull(ClassExtensions.getResource(String.class));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getPathFromObject(Object)}.
 	 */
 	@Test
@@ -583,31 +762,77 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Test method for {@link ClassExtensions#getResources(String, String...)}
+	 * The protocols to exclude and the protocols of the resources that
+	 * {@link ClassExtensions#getResources(String, String...)} finds without them, on a class path
+	 * of one directory and one jar
+	 *
+	 * @return the excluded protocols and the protocols that are left, in their order
 	 */
-	@Test
-	public void testGetResources() throws IOException
+	static Stream<Arguments> resourcesByExcludedProtocols()
 	{
-		int actual;
-		int expected;
-		List<URL> urls;
-		String resourcesDirPath;
+		return Stream.of(Arguments.of(List.of(), List.of("file", "jar")),
+			Arguments.of(List.of("jar"), List.of("file")),
+			Arguments.of(List.of("file"), List.of("jar")),
+			Arguments.of(List.of("file", "jar"), List.of()),
+			Arguments.of(List.of("http"), List.of("file", "jar")));
+	}
 
-		resourcesDirPath = "io/github/astrapi69/lang";
-		urls = ClassExtensions.getResources(resourcesDirPath);
-		actual = urls.size();
-		expected = 4;
-		assertEquals(expected, actual);
-
-		urls = ClassExtensions.getResources(resourcesDirPath, "jar");
-		actual = urls.size();
-		expected = 3;
-		assertEquals(expected, actual);
-
-		urls = ClassExtensions.getResources(resourcesDirPath, "file");
-		actual = urls.size();
-		expected = 1;
-		assertEquals(expected, actual);
+	/**
+	 * Test method for {@link ClassExtensions#getResources(String, String...)}
+	 *
+	 * The class path is built here, one directory and one jar that both hold the package, and given
+	 * to the method through the context class loader, so that what it finds does not depend on the
+	 * jars the build resolves (#13)
+	 *
+	 * @param excludedProtocols
+	 *            the protocols to exclude
+	 * @param expectedProtocols
+	 *            the protocols of the resources that are found, in their order
+	 * @param temporaryDirectory
+	 *            the directory that holds the class path
+	 * @throws IOException
+	 *             if the class path cannot be written
+	 */
+	@ParameterizedTest(name = "excluding {0} finds {1}")
+	@MethodSource("resourcesByExcludedProtocols")
+	public void testGetResources(final List<String> excludedProtocols,
+		final List<String> expectedProtocols, final @TempDir Path temporaryDirectory)
+		throws IOException
+	{
+		final String packagePath = "io/github/astrapi69/lang/resources/fixture";
+		final Path directory = temporaryDirectory.resolve("classes");
+		Files.createDirectories(directory.resolve(packagePath));
+		Files.writeString(directory.resolve(packagePath).resolve("in-directory.txt"), "directory");
+		final Path jar = temporaryDirectory.resolve("fixture.jar");
+		try (JarOutputStream output = new JarOutputStream(Files.newOutputStream(jar)))
+		{
+			output.putNextEntry(new JarEntry(packagePath + "/"));
+			output.closeEntry();
+			output.putNextEntry(new JarEntry(packagePath + "/in-jar.txt"));
+			output.write("jar".getBytes(StandardCharsets.UTF_8));
+			output.closeEntry();
+		}
+		final Thread thread = Thread.currentThread();
+		final ClassLoader previous = thread.getContextClassLoader();
+		// no parent: the class path of the test JVM stays out of the search
+		try (URLClassLoader classLoader = new URLClassLoader(
+			new URL[] { directory.toUri().toURL(), jar.toUri().toURL() }, null))
+		{
+			thread.setContextClassLoader(classLoader);
+			final List<URL> urls = ClassExtensions.getResources(packagePath,
+				excludedProtocols.toArray(new String[0]));
+			assertEquals(expectedProtocols,
+				urls.stream().map(URL::getProtocol).collect(Collectors.toList()));
+			for (final URL url : urls)
+			{
+				assertTrue(url.toString().endsWith(packagePath),
+					url + " is the package of the class path");
+			}
+		}
+		finally
+		{
+			thread.setContextClassLoader(previous);
+		}
 	}
 
 	/**
@@ -703,6 +928,22 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getResource(Class, String)} and
+	 * {@link ClassExtensions#getResource(String, Object)} with an absolute name and a class of a
+	 * named module of the JDK, whose {@link Class#getResource(String)} finds no resource of the
+	 * class path: the class loader finds it
+	 */
+	@Test
+	public void anAbsoluteResourceNameAndAClassOfTheJdk()
+	{
+		final String name = "/io/github/astrapi69/lang/resources.properties";
+		assertNull(String.class.getResource(name));
+		assertNotNull(ClassExtensions.getResource(String.class, name));
+		assertNotNull(ClassExtensions.getResource(name, "text"));
+		assertNotNull(ClassExtensions.getResource(ClassExtensionsTest.class, name));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getResource(Class)}.
 	 */
 	@Test
@@ -756,7 +997,6 @@ public class ClassExtensionsTest
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
-	@Disabled
 	public void testGetRessourceAsStream() throws IOException
 	{
 		final String propertiesFilename = "resources.properties";
@@ -835,17 +1075,53 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Makes a subclass proxy of the given class with ByteBuddy, named the way a cglib proxy is
+	 * named, with the tag {@code $$} that {@link ClassExtensions#isCglib(Class)} looks for. Before
+	 * 10.0 the tests made it with cglib 3.3.0, which needed {@code --add-opens java.base/java.lang}
+	 * on Java 17 and later; ByteBuddy loads it through a class loader of its own and needs nothing
+	 * of the kind
+	 *
+	 * @param <T>
+	 *            the type of the class
+	 * @param superclass
+	 *            the class to subclass
+	 * @return the proxy class
+	 */
+	static <T> Class<? extends T> subclassProxyOf(final Class<T> superclass)
+	{
+		return new ByteBuddy().subclass(superclass)
+			.name(superclass.getName() + "$$EnhancerByByteBuddy$$test")
+			.method(ElementMatchers.any()).intercept(SuperMethodCall.INSTANCE).make()
+			.load(ClassExtensionsTest.class.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+			.getLoaded();
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getCglibProxy(Class)},
+	 * {@link ClassExtensions#unwrapProxy(Class)}, {@link ClassExtensions#getUnwrappedProxy(Class)}
+	 * and {@link ClassExtensions#isProxy(Class)} with a subclass proxy: each sees through it to the
+	 * class it extends
+	 */
+	@Test
+	public void aSubclassProxyIsUnwrappedToItsSuperclass()
+	{
+		final Class<? extends PersonDao> proxyClass = subclassProxyOf(PersonDao.class);
+		assertTrue(ClassExtensions.isProxy(proxyClass));
+		assertFalse(ClassExtensions.isJdkProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getCglibProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getCglibProxy(PersonDao.class));
+		assertArrayEquals(new Class<?>[] { PersonDao.class },
+			ClassExtensions.unwrapProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getUnwrappedProxy(proxyClass));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#isCglib(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testIsCglib()
 	{
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
-
-		boolean cglib = ClassExtensions.isCglib(proxy.getClass());
+		boolean cglib = ClassExtensions.isCglib(subclassProxyOf(PersonDao.class));
 		assertTrue(cglib);
 	}
 
@@ -878,16 +1154,12 @@ public class ClassExtensionsTest
 	 * Test method for {@link ClassExtensions#isJdkProxy(Class)}.
 	 */
 	@Test
-	@Disabled
 	public void testIsJdkProxy()
 	{
 		boolean actual;
 		boolean expected;
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor methodInterceptor = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, methodInterceptor);
 		expected = false;
-		actual = ClassExtensions.isJdkProxy(proxy.getClass());
+		actual = ClassExtensions.isJdkProxy(subclassProxyOf(PersonDao.class));
 		assertEquals(expected, actual);
 
 		Bla bla = new Bla();
@@ -1005,26 +1277,6 @@ public class ClassExtensionsTest
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return method.invoke(original, args);
-		}
-	}
-
-	/**
-	 * The class {@link MethodInterceptorHandler} for unit tests purposes.
-	 */
-	static class MethodInterceptorHandler<T> implements MethodInterceptor
-	{
-		private final T origin;
-
-		public MethodInterceptorHandler(T origin)
-		{
-			this.origin = origin;
-		}
-
-		@Override
-		public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy)
-			throws Throwable
-		{
-			return method.invoke(origin, args);
 		}
 	}
 

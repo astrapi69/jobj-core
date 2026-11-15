@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         maven {
-            url projectRepositoriesMavenUrl
+            url = projectRepositoriesMavenUrl
         }
     }
 }
@@ -13,9 +13,8 @@ plugins {
     id 'maven-publish'
     id 'signing'
     alias(libs.plugins.gradle.versions.plugin)
-    alias(libs.plugins.grgit.gradle)
-    alias(libs.plugins.license.gradle.plugin)
     alias(libs.plugins.lombok.plugin)
+    alias(libs.plugins.pitest.gradle.plugin)
     alias(libs.plugins.spotless.plugin.gradle)
     alias(libs.plugins.version.catalog.update)
 }
@@ -27,6 +26,28 @@ description = "$rootProject.name"
 // import gradle files
 apply from: "gradle/apply-gradle-files.gradle"
 
+// Mutation-score floor the workflow "Mutation testing" fails below: it runs `./gradlew pitest` on GitHub
+// (.github/workflows/mutation-testing.yml); PIT rounds the score half up to a whole percent before it compares, and
+// holds it at 99 while a mutant survives. The floor is the measured score minus two points (the maintainer,
+// 2026-11-14): a few mutants more that survive do not fail the run at once, a drop of more than two points does.
+// Mutators DEFAULTS and STRONGER. Set at 64 from the first run, on commit 3fe99a4 of the pull request that brought
+// PIT (run 43626608343: 351 of 532 mutants detected, 66 %); raised after the parameterized tests of milestone 10.0,
+// from the run on develop d36dcf5 (run 43632544735): 468 of 584 detected, 80 %; 25 had no test that reached them.
+// Raised again after the removal of the unused types (#16) and the tests for the survivors (the maintainer,
+// 2026-11-14), from the run on develop e430ced (run 43698563899): 447 of 450 detected, 99 %. The three that survive
+// are equivalent mutants, which no test can kill, since the mutated code gives the same result:
+// - PackageExtensions.getPackageName(String), `lastDot < 0` made `<= 0`: for a dot at index 0 both give "", as
+//   substring(0, 0) is "";
+// - ThreadExtensions.setCurrentThreadPriority, `>= 1` made `> 1`: priority 1 then goes to the else branch, which sets
+//   Thread.MIN_PRIORITY, and that is 1;
+// - ThreadExtensions.shutdownExecutorService, the result of awaitTermination ignored, so shutdownNow is called
+//   always: on an executor that has terminated, shutdownNow does nothing and returns an empty list, which the method
+//   does not return.
+// Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in the file a reader looks at.
+pitest {
+    mutationThreshold = 97
+}
+
 java {
     sourceCompatibility = "$projectSourceCompatibility" as Object
     toolchain {
@@ -36,12 +57,14 @@ java {
 
 tasks.withType(JavaCompile).configureEach { javaCompiler ->
     options.encoding = "UTF-8"
+    // --release records the feature release of java.base in module-info.class (requires java.base 25), where
+    // javac would otherwise write the version of the JDK it runs on, and the jar would differ with the JDK's patch
+    // level (as astrapi69/silly-collection#99 and astrapi69/file-worker#97)
+    options.release = Integer.parseInt("$projectSourceCompatibility")
     // uncomment the next line for build with compiler argument -Xlint:deprecation
     // options.compilerArgs << "-Xlint:deprecation"
     // uncomment the next line for build with compiler argument -Xlint:unchecked
     // options.compilerArgs << "-Xlint:unchecked"
 }
 
-tasks.named("test") {
-    it.mustRunAfter(tasks.named("jar"))
-}
+apply from: "gradle/test-results-complete.gradle"

@@ -1,6 +1,94 @@
 ## Change log
 ----------------------
 
+Version 10.0
+-------------
+
+10.0 is a major release: jobj-core needs Java 25, it removes twelve public types of 9.1 that no project of the family
+used (#16), and five methods answer differently, as their Javadoc of 10.0 states (`ClassExtensions.isInstantiable`,
+#29; `Check.isInRange`, #34; `ClassExtensions.getComponentClassType`; `TypeArgumentsExtensions.getTypeArguments`;
+`Argument.isInRange` for a null value). It is published through the Central Portal, and a build of the same commit
+gives the same bytes. The tests take parameterized tables of edge cases, PIT runs on GitHub on every pull request and
+every push to `develop` and `master`, and the build fails below its coverage floors, on a javadoc warning and when a
+test class leaves no result. Measured by the release gate (Temurin 25.0.5+8, the JDK `.sdkmanrc` names, on the tree of
+`RELEASE-10.0`): 377 tests in 18 test classes, none skipped; 594 of 597 lines and 377 of 378 branches covered
+(JaCoCo, floors 97% and 97%). Measured by the workflow "Mutation testing" on GitHub, on the same sources: 451 of 454
+mutants detected, 99% (PIT 1.30.1, DEFAULTS and STRONGER, floor 97%).
+
+BREAKING CHANGES:
+
+- jobj-core needs Java 25: its class files are of version 69, its module descriptor requires `java.base` 25 and its
+  Gradle module metadata a JVM of 25, where 9.1 ran on Java 17. **Note:** a project on an older Java stays on 9.1
+- removed, as no caller in the family used them (#16); each was a plain data holder or has a counterpart in the JDK or
+  Commons Lang:
+  - `io.github.astrapi69.lang`: `DefaultValue` (its lookup is private to `ObjectExtensions` now), `EnumExtensions`,
+    `MemoryExtensions`, `OptionalExtensions`
+  - `io.github.astrapi69.lang.manifest`: `ManifestVersion`, `ManifestVersionFactory`; the package is no longer
+    exported
+  - `io.github.astrapi69.lang.model`: `AnnotationModel`, `ClassModel`, `FieldModel`, `MethodModel`,
+    `PropertiesKeyAndParameters`; the package is no longer exported
+  - `io.github.astrapi69.lang.thread`: `ThreadFieldDataBean`
+  - with the data holders the builder classes Lombok generated for them, and the module no longer requires
+    `java.compiler`
+
+  `MethodTypes` and `MethodTypeArgumentsExtensions`, which the unreleased 9.2 had added, are gone as well and were never
+  published. **Note:** for `OptionalExtensions.getOptionalValue` use `Optional.orElse`, for `MemoryExtensions`
+  `Runtime.totalMemory()` and `freeMemory()`, for `EnumExtensions.enumValueFromString` Commons Lang
+  `EnumUtils.getEnumIgnoreCase`, for `ManifestVersionFactory` `Package.getImplementationVersion()` on the class path;
+  in a named module read `META-INF/MANIFEST.MF` with `java.util.jar.Manifest`
+- `ClassExtensions.isInstantiable` answers false for an abstract class and for a class whose constructors are all
+  private, such as a utility class, where it answered true for any declared no-argument constructor; the no-argument
+  constructor counts only when `Constructor.newInstance` can call it, made accessible where it is not, so a protected
+  one in a package its module does not open, as `java.io.ObjectInputStream` has, is false as well. A class without a
+  no-argument constructor and an interface stay false, and array, `Collection` and `Map` types, their interfaces
+  included, stay true, as the Javadoc explains (#29)
+- `Check.isInRange` (Integer, Long, Float, Double) accepts a value equal to `min` or `max`, as `Argument.isInRange` and
+  Commons Lang `Validate.inclusiveBetween` do, where it refused it; NaN stays outside every range.
+  `Argument.isInRange` throws `IllegalArgumentException` for a null value instead of `NullPointerException` (#34)
+- `ClassExtensions.getComponentClassType` answers the component type the array was created with, as its Javadoc says,
+  where it answered the class of the first element: `Number` for `new Number[] { 1, 2.5 }` instead of `Integer`, and
+  `String` for `new String[] { null }` instead of a `NullPointerException`
+- `TypeArgumentsExtensions.getTypeArguments(Class, Class)`, and the `getTypeArgument` and `getFirstTypeArgument`
+  methods that call it, resolve a generic interface as the base, directly, through a superclass or through an
+  interface that extends it, where they answered with the type arguments of the child's topmost class (`[]` for a
+  class implementing `Repository<Number>`); a child that is no subtype of the base, which only raw types allow, gets an
+  `IllegalArgumentException`
+
+CHANGED:
+
+- jobj-core is published through the Central Portal (Maven Central), signed with the family's signing subkey; a release
+  leaves only from a `RELEASE-*` tag through `publish.yml` and waits in the portal for the maintainer
+- a build of the same commit gives the same bytes: the manifest no longer carries the build time, the JDK patch level
+  or the operating system and names the feature release as `Build-Jdk-Spec: 25` instead, javac compiles with
+  `--release 25`, and the javadoc jar is the same in every locale. **Note:** the manifest attributes
+  `Build-Timestamp`, `Build-Jdk` and `Build-OS` are gone, `Build-Jdk-Spec` is new
+- `ThreadDataBean` is written out instead of generated by Lombok, with Javadoc on every member; its API, `toString`
+  text included, is unchanged, `hashCode` values may differ
+
+FIXED:
+
+- `ThreadDataBean.of(Thread)` takes a thread that has terminated, whose thread group is null, and leaves `threadGroup`
+  null instead of throwing a `NullPointerException`; with it `ThreadExtensions.newThreadData()` no longer throws when a
+  thread ends while it collects
+- `PackageExtensions.getPackageName(Class)`, `getPackageNameWithDot`, `getPackagePath(Class)` and
+  `getPackagePathWithSlash` answer for primitive types, void and array types as `Class.getPackageName()` does
+  (`"java.lang"`, the element type's package) instead of throwing a `NullPointerException`; `getPackageName(String)`
+  gives `""` for a name without a dot instead of throwing `StringIndexOutOfBoundsException`
+- `InterruptableThread` stops after `interrupt()` also when `process()` does not block: its flag is volatile, so the
+  loop sees the write
+- `ThreadExtensions.runWithTimeout` keeps the interrupt status of a caller that is interrupted while it waits, and
+  stops the task then as on a timeout; `runCallableWithCpuCores` and `runAsyncSupplierWithCpuCores` shut down the
+  `ForkJoinPool` they create, whose worker lived on until its keep-alive ended
+- `TypeArgumentsExtensions.getTypeArgument` answers null for an index below 0, as its Javadoc says, instead of throwing
+  `IndexOutOfBoundsException`
+- `ClassExtensions.getPath` gives the path of the class file of a nested, an anonymous or a local class
+  (`/java/util/Map$Entry.class`), where it built a path from the simple name that does not exist; with it
+  `getResource(Class)` and `getURL(Class)` find their class files, where they answered null, and `getProtocol` and
+  `isFromJar` no longer throw a `NullPointerException` for them
+- `ClassExtensions.getResource(Class, String)` and `getResource(String, Object)` find an absolute name on the class path
+  when the class cannot, as for a class of the JDK, where the fallback asked the class loader with the leading slash and
+  found nothing
+
 Version 9.1
 -------------
 

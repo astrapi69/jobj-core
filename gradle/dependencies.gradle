@@ -1,20 +1,28 @@
 dependencies {
-
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-    testCompileOnly libs.lombok
-    testAnnotationProcessor libs.lombok
-
-    testImplementation libs.equalsverifier
-    testImplementation libs.crypt.api
-    testImplementation libs.test.object
-    testImplementation libs.silly.collection
-    testImplementation libs.silly.bean
-    testImplementation libs.runtime.compiler
-    testImplementation libs.cglib.nodep
-    testImplementation libs.guava
-    testImplementation libs.throwable
     // Note: use of bundles...
+    annotationProcessor libs.bundles.annotation.processor
+    compileOnly libs.bundles.compile.only
+
+    testAnnotationProcessor libs.bundles.test.annotation.processor
+    testCompileOnly libs.bundles.test.compile.only
+
     testImplementation libs.bundles.unit.testing
-    testRuntimeOnly libs.junit.platform.launcher
+    testRuntimeOnly libs.bundles.test.runtime.only
+    constraints {
+        // runtime-compiler 1.3, its last release (2021), brings commons-beanutils 1.9.3 and commons-lang3 3.12.0 to
+        // the tests, and with them four Dependabot alerts of this repository: three high for beanutils, fixed in
+        // 1.11.0, one medium for lang3, fixed in 3.18.0. The constraints raise both, lang3 to the family's 3.21.0;
+        // the upstream issue is astrapi69/runtime-compiler#2
+        testImplementation(libs.commons.beanutils)
+        testImplementation(libs.commons.lang3)
+    }
+}
+
+// silly-collection, a test dependency, depends on jobj-core 9.1. Gradle resolves coordinates equal to the
+// project's own to the project itself, which put build/libs/jobj-core-<version>.jar on the test runtime class
+// path, behind build/classes/java/main, which holds the same classes, and without a task dependency on :jar: test
+// needed mustRunAfter(jar) to pass Gradle's validation, and ClassExtensionsTest counted the jar only when it had
+// been built (#13; the same as astrapi69/silly-collection#36 and astrapi69/file-worker#99)
+configurations.named("testRuntimeClasspath") {
+    exclude group: project.group as String, module: project.name
 }

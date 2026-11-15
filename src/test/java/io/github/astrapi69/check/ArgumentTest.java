@@ -445,4 +445,15 @@ public class ArgumentTest
 		beanTester.testBean(Argument.class);
 	}
 
+	/**
+	 * Test method for {@link Argument#notNull(Object, String)}: it returns the argument itself, so
+	 * that a check and an assignment can be one statement
+	 */
+	@Test
+	public void notNullReturnsTheArgumentItself()
+	{
+		final Object argument = new Object();
+		Assertions.assertSame(argument, Argument.notNull(argument, "argument"));
+	}
+
 }

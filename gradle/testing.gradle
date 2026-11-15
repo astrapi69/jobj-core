@@ -2,6 +2,13 @@ test {
     useJUnitPlatform()
 }
 
+// The JaCoCo version, named so that a Gradle update does not change the measurement unnoticed (as
+// astrapi69/silly-collection). 0.8.16 (2026-10-26) instead of the 0.8.15 Gradle 9.8.2 brings, by the currency check
+// before 10.0 (RL-120): the same numbers on the same tree with both
+jacoco {
+    toolVersion = '0.8.16'
+}
+
 jacocoTestReport {
     reports {
         xml.required.set(true)
@@ -9,4 +16,31 @@ jacocoTestReport {
     }
 }
 
+// Coverage floor the build fails below (RL-112): each measure minus about two points, rounded down, as in
+// astrapi69/silly-collection#38 and astrapi69/file-worker#38, so that a few lines or branches that a new method's
+// tests do not reach yet do not fail the build at once, and a drop of more than about two points does. Set at 0.84
+// and 0.59 from develop db55754 (574 of 660 lines, 274 of 446 branches); raised after the parameterized tests of
+// milestone 10.0 (the maintainer, 2026-11-14), measured on develop d36dcf5 with ./gradlew clean build
+// --no-build-cache: 695 of 731 lines (95.08 %), 400 of 466 branches (85.84 %); raised again after the removal of the
+// unused types (#16) and the tests for the survivors of PIT (the maintainer, 2026-11-14), measured on develop f81ce23
+// the same way: 592 of 595 lines (99.50 %), 377 of 378 branches (99.74 %).
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.97
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.97
+            }
+        }
+    }
+}
+
+jacocoTestCoverageVerification.dependsOn test
 check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

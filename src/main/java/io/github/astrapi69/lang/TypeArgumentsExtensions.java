@@ -26,6 +26,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +176,7 @@ public final class TypeArgumentsExtensions
 	}
 
 	/**
-	 * Gets the type argument from the childClass at the given index or null if it does not exists.
+	 * Gets the type argument from the childClass at the given index or null if it does not exist
 	 * The base class will be resolved.
 	 *
 	 * @param <T>
@@ -184,8 +185,7 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @param index
 	 *            the index of the type argument
-	 * @return the type argument from the childClass at the given index or null if it does not
-	 *         exists.
+	 * @return the type argument from the childClass at the given index or null if it does not exist
 	 */
 	public static <T> Class<?> getTypeArgument(final @NonNull Class<? extends T> childClass,
 		final int index)
@@ -196,7 +196,7 @@ public final class TypeArgumentsExtensions
 	}
 
 	/**
-	 * Gets the type argument from the childClass at the given index or null if it does not exists.
+	 * Gets the type argument from the childClass at the given index or null if it does not exist
 	 *
 	 * @param <T>
 	 *            the generic type of the baseClass
@@ -206,14 +206,14 @@ public final class TypeArgumentsExtensions
 	 *            the child class
 	 * @param index
 	 *            the index of the type argument
-	 * @return the type argument from the childClass at the given index or null if it does not
-	 *         exists.
+	 * @return the type argument from the childClass at the given index or null if it does not exist
 	 */
 	public static <T> Class<?> getTypeArgument(final @NonNull Class<T> baseClass,
 		final @NonNull Class<? extends T> childClass, final int index)
 	{
 		final List<Class<?>> typeArguments = getTypeArguments(baseClass, childClass);
-		if (typeArguments != null && !typeArguments.isEmpty() && index < typeArguments.size())
+		// getTypeArguments never returns null; an index below 0 does not exist either
+		if (0 <= index && index < typeArguments.size())
 		{
 			return typeArguments.get(index);
 		}
@@ -237,62 +237,29 @@ public final class TypeArgumentsExtensions
 	}
 
 	/**
-	 * Get the actual type arguments a child class has used to extend a generic base class.
+	 * Get the actual type arguments a child class has used for a generic base, a class it extends
+	 * or an interface it implements, directly or through its superclasses and the interfaces they
+	 * extend.
 	 *
 	 * @param <T>
 	 *            the generic type of the baseClass
 	 * @param baseClass
-	 *            the base class
+	 *            the base class or interface
 	 * @param childClass
 	 *            the child class
 	 * @return a list of the raw classes for the actual type arguments.
+	 * @throws IllegalArgumentException
+	 *             if the child class is no subtype of the base, which only raw types allow
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> List<Class<?>> getTypeArguments(final @NonNull Class<T> baseClass,
 		final @NonNull Class<? extends T> childClass)
 	{
-		Class<T> realBaseClass = baseClass;
-		// handle interface case
-		if (realBaseClass.isInterface())
-		{
-			realBaseClass = (Class<T>)ClassExtensions.getBaseClass(childClass);
-		}
 		final Map<Type, Type> resolvedTypes = new HashMap<>();
-		Type type = childClass;
-		// start walking up the inheritance hierarchy until we hit baseClass
-		while (!getClass(type).equals(realBaseClass))
+		final Type[] actualTypeArguments = findTypeArguments(childClass, baseClass, resolvedTypes);
+		if (actualTypeArguments == null)
 		{
-			if (type instanceof Class)
-			{
-				// there is no useful information for us in raw types, so just
-				// keep going.
-				type = ((Class<?>)type).getGenericSuperclass();
-			}
-			else
-			{
-				final ParameterizedType parameterizedType = (ParameterizedType)type;
-				final Class<?> rawType = (Class<?>)parameterizedType.getRawType();
-
-				resolvedTypes.putAll(getTypeArgumentsAndParameters(parameterizedType));
-
-				if (!rawType.equals(realBaseClass))
-				{
-					type = rawType.getGenericSuperclass();
-				}
-			}
-		}
-
-		// finally, for each actual type argument provided to baseClass,
-		// determine (if possible)
-		// the raw class for that type argument.
-		Type[] actualTypeArguments;
-		if (type instanceof Class)
-		{
-			actualTypeArguments = ((Class<?>)type).getTypeParameters();
-		}
-		else
-		{
-			actualTypeArguments = ((ParameterizedType)type).getActualTypeArguments();
+			throw new IllegalArgumentException(
+				childClass.getName() + " is no subtype of " + baseClass.getName());
 		}
 		final List<Class<?>> typeArgumentsAsClasses = new ArrayList<>();
 		// resolve types by chasing down type variables.
@@ -305,6 +272,55 @@ public final class TypeArgumentsExtensions
 			typeArgumentsAsClasses.add(getClass(baseType));
 		}
 		return typeArgumentsAsClasses;
+	}
+
+	/**
+	 * Walks the generic supertypes of the given type, the superclass first, then the interfaces,
+	 * until it reaches the base, and records on the way each type parameter a parameterized
+	 * supertype binds. Before 10.0 only the superclasses were walked, and an interface as the base
+	 * was replaced by the topmost class of the child
+	 *
+	 * @param type
+	 *            the type to start from
+	 * @param baseClass
+	 *            the base class or interface
+	 * @param resolvedTypes
+	 *            the type parameters bound on the way, and what they are bound to
+	 * @return the type arguments the base is given, or null if the base is no supertype of the
+	 *         given type
+	 */
+	private static Type[] findTypeArguments(final Type type, final Class<?> baseClass,
+		final Map<Type, Type> resolvedTypes)
+	{
+		final Class<?> rawType = getClass(type);
+		if (type instanceof ParameterizedType parameterizedType)
+		{
+			resolvedTypes.putAll(getTypeArgumentsAndParameters(parameterizedType));
+			if (baseClass.equals(rawType))
+			{
+				return parameterizedType.getActualTypeArguments();
+			}
+		}
+		else if (baseClass.equals(rawType))
+		{
+			// the base itself, or a raw supertype: its own type parameters
+			return rawType.getTypeParameters();
+		}
+		final List<Type> supertypes = new ArrayList<>();
+		if (rawType.getGenericSuperclass() != null)
+		{
+			supertypes.add(rawType.getGenericSuperclass());
+		}
+		supertypes.addAll(Arrays.asList(rawType.getGenericInterfaces()));
+		for (final Type supertype : supertypes)
+		{
+			final Type[] found = findTypeArguments(supertype, baseClass, resolvedTypes);
+			if (found != null)
+			{
+				return found;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -360,13 +376,11 @@ public final class TypeArgumentsExtensions
 		{
 			return genericInterfaceTypes;
 		}
+		// null for an interface, a primitive type and Object, and null is no ParameterizedType
 		Type genericSuperclassType = clazz.getGenericSuperclass();
-		if (genericSuperclassType != null)
+		if (genericSuperclassType instanceof ParameterizedType)
 		{
-			if (genericSuperclassType instanceof ParameterizedType)
-			{
-				return new Type[] { genericSuperclassType };
-			}
+			return new Type[] { genericSuperclassType };
 		}
 		return new Type[0];
 	}

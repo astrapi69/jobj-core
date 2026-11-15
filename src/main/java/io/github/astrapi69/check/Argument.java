@@ -37,7 +37,9 @@ public final class Argument
 	}
 
 	/**
-	 * Checks if the given {@code value} argument is in the specified range
+	 * Checks if the given {@code value} argument is in the specified range, both bounds included,
+	 * as Apache Commons Lang {@code Validate.inclusiveBetween} does, and as the {@code isInRange}
+	 * methods of {@link Check} do
 	 *
 	 * @param <T>
 	 *            the generic type of the arguments
@@ -51,13 +53,15 @@ public final class Argument
 	 *            the name of the given argument
 	 * @return the {@code value} if it is in the specified range
 	 * @throws IllegalArgumentException
-	 *             if the given {@code value} is not in the specified range
+	 *             if a bound or the given {@code value} is null, or the {@code value} is not in the
+	 *             specified range
 	 */
 	public static <T extends Comparable<? super T>> T isInRange(final T min, final T max,
 		final T value, final String name)
 	{
 		notNull(min, "min");
 		notNull(max, "max");
+		notNull(value, name);
 		if ((value.compareTo(min) < 0) || (value.compareTo(max) > 0))
 		{
 			throw new IllegalArgumentException(String.format(
@@ -135,7 +139,8 @@ public final class Argument
 	public static <T extends CharSequence> T notEmpty(final T argument, final String name)
 	{
 		notNull(argument, name);
-		if ((argument.length() == 0) || (argument.toString().trim().length() == 0))
+		// trim gives the empty text for the empty text too
+		if (argument.toString().trim().isEmpty())
 		{
 			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
 		}

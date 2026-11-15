@@ -26,8 +26,19 @@ package io.github.astrapi69.lang.thread;
  */
 public abstract class InterruptableThread extends Thread
 {
-	/** A flag that indicates whether the thread is interrupted */
-	private boolean interrupted = false;
+	/**
+	 * A flag that indicates whether the thread is interrupted. Volatile: {@link #interrupt()} sets
+	 * it from another thread, and without a happens-before edge the loop of {@link #run()} may
+	 * never see the write (JLS 17.4.5); HotSpot hoists the read out of a compiled loop
+	 */
+	private volatile boolean interrupted = false;
+
+	/**
+	 * Creates a new {@link InterruptableThread}, as {@link Thread#Thread()} does
+	 */
+	public InterruptableThread()
+	{
+	}
 
 	/**
 	 * {@inheritDoc}

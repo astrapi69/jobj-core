@@ -1,206 +1,338 @@
-# Overview
+# jobj-core
+
+**Java helpers for the core classes: argument checks with a named message, the type, the
+resources and the proxies of a class, packages, the type arguments of a generic subclass, default
+values, and threads.**
 
 <div style="text-align: center">
 
 [![Java CI with Gradle](https://github.com/astrapi69/jobj-core/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/jobj-core/actions/workflows/gradle.yml)
 [![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)
+[![Mutation Score](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fastrapi69%2Fjobj-core%2Fgh-pages%2Fbadges%2Fmutation-score-develop.json)](https://pitest.org/)
 [![Open Issues](https://img.shields.io/github/issues/astrapi69/jobj-core.svg?style=flat)](https://github.com/astrapi69/jobj-core/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
-[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
-[![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
-[![Hits Of Code](https://hitsofcode.com/github/astrapi69/jobj-core?branch=master)](https://hitsofcode.com/github/astrapi69/jobj-core/view?branch=master)
-[![Lines Of Code](https://tokei.rs/b1/github/astrapi69/jobj-core)](https://github.com/astrapi69/jobj-core)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/jobj-core.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core)
+[![Javadoc](https://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](https://www.javadoc.io/doc/io.github.astrapi69/jobj-core)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-25-orange)](https://openjdk.org/projects/jdk/25/)
 
 </div>
 
-Utility library for the java core classes.
+jobj-core holds the small helpers around `Class`, `Package`, generics and threads that otherwise
+get written again in every project, and keeps them tested: the build fails when the line or branch
+coverage drops, and PIT checks that the tests notice when the code changes.
 
+## Why jobj-core
 
-> Please support this project by simply putting a Github <!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/astrapi69/jobj-core" data-icon="octicon-star" aria-label="Star astrapi69/jobj-core on GitHub">Star ⭐</a>
->
-> Share this library with friends on Twitter and everywhere else you can
->
-> If you love this project [![donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+It answers questions the JDK answers only in pieces: is this argument empty or out of its range,
+with a message that names it; what kind of class is this (array, collection, map, enum, member,
+local, anonymous), can a value of it be created, is it a proxy and what does it proxy; which class
+does a generic subclass bind a type parameter of its base to. It has no runtime dependency. If you
+need more, [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/) (`Validate`,
+`ClassUtils`, `reflect.TypeUtils`) and [Guava](https://github.com/google/guava) (`Preconditions`,
+`reflect.TypeToken`) are far larger and used almost everywhere.
 
-## Note
+## Table of contents
 
-No animals were harmed in the making of this library.
+- [Why jobj-core](#why-jobj-core)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Upgrading from 9.x](#upgrading-from-9x)
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Quality](#quality)
+- [Verifying the release signatures](#verifying-the-release-signatures)
+- [Releasing](#releasing)
+- [Contributing](#contributing)
+- [How this project is made](#how-this-project-is-made)
+- [License](#license)
+- [Support this project](#support-this-project)
+- [Similar projects](#similar-projects)
+- [Credits](#credits)
 
-## License
+## Requirements
 
-The source code comes under the liberal MIT License, making jobj-core great for all types of applications.
+**JDK 25 or newer**, at build and at runtime: from 10.0 on its jar holds Java 25 bytecode and does
+not load on an older JVM. **9.1 is the last release for Java 17.** jobj-core has no runtime
+dependency; Lombok is used at compile time only.
 
-## gradle dependency
+## Installation
 
-Replace the variable ${latestVersion} with the current latest version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/jobj-core)
+Latest release on Maven Central:
 
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of jobj-core:
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.astrapi69/jobj-core.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core)
 
-define version in file gradle.properties
+**Gradle** (version catalog, `gradle/libs.versions.toml`):
 
+```toml
+[versions]
+jobj-core-version = "10.0"
+
+[libraries]
+jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
 ```
-jobjCoreVersion=${latestVersion}
-```
 
-or in build.gradle ext area
-
-```
-    jobjCoreVersion = "${latestVersion}"
-```
-
-and than add the dependency to the dependencies area
-
-```
-    implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
-```
-
-## Maven dependency
-
-Maven dependency is now on sonatype.
-Check out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~) for latest snapshots and releases.
-
-Add the following maven dependency to your project `pom.xml` if you want to import the core functionality of jobj-core:
-
-Then you can add the dependency to your dependencies:
-
-    <properties>
-            ...
-        <!-- JOBJ-CORE version -->
-        <jobj-core.version>${latestVersion}</jobj-core.version>
-            ...
-    </properties>
-            ...
-        <dependencies>
-            ...
-            <!-- JOBJ-CORE DEPENDENCY -->
-            <dependency>
-                <groupId>io.github.astrapi69</groupId>
-                <artifactId>jobj-core</artifactId>
-                <version>${jobj-core.version}</version>
-            </dependency>
-            ...
-        </dependencies>
-
-## 📸 Snapshots
-
-[![Snapshot](https://img.shields.io/badge/dynamic/xml?url=https://oss.sonatype.org/service/local/repositories/snapshots/content/io/github/astrapi69/jobj-core/maven-metadata.xml&label=snapshot&color=red&query=.//versioning/latest)](https://oss.sonatype.org/content/repositories/snapshots/io/github/astrapi69/jobj-core/)
-
-This section describes how to import snapshot versions into your project.
-Add the following code snippet to your gradle file in the repositories section:
-```
-repositories {
-   //...
-```
 ```groovy
-    maven {
-        name "Sonatype Nexus Snapshots"
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-```
-```
+dependencies {
+    implementation libs.jobj.core
 }
 ```
 
+**Gradle** (plain):
 
-# Donations
+```groovy
+dependencies {
+    implementation "io.github.astrapi69:jobj-core:10.0"
+}
+```
 
-This project is kept as an open source product and relies on contributions to remain being
-developed. If you like this library, please consider a donation
+**Maven**:
 
-over paypal: <br><br>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
-<img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" alt="PayPal this" title="PayPal – The safer, easier way to pay online!" style="border: none" />
-</a>
-<br><br>
-or over bitcoin(BTC) with this address:
+```xml
+<dependency>
+    <groupId>io.github.astrapi69</groupId>
+    <artifactId>jobj-core</artifactId>
+    <version>10.0</version>
+</dependency>
+```
 
-bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy
+The module name is `io.github.astrapisixtynine.jobj.core`; it exports `io.github.astrapi69.check`,
+`io.github.astrapi69.lang` and `io.github.astrapi69.lang.thread`.
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy.png"
-alt="Donation Bitcoin Wallet" width="250"/>
+A snapshot, built from `develop` by a manual run of `publish.yml`, is on the Central Portal's
+snapshot repository, `https://central.sonatype.com/repository/maven-snapshots/`.
 
-or over FIO with this address:
+## Upgrading from 9.x
 
-FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop
+10.0 needs Java 25 and removes or changes API; the CHANGELOG entry of 10.0 lists each change. In
+short:
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop.png"
-alt="Donation FIO Wallet" width="250"/>
+- 12 types of 9.1 that no caller in the family used are gone: `DefaultValue`, `EnumExtensions`,
+  `MemoryExtensions`, `OptionalExtensions`, the packages `lang.manifest` and `lang.model`, and
+  `ThreadFieldDataBean`. Most are data holders; for the others the JDK or Commons Lang has a
+  counterpart, for instance `Optional.orElse`, `Runtime.freeMemory()` or Commons Lang
+  `EnumUtils.getEnumIgnoreCase` (#16)
+- `ClassExtensions.isInstantiable` answers false for an abstract class, for a class whose
+  constructors are all private and for a no-argument constructor that `Constructor.newInstance`
+  cannot call even when made accessible, where it answered true (#29)
+- the `isInRange` methods of `Check` take both bounds, as `Argument.isInRange` does, and
+  `Argument.isInRange` refuses a null value with an `IllegalArgumentException` (#34)
+- `ClassExtensions.getComponentClassType` answers the component type of the array, not the class
+  of its first element, and `TypeArgumentsExtensions.getTypeArguments` resolves a generic
+  interface as the base
+- several methods answer where they threw: `PackageExtensions` for primitive and array types,
+  `ThreadDataBean.of` for a terminated thread, `TypeArgumentsExtensions.getTypeArgument` for an
+  index below 0
 
-or over Ethereum(ETH) with:
+## Quick start
 
-0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D
+The examples are checked: each block runs, with the values its comments name as assertions, in
+[`ReadmeExamplesTest`](src/test/java/io/github/astrapi69/ReadmeExamplesTest.java).
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D.png"
-alt="Donation Ethereum Wallet" width="250"/>
+**Checking arguments.** Each check returns its argument, or throws an `IllegalArgumentException`
+that names it.
 
-or over Ethereum Classic(ETC) with:
+```java
+String name = Argument.notEmpty("jobj", "name");          // "jobj"
+int percent = Argument.isInRange(0, 100, 100, "percent"); // 100: both bounds are in the range
+Argument.notEmpty("  ", "name");                          // throws: a text of blanks is empty
+Check.get().notNull(name, "name").isInRange(1, 10, 5, "count"); // chained
+```
 
-0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD
+**Classes.**
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD.png"
-alt="Donation Ethereum Classic Wallet" width="250"/>
+```java
+ClassExtensions.getClassType(String[].class);      // ClassType.ARRAY
+ClassExtensions.isInstantiable(ArrayList.class);   // true
+ClassExtensions.isInstantiable(InputStream.class); // false: abstract
+ClassExtensions.getSimpleName(Map.Entry.class);    // "Entry"
+ClassExtensions.getResource("io/github/astrapi69/lang/resources.properties"); // the URL
+```
 
-or over Dogecoin(DOGE) with:
+**Packages.**
 
-D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1
+```java
+PackageExtensions.getPackageName(String.class);  // "java.lang"
+PackageExtensions.getPackagePath(String.class);  // "java/lang/"
+PackageExtensions.getPackageName(int.class);     // "java.lang"
+PackageExtensions.getPackageName("Unqualified"); // "", the unnamed package
+```
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1.png"
-alt="Donation Dogecoin Wallet" width="250"/>
+**Type arguments.** The class a generic subclass binds a type parameter to.
 
-or over Monero(XMR) with:
+```java
+class StringList extends ArrayList<String> { }
 
-49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw
+TypeArgumentsExtensions.getFirstTypeArgument(StringList.class); // String.class
+TypeArgumentsExtensions.getTypeArgument(StringList.class, 1);   // null: there is no second one
+```
 
-<img src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
-alt="Donation Monero Wallet" width="250"/>
+**Default values.**
 
-## Semantic Versioning
+```java
+ObjectExtensions.isDefaultValue(int.class, 0);       // true
+ObjectExtensions.isDefaultValue(int.class, 1);       // false
+ObjectExtensions.isDefaultValue(String.class, null); // true
+```
 
-The versions of jobj-core are maintained with the Simplified Semantic Versioning guidelines.
+**Threads.**
 
-Release version numbers will be incremented in the following format:
+```java
+ThreadExtensions.runWithTimeout(task, 100, TimeUnit.MILLISECONDS); // TimeoutException, and the task is stopped, if it takes longer
+ThreadExtensions.runCallableWithCpuCores(() -> 6 * 7, 2);         // 42, on a pool of 2 threads
+ThreadExtensions.newThreadData();                                 // a snapshot of the running threads
+```
 
-`<major>.<minor>.<patch>`
+## Features
 
-For detailed information on versioning for this project you can visit this [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning).
+| Package `io.github.astrapi69...` | What it holds |
+|---|---|
+| `check` | `Argument` (static checks: not null, not empty for texts, collections, maps and arrays, in a range), `Check` (the same checks, chained) |
+| `lang` | `ClassExtensions` (the type, the name, the loader, the resources and the jar of a class, proxies, whether it is instantiable, collection or map), `ClassType`, `PackageExtensions` (package names and paths), `TypeArgumentsExtensions` (the type arguments a generic subclass binds), `ObjectExtensions` (default values, the class type of an object) |
+| `lang.thread` | `ThreadExtensions` (a task with a timeout, on a pool of a given size, the running threads, priorities, shutting down an executor), `ThreadDataBean`, `InterruptableThread` |
 
-## Want to Help and improve it? ###
+The [Javadoc](https://www.javadoc.io/doc/io.github.astrapi69/jobj-core) has the details.
 
-The source code for jobj-core are on GitHub. Please feel free to fork and send pull requests!
+## Quality
 
-Create your own fork of [astrapi69/jobj-core/fork](https://github.com/astrapi69/jobj-core/fork)
+Measured by the release gate of 10.0 (Temurin 25.0.5+8, the JDK `.sdkmanrc` names; the tree of
+`RELEASE-10.0`); each release takes the numbers of its own release gate:
 
-To share your changes, [submit a pull request](https://github.com/astrapi69/jobj-core/pull/new/develop).
+| | |
+|---|---|
+| tests | 377 in 18 test classes, none skipped, most of them rows of parameterized tables |
+| line and branch coverage (JaCoCo) | 594 of 597 lines (99.50 %), 377 of 378 branches (99.74 %); the build fails below 97 % of the lines or 97 % of the branches (`jacocoTestCoverageVerification` in `gradle/testing.gradle`) |
+| mutation score (PIT) | 451 of 454 mutants detected, 99 %, with PIT's STRONGER mutators next to its defaults; the run fails below the floor of 97 % (`mutationThreshold` in `build.gradle`, which also says why the three survivors are equivalent mutants) |
+| javadoc | a warning fails the build (`-Werror`), in every locale the same jar |
+| reproducible | two builds of the same commit give the same bytes for all five artifacts (`scripts/check-reproducible.sh`) |
 
-Don't forget to add new units tests on your changes.
+The CI build runs the tests and the coverage check on every pull request, and the workflow
+"Mutation testing" runs PIT on GitHub, on every pull request and every push to `develop` and
+`master`, and publishes the mutation score of `develop` as the badge above. A pull request into
+`develop` is merged only when both are green.
 
-## Contacting the Developers
+## Verifying the release signatures
 
-Do not hesitate to contact the jobj-core developers with your questions, concerns, comments, bug reports, or feature requests.
-- Feature requests, questions and bug reports can be reported at the [issues page](https://github.com/astrapi69/jobj-core/issues).
+The releases on Maven Central from 10.0 on are signed with the signing subkey
+
+```text
+6D67 F844 2A6F CC96 BD7C  1B5E 9FCF 7C97 10E2 BD8D
+```
+
+of the OpenPGP key
+
+```text
+5B2F A6B1 1E29 8BC0 9287  F423 D8C4 0351 8C49 CA75
+```
+
+The key, with the subkey, is on keys.openpgp.org. Fetch it once, then verify the signature next to
+each file:
+
+```sh
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 5B2FA6B11E298BC09287F423D8C403518C49CA75
+gpg --verify jobj-core-10.0.jar.asc jobj-core-10.0.jar
+```
+
+gpg answers `Good signature` and prints the `Primary key fingerprint` and the `Subkey fingerprint`;
+both have to be the ones above. The warning that the key "is not certified with a trusted
+signature" only says that you have not marked it as trusted in your own keyring.
+
+## Releasing
+
+What a release consists of, in the order it is run:
+
+1. **No open issue** but those of a later milestone: every issue of the release's milestone is
+   closed, and a finding on the way is fixed in the release or, if it changes what callers rely
+   on, assigned to the next major release.
+2. **One pull request** with the CHANGELOG entry and `projectVersion` without `-SNAPSHOT`
+   (`docs: changelog for X.Y, and the version that carries it`), the full build green on it.
+3. **The release gate** on that pull request's tree: the tests and `jacocoTestCoverageVerification`
+   with its floor, `--rerun-tasks --no-build-cache`, on the JDK `.sdkmanrc` names, with an empty
+   local Maven repository (`-Dmaven.repo.local=<an empty directory>`; `gradle/repositories.gradle`
+   reads `mavenLocal()` only with `-PuseMavenLocal`); javadoc prints no warning (the build runs it
+   with `-Werror`), the class files are of Java 25 (major version 69), and the resolved
+   dependencies hold no `-SNAPSHOT`; `scripts/check-reproducible.sh` builds the five artifacts twice
+   and finds them identical. PIT does not run on a local machine: its numbers and its floor come
+   from the run of "Mutation testing" on the merge commit of the pull request, whose tree is the
+   tag's tree. The numbers of the gate go into the CHANGELOG entry and into the Quality section
+   above, in the same pull request.
+4. **Tag the merge commit** with `./gradlew tagRelease` (`make tag-release CONFIRM=yes`), which names it
+   `RELEASE-X.Y`, and push the tag. `publish.yml` uploads to the Central Portal, where the
+   maintainer releases it. A pushed tag is never moved or deleted; a failed run is fixed on the
+   branch and run again.
+5. **Verify on Central**: the jar, pom, `.module`, `-sources.jar` and `-javadoc.jar`, their sha1, and
+   `gpg --verify` on the `.asc`; a local build of the tag gives the same bytes as Central for all
+   five.
+6. **GitHub release** from the CHANGELOG entry.
+7. **`master` follows the release** by a merge of the tag: on `master`,
+   `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
+   `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; never a force push.
+8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`, by a pull request.
+
+## Contributing
+
+Pull requests are welcome: fork [astrapi69/jobj-core](https://github.com/astrapi69/jobj-core/fork)
+and [open a pull request](https://github.com/astrapi69/jobj-core/pull/new/develop) against
+`develop`. [CONTRIBUTING.md](.github/CONTRIBUTING.md) has the details.
+
+Please add tests for your change, as rows of the parameterized tables of the test class where they
+fit; the coverage and mutation floors above hold for it too. The `Makefile` runs the usual tasks:
+
+```shell
+make build          # build: tests, coverage check, javadoc, formatting check
+make spotless-apply # format, and write the license headers
+make pitest         # mutation testing on GitHub for the pushed branch
+make pitest-status  # the summary of its newest run
+```
+
+PIT does not run on your machine: `make pitest` starts `mutation-testing.yml` on GitHub for the
+current branch, which has to be pushed first. PIT's report of a run is its artifact
+`pitest-report`: `gh run download <run> -n pitest-report -D <directory>`.
+
+The `pre-commit` hook in `.githooks` refuses a commit whose files Spotless would format. Activate it
+once per clone or worktree:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The versions follow the
+[Simplified Semantic Versioning](https://github.com/lightblueseas/mvn-parent-projects/wiki/Simplified-Semantic-Versioning)
+guidelines, `<major>.<minor>.<patch>`. Questions, bug reports and feature requests belong on the
+[issues page](https://github.com/astrapi69/jobj-core/issues).
+
+## How this project is made
+
+jobj-core was written by its maintainer over many years, since 2015, before there were AI tools;
+release 10.0 was implemented mostly by AI agents, under the maintainer's review and with the
+maintainer's decision on every change of behaviour. How AI is used in the projects of this profile:
+[AI_USAGE.md](https://github.com/astrapi69/astrapi69/blob/main/AI_USAGE.md).
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+## Support this project
+
+If jobj-core is useful to you, a star on [GitHub](https://github.com/astrapi69/jobj-core) helps
+others find it. Sharing it or reporting a bug helps just as much.
+
+If you would like to contribute financially, the channels are on the repository's Sponsor button,
+which reads [.github/FUNDING.yml](.github/FUNDING.yml).
+
+## Similar projects
+
+- [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/): `Validate`, `ClassUtils`,
+  `reflect.TypeUtils`
+- [Guava](https://github.com/google/guava): `Preconditions`, `reflect.TypeToken`
+- [ClassGraph](https://github.com/classgraph/classgraph): scanning the class path and modules
 
 ## Credits
 
-|**Nexus Sonatype repositories**|
-|     :---:      |
-|[![sonatype repository](https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.astrapi69/jobj-core.svg?style=for-the-badge)](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~jobj-core~~~)|
-|Special thanks to [sonatype repository](https://www.sonatype.com) for providing a free maven repository service for open source projects|
-|     <img width=1000/>     |
+| | |
+|---|---|
+| [Maven Central](https://central.sonatype.com/artifact/io.github.astrapi69/jobj-core) | for hosting the artifacts of this open source project |
+| [codecov.io](https://codecov.io) | for free code coverage reporting |
+| [javadoc.io](https://www.javadoc.io) | for free javadoc hosting |
+| [PIT](https://pitest.org/) | for mutation testing |
 
-|**codecov.io**|
-|     :---:      |
-|[![Coverage Status](https://codecov.io/gh/astrapi69/jobj-core/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/jobj-core)|
-|Special thanks to [codecov.io](https://codecov.io) for providing a free code coverage for open source projects|
-|     <img width=1000/>     |
-
-|**javadoc.io**|
-|     :---:      |
-|[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/jobj-core.svg)](http://www.javadoc.io/doc/io.github.astrapi69/jobj-core)|
-|Special thanks to [javadoc.io](http://www.javadoc.io) for providing a free javadoc documentation for open source projects|
-|     <img width=1000/>     |
+No animals were harmed in the making of this library.

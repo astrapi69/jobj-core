@@ -1,0 +1,419 @@
+/**
+ * The MIT License
+ *
+ * Copyright (C) 2015 Asterios Raptis
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+package io.github.astrapi69.lang;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+/**
+ * {@link TypeArgumentsExtensions} over a set of generic types of its own, in parameterized tables:
+ * every kind of {@link Type}, the walk up a hierarchy of type arguments, and the index of a type
+ * argument
+ */
+class TypeArgumentsExtensionsTablesTest
+{
+
+	/** A base with two type parameters */
+	abstract static class Base<K, V>
+	{
+	}
+
+	/** Binds the first type parameter of {@link Base} and passes the second on */
+	abstract static class Mid<V> extends Base<String, V>
+	{
+	}
+
+	/** Binds the second type parameter of {@link Base} */
+	static class Leaf extends Mid<Integer>
+	{
+	}
+
+	/** A list of strings */
+	@SuppressWarnings("serial")
+	static class StringList extends ArrayList<String>
+	{
+	}
+
+	/** A raw list */
+	@SuppressWarnings({ "serial", "rawtypes" })
+	static class RawList extends ArrayList
+	{
+	}
+
+	/** A generic interface */
+	interface Repository<T>
+	{
+	}
+
+	/** Binds the type parameter of {@link Repository} */
+	static class NumberRepository implements Repository<Number>
+	{
+	}
+
+	/** Inherits the binding of {@link NumberRepository} */
+	static class SubRepository extends NumberRepository
+	{
+	}
+
+	/** Binds the type parameter of {@link Repository} in an interface that extends it */
+	interface NumberRepositoryInterface extends Repository<Number>
+	{
+	}
+
+	/** Implements {@link Repository} through {@link NumberRepositoryInterface} */
+	static class ViaSubInterface implements NumberRepositoryInterface
+	{
+	}
+
+	/**
+	 * Passes the type parameter of {@link Repository} on
+	 *
+	 * @param <T>
+	 *            the type
+	 */
+	static class GenericRepository<T> implements Repository<T>
+	{
+	}
+
+	/** Binds the type parameter that {@link GenericRepository} passes on */
+	static class StringRepository extends GenericRepository<String>
+	{
+	}
+
+	/** Implements an interface that is not generic */
+	@SuppressWarnings("serial")
+	static class Plain implements Serializable
+	{
+	}
+
+	/** Neither a generic interface nor a generic superclass */
+	static class Nothing
+	{
+	}
+
+	/**
+	 * The methods whose generic return types are the types of the table
+	 *
+	 * @param <N>
+	 *            a type variable with one bound
+	 * @param <O>
+	 *            a type variable without a bound
+	 * @param <C>
+	 *            a type variable with two bounds
+	 */
+	@SuppressWarnings("unused")
+	abstract static class Types<N extends Number, O, C extends Number & Comparable<C>>
+	{
+		abstract String plain();
+
+		abstract List<String> parameterized();
+
+		abstract List<String>[] genericArray();
+
+		abstract N[] arrayOfABoundVariable();
+
+		abstract C[] arrayOfAVariableWithTwoBounds();
+
+		abstract N boundVariable();
+
+		abstract O unboundVariable();
+
+		abstract C variableWithTwoBounds();
+
+		abstract List<? extends Number> wildcard();
+	}
+
+	private static Type returnTypeOf(final String method) throws NoSuchMethodException
+	{
+		return Types.class.getDeclaredMethod(method).getGenericReturnType();
+	}
+
+	/**
+	 * The types and the class {@link TypeArgumentsExtensions#getClass(Type)} gives for each
+	 *
+	 * @return the method whose return type is the type, and the class
+	 */
+	static Stream<Arguments> typesAndTheirClasses()
+	{
+		return Stream.of(Arguments.of("plain", String.class),
+			Arguments.of("parameterized", List.class), Arguments.of("genericArray", List[].class),
+			Arguments.of("arrayOfABoundVariable", Number[].class),
+			Arguments.of("arrayOfAVariableWithTwoBounds", null),
+			Arguments.of("boundVariable", Number.class),
+			Arguments.of("unboundVariable", Object.class),
+			Arguments.of("variableWithTwoBounds", null), Arguments.of("wildcard", List.class));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getClass(Type)}: a class is itself, a
+	 * parameterized type its raw type, a generic array the array of its component's class, a type
+	 * variable the class of its single bound; a variable with two bounds and an array of it give
+	 * null
+	 *
+	 * @param method
+	 *            the method whose generic return type is the type
+	 * @param expected
+	 *            the class
+	 * @throws NoSuchMethodException
+	 *             if the fixture lacks the method
+	 */
+	@ParameterizedTest(name = "{0}: {1}")
+	@MethodSource("typesAndTheirClasses")
+	void theClassOfAType(final String method, final Class<?> expected) throws NoSuchMethodException
+	{
+		assertEquals(expected, TypeArgumentsExtensions.getClass(returnTypeOf(method)));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getClass(Type)} with a wildcard, which is no
+	 * class, no parameterized type, no generic array and no type variable
+	 *
+	 * @throws NoSuchMethodException
+	 *             if the fixture lacks the method
+	 */
+	@Test
+	void theClassOfAWildcard() throws NoSuchMethodException
+	{
+		final Type wildcard = ((ParameterizedType)returnTypeOf("wildcard"))
+			.getActualTypeArguments()[0];
+		assertNull(TypeArgumentsExtensions.getClass(wildcard));
+	}
+
+	/**
+	 * Base classes, child classes and the type arguments the child gives the base
+	 *
+	 * @return the base, the child and the type arguments
+	 */
+	static Stream<Arguments> typeArgumentsOfHierarchies()
+	{
+		return Stream.of(
+			Arguments.of(Base.class, Leaf.class, Arrays.asList(String.class, Integer.class)),
+			Arguments.of(Base.class, Mid.class, Arrays.asList(String.class, Object.class)),
+			Arguments.of(Mid.class, Leaf.class, Arrays.asList(Integer.class)),
+			Arguments.of(ArrayList.class, StringList.class, Arrays.asList(String.class)),
+			Arguments.of(ArrayList.class, RawList.class, Arrays.asList(Object.class)),
+			Arguments.of(Leaf.class, Leaf.class, Arrays.asList()));
+	}
+
+	/**
+	 * A generic interface as the base, and the classes that implement it directly, through a
+	 * superclass, through an interface that extends it, and through a generic class: each gives the
+	 * class the interface is bound to (before 10.0 the type parameters of the topmost class of the
+	 * child were resolved instead)
+	 *
+	 * @return the base, the child and the type arguments
+	 */
+	static Stream<Arguments> typeArgumentsOfInterfaces()
+	{
+		return Stream.of(
+			Arguments.of(Repository.class, NumberRepository.class, Arrays.asList(Number.class)),
+			Arguments.of(Repository.class, SubRepository.class, Arrays.asList(Number.class)),
+			Arguments.of(Repository.class, ViaSubInterface.class, Arrays.asList(Number.class)),
+			Arguments.of(Repository.class, StringRepository.class, Arrays.asList(String.class)));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)} with a generic
+	 * interface as the base
+	 *
+	 * @param baseClass
+	 *            the interface
+	 * @param childClass
+	 *            the class that implements it
+	 * @param expected
+	 *            the type arguments
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ParameterizedTest(name = "{1} gives {0} {2}")
+	@MethodSource("typeArgumentsOfInterfaces")
+	void theTypeArgumentsAClassGivesItsInterface(final Class baseClass, final Class childClass,
+		final List<Class<?>> expected)
+	{
+		assertEquals(expected, TypeArgumentsExtensions.getTypeArguments(baseClass, childClass));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)} with a child
+	 * that is no subtype of the base, which only raw types allow
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	void aChildThatIsNoSubtypeOfTheBase()
+	{
+		final Class base = Repository.class;
+		final Class child = Leaf.class;
+		assertEquals(Leaf.class.getName() + " is no subtype of " + Repository.class.getName(),
+			assertThrows(IllegalArgumentException.class,
+				() -> TypeArgumentsExtensions.getTypeArguments(base, child)).getMessage());
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)}: the walk up
+	 * the hierarchy resolves each type parameter of the base to the class a subclass binds it to;
+	 * one that no class binds gives the class of its bound
+	 *
+	 * @param baseClass
+	 *            the base class
+	 * @param childClass
+	 *            the child class
+	 * @param expected
+	 *            the type arguments
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ParameterizedTest(name = "{1} gives {0} {2}")
+	@MethodSource("typeArgumentsOfHierarchies")
+	void theTypeArgumentsAChildGivesItsBase(final Class baseClass, final Class childClass,
+		final List<Class<?>> expected)
+	{
+		assertEquals(expected, TypeArgumentsExtensions.getTypeArguments(baseClass, childClass));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArgument(Class, Class, int)}: the type
+	 * argument at an index, and null for an index that does not exist
+	 */
+	@Test
+	void theTypeArgumentAtAnIndex()
+	{
+		assertEquals(String.class,
+			TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, 0));
+		assertEquals(Integer.class,
+			TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, 1));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, 2));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(Leaf.class, Leaf.class, 0));
+		assertEquals(String.class, TypeArgumentsExtensions.getFirstTypeArgument(StringList.class));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(Base.class, Leaf.class, -1));
+		assertNull(TypeArgumentsExtensions.getTypeArgument(StringList.class, -1));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getParameterizedType(Class)} and
+	 * {@link TypeArgumentsExtensions#getGenericTypeArray(Class)}: the generic interfaces come
+	 * first, then a parameterized superclass, else nothing
+	 */
+	@Test
+	void theParameterizedTypeOfAClass()
+	{
+		final Optional<ParameterizedType> ofInterface = TypeArgumentsExtensions
+			.getParameterizedType(NumberRepository.class);
+		assertTrue(ofInterface.isPresent());
+		assertSame(Repository.class, ofInterface.get().getRawType());
+		final Optional<ParameterizedType> ofSuperclass = TypeArgumentsExtensions
+			.getParameterizedType(Mid.class);
+		assertTrue(ofSuperclass.isPresent());
+		assertSame(Base.class, ofSuperclass.get().getRawType());
+		assertFalse(TypeArgumentsExtensions.getParameterizedType(Plain.class).isPresent());
+		assertFalse(TypeArgumentsExtensions.getParameterizedType(Nothing.class).isPresent());
+		assertArrayEquals(new Type[0], TypeArgumentsExtensions.getGenericTypeArray(Nothing.class));
+		assertArrayEquals(new Type[0],
+			TypeArgumentsExtensions.getGenericTypeArray(Repository.class));
+		assertArrayEquals(new Type[] { Serializable.class },
+			TypeArgumentsExtensions.getGenericTypeArray(Plain.class));
+	}
+
+	/**
+	 * Every call of a method of {@link TypeArgumentsExtensions} whose parameter is marked non-null
+	 * or checked with {@link java.util.Objects#requireNonNull(Object)}, with null for it
+	 *
+	 * @return the name of each call and the call
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	static Stream<Arguments> callsThatRefuseNull()
+	{
+		final Class nullClass = null;
+		return Stream.of(
+			Arguments.of("getGenericReturnType(null, name)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnType(null, "toString")),
+			Arguments.of("getGenericReturnType(class, null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnType(Object.class, null)),
+			Arguments.of("getGenericReturnClassType(null, name)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnClassType(null,
+					"toString")),
+			Arguments.of("getGenericReturnClassType(class, null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericReturnClassType(Object.class,
+					null)),
+			Arguments.of("getClass(null)",
+				(Executable)() -> TypeArgumentsExtensions.getClass((Type)null)),
+			Arguments.of("getFirstTypeArgument(null)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(nullClass)),
+			Arguments.of("getFirstTypeArgument(null, child)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(nullClass,
+					Leaf.class)),
+			Arguments.of("getFirstTypeArgument(base, null)",
+				(Executable)() -> TypeArgumentsExtensions.getFirstTypeArgument(Base.class,
+					nullClass)),
+			Arguments.of("getTypeArgument(null, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(nullClass, 0)),
+			Arguments.of("getTypeArgument(null, child, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(nullClass, Leaf.class,
+					0)),
+			Arguments.of("getTypeArgument(base, null, 0)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgument(Base.class, nullClass,
+					0)),
+			Arguments.of("getTypeArguments(null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(nullClass)),
+			Arguments.of("getTypeArguments(null, child)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(nullClass, Leaf.class)),
+			Arguments.of("getTypeArguments(base, null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArguments(Base.class, nullClass)),
+			Arguments.of("getTypeArgumentsAndParameters(null)",
+				(Executable)() -> TypeArgumentsExtensions.getTypeArgumentsAndParameters(null)),
+			Arguments.of("getParameterizedType(null)",
+				(Executable)() -> TypeArgumentsExtensions.getParameterizedType(null)),
+			Arguments.of("getGenericTypeArray(null)",
+				(Executable)() -> TypeArgumentsExtensions.getGenericTypeArray(null)));
+	}
+
+	/**
+	 * Each method refuses null with a {@link NullPointerException}
+	 *
+	 * @param call
+	 *            the name of the call
+	 * @param executable
+	 *            the call with null
+	 */
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("callsThatRefuseNull")
+	void nullIsRefused(final String call, final Executable executable)
+	{
+		assertThrows(NullPointerException.class, executable);
+	}
+}

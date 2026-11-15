@@ -1,0 +1,20 @@
+pitest {
+    junit5PluginVersion = libs.versions.pitest.junit5.plugin.version.get()
+    pitestVersion = libs.versions.pitest.version.get()
+    // junit-platform-launcher is declared in testRuntimeOnly (gradle/libs.versions.toml, bundle
+    // test-runtime-only). Left on, the plugin resolves a detached copy of testImplementation to find the
+    // JUnit Platform version, without the constraints of gradle/dependencies.gradle, and the dependency
+    // submission reports what it resolves (as astrapi69/file-worker#103)
+    addJUnitPlatformLauncher = false
+    // the two packages of the main sources; the tests are those of the same packages
+    targetClasses = ["io.github.astrapi69.check.*", "io.github.astrapi69.lang.*"]
+    threads = 4
+    // The mutator set, named so a reader of the score knows it: DEFAULTS is what PIT runs when nothing
+    // is said; STRONGER is PIT's group of further mutators on top of DEFAULTS
+    // (https://pitest.org/quickstart/mutators/), as in astrapi69/silly-collection#157.
+    mutators = ["DEFAULTS", "STRONGER"]
+    // XML is what the summary, mutation-context and badge steps in
+    // .github/workflows/mutation-testing.yml read.
+    outputFormats = ["HTML", "XML"]
+    timestampedReports = false
+}

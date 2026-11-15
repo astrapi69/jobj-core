@@ -1,16 +1,17 @@
 repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        name "Sonatype Nexus Releases"
-        url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        mavenContent {
-            releasesOnly()
-        }
+    // The local Maven repository only on request, with -PuseMavenLocal: it came before Maven Central, so an
+    // artifact built on this machine replaced the published one of the same version, and a build tested and
+    // packaged against other dependencies than CI and every user get (as astrapi69/silly-collection#99 and
+    // astrapi69/file-worker#97)
+    if (providers.gradleProperty("useMavenLocal").isPresent()) {
+        mavenLocal()
     }
+    mavenCentral()
+    // Snapshots of the family's libraries, which publish.yml uploads to the Central Portal; the OSSRH
+    // repositories this build read before were shut down
     maven {
-        name "Sonatype Nexus Snapshots"
-        url "https://oss.sonatype.org/content/repositories/snapshots"
+        name = "$projectRepositoriesSnapshotsName"
+        url = "$projectRepositoriesSnapshotsRepoUrl"
         mavenContent {
             snapshotsOnly()
         }

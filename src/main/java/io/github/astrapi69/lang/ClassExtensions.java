@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -116,12 +117,12 @@ public final class ClassExtensions
 			return childClass;
 		}
 		Class<?> superClass = childClass.getSuperclass();
-		if (superClass != null && superClass.equals(Object.class))
+		if (Object.class.equals(superClass))
 		{
 			return childClass;
 		}
-		while (superClass != null && !(superClass.getSuperclass() != null
-			&& superClass.getSuperclass().equals(Object.class)))
+		// the walk stops at the class below Object, so a class in it always has a superclass
+		while (superClass != null && !Object.class.equals(superClass.getSuperclass()))
 		{
 			superClass = superClass.getSuperclass();
 		}
@@ -187,7 +188,8 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * Gets the component {@link Class} type of the given array object
+	 * Gets the component {@link Class} type of the given array object, the type the array was
+	 * created with, whatever its elements are: {@code Number} for {@code new Number[] { 1, 2.5 }}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -198,10 +200,6 @@ public final class ClassExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getComponentClassType(final @NonNull T[] arrayObject)
 	{
-		if (0 < arrayObject.length)
-		{
-			return (Class<T>)arrayObject[0].getClass();
-		}
 		return (Class<T>)arrayObject.getClass().getComponentType();
 	}
 
@@ -476,8 +474,9 @@ public final class ClassExtensions
 
 
 	/**
-	 * Gets the path from the given class. For instance /java/lang/Object.class if the given class
-	 * is from {@code Object}
+	 * Gets the path of the class file of the given class, from its binary name. For instance
+	 * /java/lang/Object.class if the given class is from {@code Object}, and
+	 * /java/util/Map$Entry.class for {@code Map.Entry}
 	 *
 	 * @param clazz
 	 *            The class.
@@ -485,10 +484,10 @@ public final class ClassExtensions
 	 */
 	public static String getPath(final @NonNull Class<?> clazz)
 	{
-		final String packagePath = PackageExtensions.getPackagePath(clazz);
-		final String className = ClassExtensions.getSimpleName(clazz);
-		return new StringBuilder().append("/").append(packagePath).append(className)
-			.append(".class").toString();
+		// the binary name, as Class.getName gives it, is the name of the class file: Outer$Inner
+		// for
+		// a nested class, Outer$1 for an anonymous one
+		return "/" + clazz.getName().replace('.', '/') + ".class";
 	}
 
 	/**
@@ -513,7 +512,8 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * Gives the url from the path back.
+	 * Gives the url of the class file of the given class, at the path of {@link #getPath(Class)},
+	 * or null for a class without one, such as a class made at runtime
 	 *
 	 * @param clazz
 	 *            The class-object.
@@ -521,17 +521,15 @@ public final class ClassExtensions
 	 */
 	public static URL getResource(final @NonNull Class<?> clazz)
 	{
-		final String path = ClassExtensions.getPath(clazz);
-		URL url = clazz.getResource(path);
-		if (url == null)
-		{
-			url = ClassExtensions.getClassLoader().getResource(path);
-		}
-		return url;
+		// the path starts with a slash, which Class.getResource takes as absolute; a class loader
+		// finds nothing for such a name, so there is nothing to ask it in addition
+		return clazz.getResource(ClassExtensions.getPath(clazz));
 	}
 
 	/**
-	 * Gives the url from the path back.
+	 * Gives the url from the path back: from {@link Class#getResource(String)} of the given class,
+	 * else from the class loader of {@link #getResource(String)}, which takes an absolute path as
+	 * well
 	 *
 	 * @param clazz
 	 *            The class-object.
@@ -544,7 +542,9 @@ public final class ClassExtensions
 		URL url = clazz.getResource(path);
 		if (url == null)
 		{
-			url = ClassExtensions.getClassLoader().getResource(path);
+			// a class loader finds nothing for a name with a leading slash; getResource(String)
+			// strips it
+			url = ClassExtensions.getResource(path);
 		}
 		return url;
 	}
@@ -579,13 +579,9 @@ public final class ClassExtensions
 	 */
 	public static <T> URL getResource(final @NonNull String name, final @NonNull T obj)
 	{
-		final Class<?> clazz = obj.getClass();
-		URL url = clazz.getResource(name);
-		if (url == null)
-		{
-			url = getResource(clazz, name);
-		}
-		return url;
+		// getResource(Class, String) asks Class.getResource first, and falls back to the class
+		// loader
+		return getResource(obj.getClass(), name);
 	}
 
 	/**
@@ -601,16 +597,11 @@ public final class ClassExtensions
 	public static File getResourceAsFile(final @NonNull String name) throws URISyntaxException
 	{
 		File file = null;
+		// getResource(String) asks the same class loader with the name without a leading slash; a
+		// second lookup with the name as given found nothing more, since the class loaders of the
+		// JDK find nothing for a name that starts with a slash
 		URL url = getResource(name);
-		if (null == url)
-		{
-			url = ClassExtensions.getClassLoader().getResource(name);
-			if (null != url)
-			{
-				file = new File(url.toURI());
-			}
-		}
-		else
+		if (null != url)
 		{
 			if (url.getProtocol().equals("jar"))
 			{
@@ -737,12 +728,9 @@ public final class ClassExtensions
 	public static List<URL> getResources(final @NonNull String path, String... excludeUrlProtocols)
 		throws IOException
 	{
-		ArrayList<URL> urls = Collections.list(ClassExtensions.getClassLoader().getResources(path));
-		return 0 < excludeUrlProtocols.length
-			? urls.stream()
-				.filter(url -> !Arrays.asList(excludeUrlProtocols).contains(url.getProtocol()))
-				.collect(Collectors.toList())
-			: urls;
+		final List<String> excluded = Arrays.asList(excludeUrlProtocols);
+		return Collections.list(ClassExtensions.getClassLoader().getResources(path)).stream()
+			.filter(url -> !excluded.contains(url.getProtocol())).collect(Collectors.toList());
 	}
 
 	/**
@@ -768,7 +756,7 @@ public final class ClassExtensions
 	public static Class<?> getUnwrappedProxy(final Class<?> clazz)
 	{
 		final Class<?>[] found = unwrapProxy(clazz);
-		if (found != null && 0 < found.length)
+		if (0 < found.length)
 		{
 			return found[0];
 		}
@@ -841,14 +829,8 @@ public final class ClassExtensions
 		{
 			return true;
 		}
-		if (compare == null)
-		{
-			return false;
-		}
-		if (source == null)
-		{
-			return true;
-		}
+		// the walk ends at the bootstrap class loader, null: a null compare has no parents, and a
+		// null source is the parent of every chain
 		while (null != compare)
 		{
 			compare = compare.getParent();
@@ -862,7 +844,22 @@ public final class ClassExtensions
 
 
 	/**
-	 * Checks if the given {@link Class} is instantiable
+	 * Checks if the given {@link Class} is instantiable: a value of it can be created with its
+	 * no-argument constructor through {@link Constructor#newInstance(Object...)}, made accessible
+	 * first where it is not, which this method tries with {@link Constructor#trySetAccessible()} on
+	 * a copy of the constructor; a caller that creates the value makes its own copy accessible. A
+	 * private no-argument constructor therefore counts when the class has a constructor that is not
+	 * private as well and the constructor can be made accessible. An abstract class, an interface,
+	 * an enum, a primitive type, an inner class, a class without a no-argument constructor, a class
+	 * whose constructors are all private, such as a utility class, and a class whose no-argument
+	 * constructor cannot be made accessible, such as a protected one in a package its module does
+	 * not open, are not instantiable.
+	 *
+	 * <p>
+	 * The exception are the array types and the {@link java.util.Collection} and {@link Map} types,
+	 * their interfaces such as {@link java.util.List} included: they count as instantiable whatever
+	 * their constructors, because a value of them can always be created, an empty array, or a
+	 * default implementation such as {@link java.util.ArrayList} or {@link java.util.HashMap}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -872,16 +869,32 @@ public final class ClassExtensions
 	 */
 	public static <T> boolean isInstantiable(final Class<T> clazz)
 	{
+		ClassType classType = ClassExtensions.getClassType(clazz);
+		if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
+			|| classType.equals(ClassType.COLLECTION))
+		{
+			return true;
+		}
+		// Constructor.newInstance throws InstantiationException for an abstract class (its
+		// Javadoc);
+		// an interface carries the abstract modifier too (JVMS 4.1), and so do the primitive types
+		if (Modifier.isAbstract(clazz.getModifiers()))
+		{
+			return false;
+		}
+		// a class whose constructors are all private, such as a utility class, is not meant to
+		// be instantiated from outside (the maintainer's decision on #29)
+		if (Arrays.stream(clazz.getDeclaredConstructors())
+			.allMatch(constructor -> Modifier.isPrivate(constructor.getModifiers())))
+		{
+			return false;
+		}
 		try
 		{
-			ClassType classType = ClassExtensions.getClassType(clazz);
-			if (classType.equals(ClassType.ARRAY) || classType.equals(ClassType.MAP)
-				|| classType.equals(ClassType.COLLECTION))
-			{
-				return true;
-			}
-			final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
-			return declaredConstructor != null;
+			// Option 1 of #29: a no-argument constructor that Constructor.newInstance can call,
+			// made accessible where it is not; trySetAccessible answers false where the module
+			// of the class does not open its package, as java.base does not open java.io
+			return clazz.getDeclaredConstructor().trySetAccessible();
 		}
 		catch (NoSuchMethodException throwable)
 		{
@@ -968,16 +981,9 @@ public final class ClassExtensions
 		{
 			return new Class<?>[] { };
 		}
-		Class<?> found = clazz;
-		if (isCglib(found))
-		{
-			found = getCglibProxy(found);
-		}
-		if (isJdkProxy(found))
-		{
-			return getJdkProxyInterfaces(found);
-		}
-		return new Class<?>[] { found };
+		// getCglibProxy gives a class that is no subclass proxy as it is, and getJdkProxyInterfaces
+		// gives a class that is no JDK proxy as the only element
+		return getJdkProxyInterfaces(getCglibProxy(clazz));
 	}
 
 }
