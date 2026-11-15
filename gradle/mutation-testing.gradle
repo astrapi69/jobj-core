@@ -9,8 +9,6 @@ pitest {
     // the two packages of the main sources; the tests are those of the same packages
     targetClasses = ["io.github.astrapi69.check.*", "io.github.astrapi69.lang.*"]
     threads = 4
-    // the opening of java.lang that the cglib proxies of ClassExtensionsTest need (gradle/testing.gradle)
-    jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
     // The mutator set, named so a reader of the score knows it: DEFAULTS is what PIT runs when nothing
     // is said; STRONGER is PIT's group of further mutators on top of DEFAULTS
     // (https://pitest.org/quickstart/mutators/), as in astrapi69/silly-collection#157.

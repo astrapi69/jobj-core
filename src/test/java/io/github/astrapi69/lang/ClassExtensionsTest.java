@@ -20,6 +20,7 @@
  */
 package io.github.astrapi69.lang;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,9 +74,10 @@ import io.github.astrapi69.test.object.classes.inner.OuterClass;
 import io.github.astrapi69.test.object.enumeration.Brand;
 import io.github.astrapi69.test.object.generic.PersonDao;
 import io.github.astrapi69.throwable.RuntimeExceptionDecorator;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.SuperMethodCall;
+import net.bytebuddy.matcher.ElementMatchers;
 
 /**
  * The unit test class for the class {@link ClassExtensions}
@@ -133,10 +135,77 @@ public class ClassExtensionsTest
 			Arguments.of(List.class, true, "a collection interface"),
 			Arguments.of(HashMap.class, true, "a map type"),
 			Arguments.of(Map.class, true, "a map interface"),
-			Arguments.of(InputStream.class, true,
-				"abstract, but with a no-argument constructor: pinned as it is, see the issue"),
-			Arguments.of(ClassExtensions.class, true,
-				"a private no-argument constructor: pinned as it is, see the issue"));
+			Arguments.of(InputStream.class, false, "abstract (#29)"),
+			Arguments.of(AbstractWithConstructor.class, false,
+				"abstract, though with a public no-argument constructor (#29)"),
+			Arguments.of(ClassExtensions.class, false,
+				"only a private no-argument constructor (#29)"),
+			Arguments.of(OnlyPrivateConstructor.class, false, "only a private constructor (#29)"),
+			Arguments.of(PrivateNoArgumentConstructor.class, false,
+				"the no-argument constructor is private (#29)"),
+			Arguments.of(ProtectedNoArgumentConstructor.class, true,
+				"a protected no-argument constructor"),
+			Arguments.of(PackagePrivateNoArgumentConstructor.class, true,
+				"a package-private no-argument constructor"),
+			Arguments.of(Inner.class, false,
+				"an inner class: its constructor takes the outer instance"));
+	}
+
+	/** Abstract, with a public no-argument constructor */
+	abstract static class AbstractWithConstructor
+	{
+		/** The public no-argument constructor */
+		public AbstractWithConstructor()
+		{
+		}
+	}
+
+	/** Has only a private constructor */
+	static final class OnlyPrivateConstructor
+	{
+		private OnlyPrivateConstructor()
+		{
+		}
+	}
+
+	/** A private no-argument constructor and a public one with an argument */
+	static final class PrivateNoArgumentConstructor
+	{
+		private PrivateNoArgumentConstructor()
+		{
+		}
+
+		/**
+		 * The public constructor with an argument
+		 *
+		 * @param name
+		 *            a name
+		 */
+		public PrivateNoArgumentConstructor(final String name)
+		{
+		}
+	}
+
+	/** A protected no-argument constructor */
+	static class ProtectedNoArgumentConstructor
+	{
+		/** The protected no-argument constructor */
+		protected ProtectedNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** A package-private no-argument constructor */
+	static class PackagePrivateNoArgumentConstructor
+	{
+		PackagePrivateNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** An inner class, whose constructor takes the instance of the outer class */
+	class Inner
+	{
 	}
 
 	/**
@@ -509,10 +578,8 @@ public class ClassExtensionsTest
 		Class<?> actual;
 		Class<?>[] jdkProxyInterfaces;
 
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
-		jdkProxyInterfaces = ClassExtensions.getJdkProxyInterfaces(proxy.getClass());
+		jdkProxyInterfaces = ClassExtensions
+			.getJdkProxyInterfaces(subclassProxyOf(PersonDao.class));
 
 		assertNotNull(jdkProxyInterfaces);
 		assertTrue(jdkProxyInterfaces.length == 1);
@@ -907,16 +974,53 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Makes a subclass proxy of the given class with ByteBuddy, named the way a cglib proxy is
+	 * named, with the tag {@code $$} that {@link ClassExtensions#isCglib(Class)} looks for. Before
+	 * 10.0 the tests made it with cglib 3.3.0, which needed {@code --add-opens java.base/java.lang}
+	 * on Java 17 and later; ByteBuddy loads it through a class loader of its own and needs nothing
+	 * of the kind
+	 *
+	 * @param <T>
+	 *            the type of the class
+	 * @param superclass
+	 *            the class to subclass
+	 * @return the proxy class
+	 */
+	static <T> Class<? extends T> subclassProxyOf(final Class<T> superclass)
+	{
+		return new ByteBuddy().subclass(superclass)
+			.name(superclass.getName() + "$$EnhancerByByteBuddy$$test")
+			.method(ElementMatchers.any()).intercept(SuperMethodCall.INSTANCE).make()
+			.load(ClassExtensionsTest.class.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+			.getLoaded();
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getCglibProxy(Class)},
+	 * {@link ClassExtensions#unwrapProxy(Class)}, {@link ClassExtensions#getUnwrappedProxy(Class)}
+	 * and {@link ClassExtensions#isProxy(Class)} with a subclass proxy: each sees through it to the
+	 * class it extends
+	 */
+	@Test
+	public void aSubclassProxyIsUnwrappedToItsSuperclass()
+	{
+		final Class<? extends PersonDao> proxyClass = subclassProxyOf(PersonDao.class);
+		assertTrue(ClassExtensions.isProxy(proxyClass));
+		assertFalse(ClassExtensions.isJdkProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getCglibProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getCglibProxy(PersonDao.class));
+		assertArrayEquals(new Class<?>[] { PersonDao.class },
+			ClassExtensions.unwrapProxy(proxyClass));
+		assertEquals(PersonDao.class, ClassExtensions.getUnwrappedProxy(proxyClass));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#isCglib(Class)}.
 	 */
 	@Test
 	public void testIsCglib()
 	{
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor handler = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, handler);
-
-		boolean cglib = ClassExtensions.isCglib(proxy.getClass());
+		boolean cglib = ClassExtensions.isCglib(subclassProxyOf(PersonDao.class));
 		assertTrue(cglib);
 	}
 
@@ -953,11 +1057,8 @@ public class ClassExtensionsTest
 	{
 		boolean actual;
 		boolean expected;
-		PersonDao personDao = new PersonDao();
-		MethodInterceptor methodInterceptor = new MethodInterceptorHandler<>(personDao);
-		PersonDao proxy = (PersonDao)Enhancer.create(PersonDao.class, methodInterceptor);
 		expected = false;
-		actual = ClassExtensions.isJdkProxy(proxy.getClass());
+		actual = ClassExtensions.isJdkProxy(subclassProxyOf(PersonDao.class));
 		assertEquals(expected, actual);
 
 		Bla bla = new Bla();
@@ -1075,26 +1176,6 @@ public class ClassExtensionsTest
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return method.invoke(original, args);
-		}
-	}
-
-	/**
-	 * The class {@link MethodInterceptorHandler} for unit tests purposes.
-	 */
-	static class MethodInterceptorHandler<T> implements MethodInterceptor
-	{
-		private final T origin;
-
-		public MethodInterceptorHandler(T origin)
-		{
-			this.origin = origin;
-		}
-
-		@Override
-		public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy)
-			throws Throwable
-		{
-			return method.invoke(origin, args);
 		}
 	}
 
