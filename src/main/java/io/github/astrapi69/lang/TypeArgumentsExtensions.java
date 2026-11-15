@@ -359,13 +359,11 @@ public final class TypeArgumentsExtensions
 		{
 			return genericInterfaceTypes;
 		}
+		// null for an interface, a primitive type and Object, and null is no ParameterizedType
 		Type genericSuperclassType = clazz.getGenericSuperclass();
-		if (genericSuperclassType != null)
+		if (genericSuperclassType instanceof ParameterizedType)
 		{
-			if (genericSuperclassType instanceof ParameterizedType)
-			{
-				return new Type[] { genericSuperclassType };
-			}
+			return new Type[] { genericSuperclassType };
 		}
 		return new Type[0];
 	}
