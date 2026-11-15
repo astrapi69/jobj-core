@@ -905,6 +905,22 @@ public class ClassExtensionsTest
 	}
 
 	/**
+	 * Test method for {@link ClassExtensions#getResource(Class, String)} and
+	 * {@link ClassExtensions#getResource(String, Object)} with an absolute name and a class of a
+	 * named module of the JDK, whose {@link Class#getResource(String)} finds no resource of the
+	 * class path: the class loader finds it
+	 */
+	@Test
+	public void anAbsoluteResourceNameAndAClassOfTheJdk()
+	{
+		final String name = "/io/github/astrapi69/lang/resources.properties";
+		assertNull(String.class.getResource(name));
+		assertNotNull(ClassExtensions.getResource(String.class, name));
+		assertNotNull(ClassExtensions.getResource(name, "text"));
+		assertNotNull(ClassExtensions.getResource(ClassExtensionsTest.class, name));
+	}
+
+	/**
 	 * Test method for {@link ClassExtensions#getResource(Class)}.
 	 */
 	@Test

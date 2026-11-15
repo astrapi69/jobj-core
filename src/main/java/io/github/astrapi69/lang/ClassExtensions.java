@@ -527,7 +527,9 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * Gives the url from the path back.
+	 * Gives the url from the path back: from {@link Class#getResource(String)} of the given class,
+	 * else from the class loader of {@link #getResource(String)}, which takes an absolute path as
+	 * well
 	 *
 	 * @param clazz
 	 *            The class-object.
@@ -540,7 +542,9 @@ public final class ClassExtensions
 		URL url = clazz.getResource(path);
 		if (url == null)
 		{
-			url = ClassExtensions.getClassLoader().getResource(path);
+			// a class loader finds nothing for a name with a leading slash; getResource(String)
+			// strips it
+			url = ClassExtensions.getResource(path);
 		}
 		return url;
 	}
