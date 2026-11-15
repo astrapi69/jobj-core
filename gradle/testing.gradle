@@ -2,10 +2,11 @@ test {
     useJUnitPlatform()
 }
 
-// The JaCoCo version Gradle 9.8.2 brings, named so that a Gradle update does not change the measurement
-// unnoticed (as astrapi69/silly-collection)
+// The JaCoCo version, named so that a Gradle update does not change the measurement unnoticed (as
+// astrapi69/silly-collection). 0.8.16 (2026-10-26) instead of the 0.8.15 Gradle 9.8.2 brings, by the currency check
+// before 10.0 (RL-120): the same numbers on the same tree with both
 jacoco {
-    toolVersion = '0.8.15'
+    toolVersion = '0.8.16'
 }
 
 jacocoTestReport {
