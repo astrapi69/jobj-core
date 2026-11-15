@@ -10,11 +10,12 @@ task javadocJar(type: Jar) {
     archiveClassifier.set("javadoc")
 }
 
-// A javadoc error fails the build, and check depends on javadoc, so that ./gradlew build and CI run it (as
-// astrapi69/silly-collection#96). -Werror, which turns every warning into an error, waits for #16: the warnings
-// left are all in the types that issue may remove from the API.
+// A javadoc warning fails the build (RL-113, as astrapi69/silly-collection#96): -Werror turns each warning into an
+// error, failOnError lets that error fail the task, and check depends on javadoc, so that ./gradlew build and CI run
+// it. A count of warnings by a text search depends on the tool's language; failing on them does not.
 javadoc {
     failOnError = true
+    options.addBooleanOption("Werror", true)
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption("html5", true)
     }
