@@ -33,9 +33,19 @@ apply from: "gradle/apply-gradle-files.gradle"
 // Mutators DEFAULTS and STRONGER. Set at 64 from the first run, on commit 3fe99a4 of the pull request that brought
 // PIT (run 43626608343: 351 of 532 mutants detected, 66 %); raised after the parameterized tests of milestone 10.0,
 // from the run on develop d36dcf5 (run 43632544735): 468 of 584 detected, 80 %; 25 had no test that reached them.
+// Raised again after the removal of the unused types (#16) and the tests for the survivors (the maintainer,
+// 2026-11-14), from the run on develop e430ced (run 43698563899): 447 of 450 detected, 99 %. The three that survive
+// are equivalent mutants, which no test can kill, since the mutated code gives the same result:
+// - PackageExtensions.getPackageName(String), `lastDot < 0` made `<= 0`: for a dot at index 0 both give "", as
+//   substring(0, 0) is "";
+// - ThreadExtensions.setCurrentThreadPriority, `>= 1` made `> 1`: priority 1 then goes to the else branch, which sets
+//   Thread.MIN_PRIORITY, and that is 1;
+// - ThreadExtensions.shutdownExecutorService, the result of awaitTermination ignored, so shutdownNow is called
+//   always: on an executor that has terminated, shutdownNow does nothing and returns an empty list, which the method
+//   does not return.
 // Kept here, not in gradle/mutation-testing.gradle, so that the floor sits in the file a reader looks at.
 pitest {
-    mutationThreshold = 78
+    mutationThreshold = 97
 }
 
 java {
