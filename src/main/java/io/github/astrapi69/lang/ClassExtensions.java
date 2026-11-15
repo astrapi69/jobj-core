@@ -579,13 +579,9 @@ public final class ClassExtensions
 	 */
 	public static <T> URL getResource(final @NonNull String name, final @NonNull T obj)
 	{
-		final Class<?> clazz = obj.getClass();
-		URL url = clazz.getResource(name);
-		if (url == null)
-		{
-			url = getResource(clazz, name);
-		}
-		return url;
+		// getResource(Class, String) asks Class.getResource first, and falls back to the class
+		// loader
+		return getResource(obj.getClass(), name);
 	}
 
 	/**
