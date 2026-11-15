@@ -139,7 +139,8 @@ public final class Argument
 	public static <T extends CharSequence> T notEmpty(final T argument, final String name)
 	{
 		notNull(argument, name);
-		if ((argument.length() == 0) || (argument.toString().trim().length() == 0))
+		// trim gives the empty text for the empty text too
+		if (argument.toString().trim().isEmpty())
 		{
 			throw new IllegalArgumentException("Given argument '" + name + "' may not be empty.");
 		}
