@@ -142,4 +142,33 @@ public class ThreadDataBeanTest
 		assertEquals(thread.threadId(), data.getId());
 	}
 
+	/**
+	 * A subclass that adds state and refuses to be equal to a plain {@link ThreadDataBean}
+	 */
+	static class RefusingThreadDataBean extends ThreadDataBean
+	{
+		@Override
+		protected boolean canEqual(final Object other)
+		{
+			return other instanceof RefusingThreadDataBean;
+		}
+	}
+
+	/**
+	 * Test method for {@link ThreadDataBean#equals(Object)} and its {@code canEqual}: a subclass
+	 * that refuses equality with a plain bean is not equal to it, though every field is the same
+	 * (the other direction is the equals of the subclass, as Lombok generates it); and an object of
+	 * another class cannot be equal
+	 */
+	@Test
+	public void canEqualLetsASubclassRefuseEquality()
+	{
+		final ThreadDataBean plain = new ThreadDataBean();
+		final ThreadDataBean refusing = new RefusingThreadDataBean();
+		assertFalse(plain.equals(refusing), "the plain bean asks the subclass, which refuses");
+		assertTrue(refusing.equals(new RefusingThreadDataBean()));
+		assertFalse(plain.canEqual("text"));
+		assertTrue(plain.canEqual(refusing));
+	}
+
 }

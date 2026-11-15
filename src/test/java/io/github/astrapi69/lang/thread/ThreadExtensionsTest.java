@@ -216,6 +216,37 @@ public class ThreadExtensionsTest extends BaseTestCase
 	}
 
 	/**
+	 * Test method for
+	 * {@link ThreadExtensions#shutdownExecutorService(ExecutorService, long, long)}: the time to
+	 * wait is the timeout times the task size, so a task that needs longer than the timeout alone,
+	 * but less than the product, ends on its own and is not interrupted
+	 *
+	 * @throws Exception
+	 *             if the test is interrupted while it waits, or the task failed
+	 */
+	@Test
+	public void shutdownExecutorServiceWaitsTheTimeoutTimesTheTaskSize() throws Exception
+	{
+		final ExecutorService executorService = Executors.newSingleThreadExecutor();
+		final AtomicBoolean interrupted = new AtomicBoolean();
+		final Future<?> future = executorService.submit(() -> {
+			try
+			{
+				Thread.sleep(300);
+			}
+			catch (InterruptedException e)
+			{
+				interrupted.set(true);
+			}
+		});
+		// 1 second times 5 tasks: up to 5 seconds for a task of 300 milliseconds
+		ThreadExtensions.shutdownExecutorService(executorService, 1, 5);
+		assertTrue(executorService.isTerminated());
+		future.get();
+		assertFalse(interrupted.get(), "the task ended on its own");
+	}
+
+	/**
 	 * Test method for {@link ThreadExtensions#shutdownExecutorService(ExecutorService, long, long)}
 	 * with a task that does not end in time: the executor is shut down now, which interrupts the
 	 * task
