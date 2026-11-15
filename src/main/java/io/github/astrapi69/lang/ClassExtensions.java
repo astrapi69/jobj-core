@@ -117,12 +117,12 @@ public final class ClassExtensions
 			return childClass;
 		}
 		Class<?> superClass = childClass.getSuperclass();
-		if (superClass != null && superClass.equals(Object.class))
+		if (Object.class.equals(superClass))
 		{
 			return childClass;
 		}
-		while (superClass != null && !(superClass.getSuperclass() != null
-			&& superClass.getSuperclass().equals(Object.class)))
+		// the walk stops at the class below Object, so a class in it always has a superclass
+		while (superClass != null && !Object.class.equals(superClass.getSuperclass()))
 		{
 			superClass = superClass.getSuperclass();
 		}
@@ -602,16 +602,11 @@ public final class ClassExtensions
 	public static File getResourceAsFile(final @NonNull String name) throws URISyntaxException
 	{
 		File file = null;
+		// getResource(String) asks the same class loader with the name without a leading slash; a
+		// second lookup with the name as given found nothing more, since the class loaders of the
+		// JDK find nothing for a name that starts with a slash
 		URL url = getResource(name);
-		if (null == url)
-		{
-			url = ClassExtensions.getClassLoader().getResource(name);
-			if (null != url)
-			{
-				file = new File(url.toURI());
-			}
-		}
-		else
+		if (null != url)
 		{
 			if (url.getProtocol().equals("jar"))
 			{
@@ -738,12 +733,9 @@ public final class ClassExtensions
 	public static List<URL> getResources(final @NonNull String path, String... excludeUrlProtocols)
 		throws IOException
 	{
-		ArrayList<URL> urls = Collections.list(ClassExtensions.getClassLoader().getResources(path));
-		return 0 < excludeUrlProtocols.length
-			? urls.stream()
-				.filter(url -> !Arrays.asList(excludeUrlProtocols).contains(url.getProtocol()))
-				.collect(Collectors.toList())
-			: urls;
+		final List<String> excluded = Arrays.asList(excludeUrlProtocols);
+		return Collections.list(ClassExtensions.getClassLoader().getResources(path)).stream()
+			.filter(url -> !excluded.contains(url.getProtocol())).collect(Collectors.toList());
 	}
 
 	/**
@@ -769,7 +761,7 @@ public final class ClassExtensions
 	public static Class<?> getUnwrappedProxy(final Class<?> clazz)
 	{
 		final Class<?>[] found = unwrapProxy(clazz);
-		if (found != null && 0 < found.length)
+		if (0 < found.length)
 		{
 			return found[0];
 		}
@@ -842,14 +834,8 @@ public final class ClassExtensions
 		{
 			return true;
 		}
-		if (compare == null)
-		{
-			return false;
-		}
-		if (source == null)
-		{
-			return true;
-		}
+		// the walk ends at the bootstrap class loader, null: a null compare has no parents, and a
+		// null source is the parent of every chain
 		while (null != compare)
 		{
 			compare = compare.getParent();
@@ -890,8 +876,8 @@ public final class ClassExtensions
 		}
 		// Constructor.newInstance throws InstantiationException for an abstract class (its
 		// Javadoc);
-		// the primitive types carry the abstract modifier as well
-		if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()))
+		// an interface carries the abstract modifier too (JVMS 4.1), and so do the primitive types
+		if (Modifier.isAbstract(clazz.getModifiers()))
 		{
 			return false;
 		}
@@ -985,16 +971,9 @@ public final class ClassExtensions
 		{
 			return new Class<?>[] { };
 		}
-		Class<?> found = clazz;
-		if (isCglib(found))
-		{
-			found = getCglibProxy(found);
-		}
-		if (isJdkProxy(found))
-		{
-			return getJdkProxyInterfaces(found);
-		}
-		return new Class<?>[] { found };
+		// getCglibProxy gives a class that is no subclass proxy as it is, and getJdkProxyInterfaces
+		// gives a class that is no JDK proxy as the only element
+		return getJdkProxyInterfaces(getCglibProxy(clazz));
 	}
 
 }
