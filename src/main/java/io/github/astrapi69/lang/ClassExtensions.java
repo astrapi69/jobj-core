@@ -844,10 +844,16 @@ public final class ClassExtensions
 
 
 	/**
-	 * Checks if the given {@link Class} is instantiable: a value of it can be created with a
-	 * no-argument constructor that is not private. An abstract class, an interface, an enum, a
-	 * primitive type, an inner class and a class whose no-argument constructor is private or
-	 * missing are not instantiable.
+	 * Checks if the given {@link Class} is instantiable: a value of it can be created with its
+	 * no-argument constructor through {@link Constructor#newInstance(Object...)}, made accessible
+	 * first where it is not, which this method tries with {@link Constructor#trySetAccessible()} on
+	 * a copy of the constructor; a caller that creates the value makes its own copy accessible. A
+	 * private no-argument constructor therefore counts when the class has a constructor that is not
+	 * private as well and the constructor can be made accessible. An abstract class, an interface,
+	 * an enum, a primitive type, an inner class, a class without a no-argument constructor, a class
+	 * whose constructors are all private, such as a utility class, and a class whose no-argument
+	 * constructor cannot be made accessible, such as a protected one in a package its module does
+	 * not open, are not instantiable.
 	 *
 	 * <p>
 	 * The exception are the array types and the {@link java.util.Collection} and {@link Map} types,
@@ -876,10 +882,19 @@ public final class ClassExtensions
 		{
 			return false;
 		}
+		// a class whose constructors are all private, such as a utility class, is not meant to
+		// be instantiated from outside (the maintainer's decision on #29)
+		if (Arrays.stream(clazz.getDeclaredConstructors())
+			.allMatch(constructor -> Modifier.isPrivate(constructor.getModifiers())))
+		{
+			return false;
+		}
 		try
 		{
-			final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
-			return !Modifier.isPrivate(declaredConstructor.getModifiers());
+			// Option 1 of #29: a no-argument constructor that Constructor.newInstance can call,
+			// made accessible where it is not; trySetAccessible answers false where the module
+			// of the class does not open its package, as java.base does not open java.io
+			return clazz.getDeclaredConstructor().trySetAccessible();
 		}
 		catch (NoSuchMethodException throwable)
 		{

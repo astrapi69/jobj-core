@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -121,7 +122,7 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them today
+	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them
 	 *
 	 * @return the classes and the answers
 	 */
@@ -142,10 +143,14 @@ public class ClassExtensionsTest
 			Arguments.of(ClassExtensions.class, false,
 				"only a private no-argument constructor (#29)"),
 			Arguments.of(OnlyPrivateConstructor.class, false, "only a private constructor (#29)"),
-			Arguments.of(PrivateNoArgumentConstructor.class, false,
-				"the no-argument constructor is private (#29)"),
+			Arguments.of(OnlyPrivateConstructors.class, false,
+				"only private constructors, a no-argument one among them (#29)"),
+			Arguments.of(PrivateNoArgumentConstructor.class, true,
+				"a private no-argument constructor that can be made accessible, next to a public one (#29)"),
 			Arguments.of(ProtectedNoArgumentConstructor.class, true,
 				"a protected no-argument constructor"),
+			Arguments.of(ObjectInputStream.class, false,
+				"a protected no-argument constructor that cannot be made accessible, in a package java.base does not open (#29)"),
 			Arguments.of(PackagePrivateNoArgumentConstructor.class, true,
 				"a package-private no-argument constructor"),
 			Arguments.of(Inner.class, false,
@@ -165,6 +170,24 @@ public class ClassExtensionsTest
 	static final class OnlyPrivateConstructor
 	{
 		private OnlyPrivateConstructor()
+		{
+		}
+	}
+
+	/** Has only private constructors, a no-argument one and one with an argument */
+	static final class OnlyPrivateConstructors
+	{
+		private OnlyPrivateConstructors()
+		{
+		}
+
+		/**
+		 * The private constructor with an argument
+		 *
+		 * @param name
+		 *            a name
+		 */
+		private OnlyPrivateConstructors(final String name)
 		{
 		}
 	}
