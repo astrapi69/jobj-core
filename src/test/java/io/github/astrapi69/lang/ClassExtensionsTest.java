@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -350,17 +349,16 @@ public class ClassExtensionsTest
 
 	/**
 	 * Test method for {@link ClassExtensions#getComponentClassType(Object[])} with an array whose
-	 * elements are of a subclass of its component type, or null
+	 * elements are of a subclass of its component type, or null: the answer is the component type
+	 * the array was created with
 	 */
 	@Test
 	public void theComponentTypeOfAnArrayOfSubclasses()
 	{
-		assertEquals(Integer.class, ClassExtensions.getComponentClassType(new Number[] { 1, 2.5 }),
-			"the class of the first element, not the component type Number");
-		assertEquals(Double.class, ClassExtensions.getComponentClassType(new Number[] { 2.5, 1 }));
-		assertEquals(String.class, ClassExtensions.getComponentClassType(new Object[] { "a" }));
-		assertThrows(NullPointerException.class,
-			() -> ClassExtensions.getComponentClassType(new String[] { null }));
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 1, 2.5 }));
+		assertEquals(Number.class, ClassExtensions.getComponentClassType(new Number[] { 2.5, 1 }));
+		assertEquals(Object.class, ClassExtensions.getComponentClassType(new Object[] { "a" }));
+		assertEquals(String.class, ClassExtensions.getComponentClassType(new String[] { null }));
 	}
 
 	/**

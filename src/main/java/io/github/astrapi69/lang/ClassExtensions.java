@@ -188,7 +188,8 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * Gets the component {@link Class} type of the given array object
+	 * Gets the component {@link Class} type of the given array object, the type the array was
+	 * created with, whatever its elements are: {@code Number} for {@code new Number[] { 1, 2.5 }}
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -199,10 +200,6 @@ public final class ClassExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getComponentClassType(final @NonNull T[] arrayObject)
 	{
-		if (0 < arrayObject.length)
-		{
-			return (Class<T>)arrayObject[0].getClass();
-		}
 		return (Class<T>)arrayObject.getClass().getComponentType();
 	}
 
