@@ -474,8 +474,9 @@ public final class ClassExtensions
 
 
 	/**
-	 * Gets the path from the given class. For instance /java/lang/Object.class if the given class
-	 * is from {@code Object}
+	 * Gets the path of the class file of the given class, from its binary name. For instance
+	 * /java/lang/Object.class if the given class is from {@code Object}, and
+	 * /java/util/Map$Entry.class for {@code Map.Entry}
 	 *
 	 * @param clazz
 	 *            The class.
@@ -483,10 +484,10 @@ public final class ClassExtensions
 	 */
 	public static String getPath(final @NonNull Class<?> clazz)
 	{
-		final String packagePath = PackageExtensions.getPackagePath(clazz);
-		final String className = ClassExtensions.getSimpleName(clazz);
-		return new StringBuilder().append("/").append(packagePath).append(className)
-			.append(".class").toString();
+		// the binary name, as Class.getName gives it, is the name of the class file: Outer$Inner
+		// for
+		// a nested class, Outer$1 for an anonymous one
+		return "/" + clazz.getName().replace('.', '/') + ".class";
 	}
 
 	/**
@@ -511,7 +512,8 @@ public final class ClassExtensions
 	}
 
 	/**
-	 * Gives the url from the path back.
+	 * Gives the url of the class file of the given class, at the path of {@link #getPath(Class)},
+	 * or null for a class without one, such as a class made at runtime
 	 *
 	 * @param clazz
 	 *            The class-object.
@@ -519,13 +521,9 @@ public final class ClassExtensions
 	 */
 	public static URL getResource(final @NonNull Class<?> clazz)
 	{
-		final String path = ClassExtensions.getPath(clazz);
-		URL url = clazz.getResource(path);
-		if (url == null)
-		{
-			url = ClassExtensions.getClassLoader().getResource(path);
-		}
-		return url;
+		// the path starts with a slash, which Class.getResource takes as absolute; a class loader
+		// finds nothing for such a name, so there is nothing to ask it in addition
+		return clazz.getResource(ClassExtensions.getPath(clazz));
 	}
 
 	/**

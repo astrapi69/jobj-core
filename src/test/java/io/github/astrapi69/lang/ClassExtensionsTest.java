@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -654,6 +655,53 @@ public class ClassExtensionsTest
 		expected = "/java/lang/Class.class";
 		actual = ClassExtensions.getPath(Class.class);
 		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#isFromJar(Class)} and
+	 * {@link ClassExtensions#getProtocol(Class)}, which look the class file up by
+	 * {@link ClassExtensions#getPath(Class)}: a class of a jar, of the build's class directory, of
+	 * the JDK's runtime image, and a nested class, for which the path was wrong before 10.0
+	 */
+	@Test
+	public void theProtocolOfTheClassFile()
+	{
+		assertTrue(ClassExtensions.isFromJar(Test.class));
+		assertEquals("jar", ClassExtensions.getProtocol(Test.class));
+		assertFalse(ClassExtensions.isFromJar(ClassExtensions.class));
+		assertEquals("file", ClassExtensions.getProtocol(ClassExtensions.class));
+		assertFalse(ClassExtensions.isFromJar(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(String.class));
+		assertEquals("jrt", ClassExtensions.getProtocol(Map.Entry.class));
+		assertEquals("file", ClassExtensions.getProtocol(StaticNestedClass.class));
+	}
+
+	/**
+	 * Test method for {@link ClassExtensions#getPath(Class)} and
+	 * {@link ClassExtensions#getResource(Class)} with a nested, an anonymous and a local class: the
+	 * path is the one of the class file, from the binary name
+	 */
+	@Test
+	public void thePathOfANestedClass()
+	{
+		final Object anonymous = new Object()
+		{
+		};
+		class Local
+		{
+		}
+		assertEquals("/java/util/Map$Entry.class", ClassExtensions.getPath(Map.Entry.class));
+		assertEquals("/" + anonymous.getClass().getName().replace('.', '/') + ".class",
+			ClassExtensions.getPath(anonymous.getClass()));
+		assertEquals("/io/github/astrapi69/lang/ClassExtensionsTest$1Local.class",
+			ClassExtensions.getPath(Local.class));
+		assertNotNull(ClassExtensions.getResource(Map.Entry.class));
+		assertNotNull(ClassExtensions.getResource(Local.class));
+		assertNotNull(ClassExtensions.getResource(anonymous.getClass()));
+		assertNull(
+			ClassExtensions.getResource(ClassExtensionsTest.subclassProxyOf(PersonDao.class)),
+			"a class made at runtime has no class file");
+		assertNotNull(ClassExtensions.getResource(String.class));
 	}
 
 	/**
