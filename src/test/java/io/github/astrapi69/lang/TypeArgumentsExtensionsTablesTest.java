@@ -235,17 +235,18 @@ class TypeArgumentsExtensionsTablesTest
 
 	/**
 	 * A generic interface as the base, and the classes that implement it directly, through a
-	 * superclass, through an interface that extends it, and through a generic class; pinned as they
-	 * are today: the type parameters of the topmost class of the child are resolved, not those of
-	 * the interface
+	 * superclass, through an interface that extends it, and through a generic class: each gives the
+	 * class the interface is bound to (before 10.0 the type parameters of the topmost class of the
+	 * child were resolved instead)
 	 *
 	 * @return the base, the child and the type arguments
 	 */
 	static Stream<Arguments> typeArgumentsOfInterfaces()
 	{
-		return Stream.of(Arguments.of(Repository.class, NumberRepository.class, Arrays.asList()),
-			Arguments.of(Repository.class, SubRepository.class, Arrays.asList()),
-			Arguments.of(Repository.class, ViaSubInterface.class, Arrays.asList()),
+		return Stream.of(
+			Arguments.of(Repository.class, NumberRepository.class, Arrays.asList(Number.class)),
+			Arguments.of(Repository.class, SubRepository.class, Arrays.asList(Number.class)),
+			Arguments.of(Repository.class, ViaSubInterface.class, Arrays.asList(Number.class)),
 			Arguments.of(Repository.class, StringRepository.class, Arrays.asList(String.class)));
 	}
 
@@ -267,6 +268,21 @@ class TypeArgumentsExtensionsTablesTest
 		final List<Class<?>> expected)
 	{
 		assertEquals(expected, TypeArgumentsExtensions.getTypeArguments(baseClass, childClass));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)} with a child
+	 * that is no subtype of the base, which only raw types allow
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	void aChildThatIsNoSubtypeOfTheBase()
+	{
+		final Class base = Repository.class;
+		final Class child = Leaf.class;
+		assertEquals(Leaf.class.getName() + " is no subtype of " + Repository.class.getName(),
+			assertThrows(IllegalArgumentException.class,
+				() -> TypeArgumentsExtensions.getTypeArguments(base, child)).getMessage());
 	}
 
 	/**
