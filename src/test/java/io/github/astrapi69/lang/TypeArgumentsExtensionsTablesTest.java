@@ -88,6 +88,36 @@ class TypeArgumentsExtensionsTablesTest
 	{
 	}
 
+	/** Inherits the binding of {@link NumberRepository} */
+	static class SubRepository extends NumberRepository
+	{
+	}
+
+	/** Binds the type parameter of {@link Repository} in an interface that extends it */
+	interface NumberRepositoryInterface extends Repository<Number>
+	{
+	}
+
+	/** Implements {@link Repository} through {@link NumberRepositoryInterface} */
+	static class ViaSubInterface implements NumberRepositoryInterface
+	{
+	}
+
+	/**
+	 * Passes the type parameter of {@link Repository} on
+	 *
+	 * @param <T>
+	 *            the type
+	 */
+	static class GenericRepository<T> implements Repository<T>
+	{
+	}
+
+	/** Binds the type parameter that {@link GenericRepository} passes on */
+	static class StringRepository extends GenericRepository<String>
+	{
+	}
+
 	/** Implements an interface that is not generic */
 	@SuppressWarnings("serial")
 	static class Plain implements Serializable
@@ -201,6 +231,42 @@ class TypeArgumentsExtensionsTablesTest
 			Arguments.of(ArrayList.class, StringList.class, Arrays.asList(String.class)),
 			Arguments.of(ArrayList.class, RawList.class, Arrays.asList(Object.class)),
 			Arguments.of(Leaf.class, Leaf.class, Arrays.asList()));
+	}
+
+	/**
+	 * A generic interface as the base, and the classes that implement it directly, through a
+	 * superclass, through an interface that extends it, and through a generic class; pinned as they
+	 * are today: the type parameters of the topmost class of the child are resolved, not those of
+	 * the interface
+	 *
+	 * @return the base, the child and the type arguments
+	 */
+	static Stream<Arguments> typeArgumentsOfInterfaces()
+	{
+		return Stream.of(Arguments.of(Repository.class, NumberRepository.class, Arrays.asList()),
+			Arguments.of(Repository.class, SubRepository.class, Arrays.asList()),
+			Arguments.of(Repository.class, ViaSubInterface.class, Arrays.asList()),
+			Arguments.of(Repository.class, StringRepository.class, Arrays.asList(String.class)));
+	}
+
+	/**
+	 * Test method for {@link TypeArgumentsExtensions#getTypeArguments(Class, Class)} with a generic
+	 * interface as the base
+	 *
+	 * @param baseClass
+	 *            the interface
+	 * @param childClass
+	 *            the class that implements it
+	 * @param expected
+	 *            the type arguments
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ParameterizedTest(name = "{1} gives {0} {2}")
+	@MethodSource("typeArgumentsOfInterfaces")
+	void theTypeArgumentsAClassGivesItsInterface(final Class baseClass, final Class childClass,
+		final List<Class<?>> expected)
+	{
+		assertEquals(expected, TypeArgumentsExtensions.getTypeArguments(baseClass, childClass));
 	}
 
 	/**
