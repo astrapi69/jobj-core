@@ -135,10 +135,77 @@ public class ClassExtensionsTest
 			Arguments.of(List.class, true, "a collection interface"),
 			Arguments.of(HashMap.class, true, "a map type"),
 			Arguments.of(Map.class, true, "a map interface"),
-			Arguments.of(InputStream.class, true,
-				"abstract, but with a no-argument constructor: pinned as it is, see the issue"),
-			Arguments.of(ClassExtensions.class, true,
-				"a private no-argument constructor: pinned as it is, see the issue"));
+			Arguments.of(InputStream.class, false, "abstract (#29)"),
+			Arguments.of(AbstractWithConstructor.class, false,
+				"abstract, though with a public no-argument constructor (#29)"),
+			Arguments.of(ClassExtensions.class, false,
+				"only a private no-argument constructor (#29)"),
+			Arguments.of(OnlyPrivateConstructor.class, false, "only a private constructor (#29)"),
+			Arguments.of(PrivateNoArgumentConstructor.class, false,
+				"the no-argument constructor is private (#29)"),
+			Arguments.of(ProtectedNoArgumentConstructor.class, true,
+				"a protected no-argument constructor"),
+			Arguments.of(PackagePrivateNoArgumentConstructor.class, true,
+				"a package-private no-argument constructor"),
+			Arguments.of(Inner.class, false,
+				"an inner class: its constructor takes the outer instance"));
+	}
+
+	/** Abstract, with a public no-argument constructor */
+	abstract static class AbstractWithConstructor
+	{
+		/** The public no-argument constructor */
+		public AbstractWithConstructor()
+		{
+		}
+	}
+
+	/** Has only a private constructor */
+	static final class OnlyPrivateConstructor
+	{
+		private OnlyPrivateConstructor()
+		{
+		}
+	}
+
+	/** A private no-argument constructor and a public one with an argument */
+	static final class PrivateNoArgumentConstructor
+	{
+		private PrivateNoArgumentConstructor()
+		{
+		}
+
+		/**
+		 * The public constructor with an argument
+		 *
+		 * @param name
+		 *            a name
+		 */
+		public PrivateNoArgumentConstructor(final String name)
+		{
+		}
+	}
+
+	/** A protected no-argument constructor */
+	static class ProtectedNoArgumentConstructor
+	{
+		/** The protected no-argument constructor */
+		protected ProtectedNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** A package-private no-argument constructor */
+	static class PackagePrivateNoArgumentConstructor
+	{
+		PackagePrivateNoArgumentConstructor()
+		{
+		}
+	}
+
+	/** An inner class, whose constructor takes the instance of the outer class */
+	class Inner
+	{
 	}
 
 	/**
