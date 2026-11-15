@@ -122,7 +122,7 @@ public class ClassExtensionsTest
 	}
 
 	/**
-	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them today
+	 * Classes and what {@link ClassExtensions#isInstantiable(Class)} answers for them
 	 *
 	 * @return the classes and the answers
 	 */
@@ -145,12 +145,12 @@ public class ClassExtensionsTest
 			Arguments.of(OnlyPrivateConstructor.class, false, "only a private constructor (#29)"),
 			Arguments.of(OnlyPrivateConstructors.class, false,
 				"only private constructors, a no-argument one among them (#29)"),
-			Arguments.of(PrivateNoArgumentConstructor.class, false,
-				"the no-argument constructor is private (#29)"),
+			Arguments.of(PrivateNoArgumentConstructor.class, true,
+				"a private no-argument constructor that can be made accessible, next to a public one (#29)"),
 			Arguments.of(ProtectedNoArgumentConstructor.class, true,
 				"a protected no-argument constructor"),
-			Arguments.of(ObjectInputStream.class, true,
-				"a protected no-argument constructor in a package java.base does not open"),
+			Arguments.of(ObjectInputStream.class, false,
+				"a protected no-argument constructor that cannot be made accessible, in a package java.base does not open (#29)"),
 			Arguments.of(PackagePrivateNoArgumentConstructor.class, true,
 				"a package-private no-argument constructor"),
 			Arguments.of(Inner.class, false,
