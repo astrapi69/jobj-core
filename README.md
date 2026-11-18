@@ -267,6 +267,10 @@ What a release consists of, in the order it is run:
    `git merge --no-ff "RELEASE-X.Y^{commit}" -m "Merge tag RELEASE-X.Y into master"`. Before
    `master` is pushed, `git diff RELEASE-X.Y master` has to be empty; never a force push.
 8. **Open the next cycle**: `projectVersion` to the next `-SNAPSHOT`, by a pull request.
+9. **Bump drafts in the consumers** (RL-127): in every repository of the family that declares
+   jobj-core, a draft pull request that raises it to the release and shows the build before and
+   after it, so that a break shows the day the release appears; each is merged by RL-065, a runtime
+   major in a session of its own.
 
 ## Contributing
 
