@@ -41,6 +41,12 @@ public final class Argument
 	 * as Apache Commons Lang {@code Validate.inclusiveBetween} does, and as the {@code isInRange}
 	 * methods of {@link Check} do
 	 *
+	 * <p>
+	 * A null {@code value} is refused with the {@link IllegalArgumentException} of this class, as
+	 * every check of it refuses a null argument; {@code Validate.inclusiveBetween} throws a
+	 * {@link NullPointerException} there instead. Before 10.0 this method threw a
+	 * {@link NullPointerException} for a null value as well.
+	 *
 	 * @param <T>
 	 *            the generic type of the arguments
 	 * @param min
